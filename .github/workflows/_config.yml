@@ -1,0 +1,12 @@
+title: chatcord.ai
+description: A simple Jekyll site
+baseurl: ""  # Leave blank if deploying to GitHub Pages
+url: "https://yourusername.github.io"
+
+# Exclude files from the build
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
