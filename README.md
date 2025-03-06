@@ -1,2 +1,2 @@
 # chatcord.ai
-Website for an AI service
+Website for an AI service :)
