@@ -47,6 +47,10 @@
             width: 100%;
             height: auto;
             border-radius: 10px;
+            transition: transform 0.2s;
+        }
+        .grid img:hover {
+            transform: scale(1.1);
         }
         .register-btn {
             display: inline-block;
@@ -92,12 +96,25 @@
 
 <a href="register.html" class="register-btn">Register Now</a>
 
-<div class="grid">
-    <a href="https://link1.com"><img src="images/image1.jpg" alt="Image 1"></a>
-    <a href="https://link2.com"><img src="images/image2.jpg" alt="Image 2"></a>
-    <a href="https://link3.com"><img src="images/image3.jpg" alt="Image 3"></a>
-    <a href="https://link4.com"><img src="images/image4.jpg" alt="Image 4"></a>
-</div>
+    <h1>Select a Character</h1>
+    <div class="grid" id="characterGrid"></div>
+
+    <script>
+        async function loadCharacters() {
+            const response = await fetch("characters.json");
+            const characters = await response.json();
+            const grid = document.getElementById("characterGrid");
+
+            characters.forEach(character => {
+                const link = document.createElement("a");
+                link.href = `character.html?id=${character.id}`;
+                link.innerHTML = `<img src="${character.image}" alt="${character.name}">`;
+                grid.appendChild(link);
+            });
+        }
+
+        loadCharacters();
+    </script>
 
 <footer>
     <p>&copy; 2025 chatcord</p>
