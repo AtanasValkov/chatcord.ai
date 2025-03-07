@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - ChatCord AI</title>
+    <title>Register - ChatCord</title>
     <style>
         * {
             box-sizing: border-box;
@@ -66,16 +65,36 @@
 <body>
 
 <div class="container">
-    <h2>Register for ChatCord AI</h2>
-    <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-        <input type="text" name="name" placeholder="Full Name" required>
-        <input type="email" name="email" placeholder="Email Address" required>
-        <input type="password" name="password" placeholder="Password" required>
+    <h2>Register for ChatCord</h2>
+    <form id="registerForm">
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="password" id="password" placeholder="Password" required>
         <button type="submit">Register</button>
         <a href="index.html" class="back-link">Back</a>
     </form>
-
+    <p id="message"></p>
 </div>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent form from submitting traditionally
+
+        let name = document.getElementById("name").value;
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
+
+        if (name && email && password) {
+            let user = { name, email, password };
+            localStorage.setItem("user", JSON.stringify(user)); // Save user data in localStorage
+
+            document.getElementById("message").innerHTML = "✅ Registration successful!";
+            setTimeout(() => window.location.href = "index.html", 2000); // Redirect after success
+        } else {
+            document.getElementById("message").innerHTML = "❌ Please fill in all fields!";
+        }
+    });
+</script>
 
 </body>
 </html>
