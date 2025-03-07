@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>chatcord.ai</title>
-    <style>
+    <title>CHATCORD</title>
+    <style>        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
         body {
             background: url('images/background.jpg') no-repeat center center fixed;
             background-size: cover;
@@ -13,9 +19,13 @@
             justify-content: center;
             height: 100vh;
         }
-        header, footer {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
+        /* Header styles */
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .grid {
             display: grid;
@@ -46,12 +56,20 @@
             border-radius: 5px;
             text-decoration: none;
         }
+                /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>chatcord.ai</h1>
+    <h1>CHATCORD</h1>
     <h2>code by vulonkul</h2>
     <h2>bots by muricanpie</h2>
 </header>
@@ -66,7 +84,7 @@
 </div>
 
 <footer>
-    <p>&copy; 2025 chatcord.ai</p>
+    <p>&copy; 2025 chatcord</p>
 </footer>
 
 </body>
