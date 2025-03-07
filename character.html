@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: gray;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: none;
+            resize: none;
+        }
+        button {
+            background: #ff6600;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #ff4500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 id="characterName">Loading...</h1>
+        <img id="characterImage" src="" alt="Character Image">
+        <textarea id="charDescription"></textarea>
+        <br>
+        <button onclick="copyText()">Copy Description</button>
+    </div>
+
+    <script>
+        async function loadCharacter() {
+            // Get character ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const characterId = urlParams.get("id");
+
+            const response = await fetch("characters.json");
+            const characters = await response.json();
+
+            const character = characters.find(c => c.id == characterId);
+            if (!character) {
+                document.querySelector(".container").innerHTML = "<h1>Character Not Found</h1>";
+                return;
+            }
+
+            document.getElementById("characterName").textContent = character.name;
+            document.getElementById("characterImage").src = character.image;
+            document.getElementById("charDescription").value = character.description;
+        }
+
+        function copyText() {
+            var textArea = document.getElementById("charDescription");
+            textArea.select();
+            document.execCommand("copy");
+            alert("Description copied to clipboard!");
+        }
+
+        loadCharacter();
+    </script>
+
+</body>
+</html>
