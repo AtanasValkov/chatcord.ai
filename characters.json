@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "name": "Character One",
+        "image": "images/image1.jpg",
+        "description": "Punk girl"
+    },
+    {
+        "id": 2,
+        "name": "Character Two",
+        "image": "images/image2.jpg",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 3,
+        "name": "Character Three",
+        "image": "images/image3.jpg",
+        "description": "Goblin chef"
+    },
+    {
+        "id": 4,
+        "name": "Character Four",
+        "image": "images/image4.jpg",
+        "description": "Goth pony"
+    }
+]
