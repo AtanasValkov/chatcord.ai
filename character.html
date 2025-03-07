@@ -89,7 +89,9 @@
                 return;
             }
 
-            document.getElementById("characterName").textContent = character.image;
+            document.getElementById("characterName").textContent = character.image
+                .replace("images/", "") // Remove "images/"
+                .replace(".png", "");   // Remove ".png"
             document.getElementById("characterImage").src = character.image;
             document.getElementById("charDescription").value = character.description;
         }
