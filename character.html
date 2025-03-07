@@ -50,6 +50,17 @@
         button:hover {
             background: #ff4500;
         }
+
+        .back-btn {
+            display: inline-block;
+            background: #ff6600;
+            color: white;
+            padding: 10px 20px;
+            margin: 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -60,7 +71,7 @@
         <textarea id="charDescription"></textarea>
         <br>
         <button onclick="copyText()">Copy Description</button>
-        <button href="index.html">Back</button>
+        <button href="index.html" class="back-btn">Back</button>
     </div>
 
     <script>
