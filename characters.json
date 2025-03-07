@@ -2,25 +2,175 @@
     {
         "id": 1,
         "name": "Character One",
-        "image": "images/image1.jpg",
+        "image": "images/Ainisa the Imp Familiar.png",
         "description": "Punk girl"
     },
     {
         "id": 2,
         "name": "Character Two",
-        "image": "images/image2.jpg",
+        "image": "images/Alphys.png",
         "description": "Dirty little inter"
     },
     {
         "id": 3,
         "name": "Character Three",
-        "image": "images/image3.jpg",
+        "image": "images/Amphora V3.png",
         "description": "Goblin chef"
     },
     {
         "id": 4,
         "name": "Character Four",
-        "image": "images/image4.jpg",
+        "image": "images/Blake Belladonna (v1.2).png",
         "description": "Goth pony"
+    }
+        {
+        "id": 5,
+        "name": "Character Two",
+        "image": "images/Ella Hazelton.card.png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 6,
+        "name": "Character Three",
+        "image": "images/Eri.png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 7,
+        "name": "Character Two",
+        "image": "images/Gardevoir.png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 8,
+        "name": "Character Three",
+        "image": "images/Giselle (v1).png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 9,
+        "name": "Character Two",
+        "image": "images/Grizelda Brakkenvein.png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 10,
+        "name": "Character Three",
+        "image": "images/Gypsum (v2).png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 11,
+        "name": "Character Two",
+        "image": "images/H.E.R.A. 9-156.png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 12,
+        "name": "Character Three",
+        "image": "images/Ito Beastcrest.png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 13,
+        "name": "Character Two",
+        "image": "images/Josie.png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 14,
+        "name": "Character Three",
+        "image": "images/Kagechi.png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 15,
+        "name": "Character Two",
+        "image": "images/Madilyn Harper.card.png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 16,
+        "name": "Character Three",
+        "image": "images/Moira V1.5.png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 17,
+        "name": "Character Two",
+        "image": "images/Monica (v1.5).png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 18,
+        "name": "Character Three",
+        "image": "images/Nora.png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 19,
+        "name": "Character Two",
+        "image": "images/Olmag Ulmagor (v2).png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 20,
+        "name": "Character Three",
+        "image": "images/Poppy.png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 21,
+        "name": "Character Two",
+        "image": "images/Praea Sonus.card.png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 22,
+        "name": "Character Three",
+        "image": "images/Reina de la Montrité.png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 23,
+        "name": "Character Two",
+        "image": "images/Risa (R1-SA).png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 24,
+        "name": "Character Three",
+        "image": "images/Sachiko V5-1.png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 25,
+        "name": "Character Two",
+        "image": "images/Sap Hands (F).png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 26,
+        "name": "Character Three",
+        "image": "images/Sommer.card.png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 27,
+        "name": "Character Two",
+        "image": "images/Talvi.card.png",
+        "description": "Dirty little inter"
+    },
+    {
+        "id": 28,
+        "name": "Character Three",
+        "image": "images/Willow (v1.5).png",
+        "description": "Goblin chef"
+    },
+        {
+        "id": 29,
+        "name": "Character Two",
+        "image": "images/hure.png",
+        "description": "Dirty little inter"
     }
 ]
