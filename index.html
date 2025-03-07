@@ -17,7 +17,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            flex-direction: column;
         }
         /* Header styles */
         header {
@@ -27,6 +27,7 @@
             justify-content: center;
             align-items: center;    
             flex-direction: column; /* Stack elements vertically */
+            width: 100%;
         }
         .grid {
             display: grid;
@@ -74,6 +75,10 @@
             position: fixed;
             bottom: 0;
             width: 100%;
+          	text-align: center; /* Centers inline text */
+    		display: flex;
+    		justify-content: center; /* Centers flex items horizontally */
+    		align-items: center; /* Centers flex items vertically */
         }
     </style>
 </head>
