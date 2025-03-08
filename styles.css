@@ -12,8 +12,8 @@ header {
     align-items: center;
     background: #16213e;
     padding: 15px 20px;
-    position: fixed;
-    top: 0;
+    position: sticky;
+    top: 0px;
 }
 
 .logo {
@@ -37,9 +37,10 @@ nav a {
 }
 
 .sidebar {
-    width: 200px;
+    width: 150px;
     background: #0f3460;
     padding: 15px;
+    position: fixed;
 }
 
 .sidebar ul {
@@ -52,7 +53,7 @@ nav a {
 }
 
 .search-bar {
-    width: 100%;
+    width: 80%;
     padding: 10px;
     margin-bottom: 20px;
 }
