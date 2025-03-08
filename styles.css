@@ -60,9 +60,9 @@ nav a {
 
 .character-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
     gap: 15px;
-    padding: 20px;
+    padding: 200px;
     flex: 1;
 }
 
@@ -84,6 +84,8 @@ nav a {
     background: #0f3460;
     padding: 20px;
     display: none;
+    position: absolute;
+    right: 0px;
 }
 
 .details-panel img {
