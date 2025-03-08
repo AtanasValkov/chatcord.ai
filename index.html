@@ -4,41 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatCord</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>
+        <div class="logo">ChatCord</div>
+        <nav>
+            <a href="#">Create-A-Character</a>
+            <a href="#">My Bots</a>
+            <a href="#">Profile</a>
+            <a href="#">Subscribe</a>
+            <a href="#">Rules</a>
+            <a href="#">TOS</a>
+            <a href="https://discord.gg/PEWCwNAv" target="_blank">
+                <img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" 
+                     alt="Join ChatCord">
+            </a>
 
-<header>
-    <h1>ChatCord</h1>
-    <h2>code by vulonkul</h2>
-    <h2>bots by muricanpie</h2>
-</header>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Tags</h2>
+            <ul>
+                <li><input type="checkbox" checked> Female</li>
+                <li><input type="checkbox" checked> NSFW</li>
+                <li><input type="checkbox" checked> Official</li>
+                <li><input type="checkbox"> Male</li>
+                <li><input type="checkbox"> SFW</li>
+                <li><input type="checkbox"> Furry</li>
+                <li><input type="checkbox"> THICC</li>
+            </ul>
+        </aside>
 
-<a href="register.html" class="register-btn">Register Now</a>
+        <main>
+            <input type="text" placeholder="Search..." class="search-bar">
+            <div class="character-grid">
+                    <div class="grid" id="characterGrid"></div>
 
-    <h1>Select a Character</h1>
-    <div class="grid" id="characterGrid"></div>
+            <script>
+                async function loadCharacters() {
+                    const response = await fetch("characters.json");
+                    const characters = await response.json();
+                    const grid = document.getElementById("characterGrid");
+        
+                    characters.forEach(character => {
+                        const link = document.createElement("a");
+                        link.href = `character.html?id=${character.id}`;
+                        link.innerHTML = `<img src="${character.image}" alt="${character.name}">`;
+                        grid.appendChild(link);
+                    });
+                }
+        
+                loadCharacters();
+            </script>
+                <div class="character" onclick="showDetails('Poppy', 'Poppy the yordle', 'image.png')">
+                    <img src="image.png" alt="Poppy">
+                    <p>Poppy, the yordle</p>
+                    <span>232K ⬇ | 950 ❤️ | 87 ⭐ | 7K 💬</span>
+                </div>
+                <!-- Repeat character divs for more characters -->
+            </div>
+        </main>
+        
+        <aside class="details-panel" id="detailsPanel">
+            <img id="characterImage" src="" alt="Character">
+            <h2 id="characterName">Poppy</h2>
+            <p id="characterDesc">Description of the character...</p>
+            <button>Download</button>
+        </aside>
+    </div>
 
     <script>
-        async function loadCharacters() {
-            const response = await fetch("characters.json");
-            const characters = await response.json();
-            const grid = document.getElementById("characterGrid");
-
-            characters.forEach(character => {
-                const link = document.createElement("a");
-                link.href = `character.html?id=${character.id}`;
-                link.innerHTML = `<img src="${character.image}" alt="${character.name}">`;
-                grid.appendChild(link);
-            });
+        function showDetails(name, desc, img) {
+            document.getElementById('characterName').innerText = name;
+            document.getElementById('characterDesc').innerText = desc;
+            document.getElementById('characterImage').src = img;
+            document.getElementById('detailsPanel').style.display = 'block';
         }
-
-        loadCharacters();
     </script>
-
-<a href="https://discord.gg/PEWCwNAv" target="_blank">
-    <img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" 
-         alt="Join ChatCord">
-</a>
 
 <footer>
     <p>&copy; 2025 chatcord</p>
