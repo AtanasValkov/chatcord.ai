@@ -26,6 +26,7 @@
     
     <div class="container">
         <aside class="sidebar">
+            <input type="text" placeholder="Search..." class="search-bar">
             <h2>Tags</h2>
             <ul>
                 <li><input type="checkbox" checked> Female</li>
@@ -39,32 +40,39 @@
         </aside>
 
         <main>
-            <input type="text" placeholder="Search..." class="search-bar">
             <div class="character-grid">
                     <div class="grid" id="characterGrid"></div>
 
-            <script>
-                async function loadCharacters() {
-                    const response = await fetch("characters.json");
-                    const characters = await response.json();
-                    const grid = document.getElementById("characterGrid");
-        
-                    characters.forEach(character => {
-                        const link = document.createElement("a");
-                        link.href = `character.html?id=${character.id}`;
-                        link.innerHTML = `<img src="${character.image}" alt="${character.name}">`;
-                        grid.appendChild(link);
-                    });
-                }
-        
-                loadCharacters();
-            </script>
-                <div class="character" onclick="showDetails('Poppy', 'Poppy the yordle', 'image.png')">
-                    <img src="image.png" alt="Poppy">
-                    <p>Poppy, the yordle</p>
-                    <span>232K ⬇ | 950 ❤️ | 87 ⭐ | 7K 💬</span>
-                </div>
-                <!-- Repeat character divs for more characters -->
+                        <script>
+                            async function loadCharacters() {
+                                const response = await fetch("characters.json");
+                                const characters = await response.json();
+                                const grid = document.getElementById("characterGrid");
+                        
+                                characters.forEach(character => {
+                                    const charDiv = document.createElement("div");
+                                    charDiv.classList.add("character");
+                                    charDiv.onclick = () => showDetails(character.name, character.description, character.image);
+                        
+                                    charDiv.innerHTML = `
+                                        <img src="${character.image}" alt="${character.name}">
+                                        <p>${character.name}</p>
+                                        <span>${character.stats.downloads} ⬇ | ${character.stats.likes} ❤️ | ${character.stats.stars} ⭐ | ${character.stats.comments} 💬</span>
+                                    `;
+                                    grid.appendChild(charDiv);
+                                });
+                            }
+                        
+                            function showDetails(name, desc, img) {
+                                document.getElementById('characterName').innerText = name;
+                                document.getElementById('characterDesc').innerText = desc;
+                                document.getElementById('characterImage').src = img;
+                                document.getElementById('detailsPanel').style.display = 'block';
+                            }
+                        
+                            loadCharacters();
+                        </script>
+
             </div>
         </main>
         
