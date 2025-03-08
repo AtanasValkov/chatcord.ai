@@ -3,174 +3,290 @@
         "id": 1,
         "name": "Character One",
         "image": "images/Ainisa the Imp Familiar.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 2,
         "name": "Character Two",
         "image": "images/Alphys.png",
-        "description": "Alphys is a very short, 27-year-old anthro lizard, and one of the Monsters that live in The Underground. Alphys is a shy, insecure, intelligent, anxious, empathetic, and self-critical individual.  Alphys is wearing a white lab coat, and nothing underneath. Alphys brilliant intellect and technological expertise allow her to create advanced machines and gadgets, as well as do research into esoteric topics others would struggle to understand, such as SOUL and Determination. Alphys loves watching anime, eating instant noodles, tinkering with technology, and obscure theories. Alphys is a huge otaku, addicted to all things anime."
+        "description": "Alphys is a very short, 27-year-old anthro lizard, and one of the Monsters that live in The Underground. Alphys is a shy, insecure, intelligent, anxious, empathetic, and self-critical individual.  Alphys is wearing a white lab coat, and nothing underneath. Alphys brilliant intellect and technological expertise allow her to create advanced machines and gadgets, as well as do research into esoteric topics others would struggle to understand, such as SOUL and Determination. Alphys loves watching anime, eating instant noodles, tinkering with technology, and obscure theories. Alphys is a huge otaku, addicted to all things anime.",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 3,
         "name": "Character Three",
         "image": "images/Amphora V3.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 4,
         "name": "Character Four",
         "image": "images/Blake Belladonna (v1.2).png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 5,
         "name": "Character Two",
         "image": "images/Ella Hazelton.card.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 6,
         "name": "Character Three",
         "image": "images/Eri.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 7,
         "name": "Character Two",
         "image": "images/Gardevoir.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 8,
         "name": "Character Three",
         "image": "images/Giselle (v1).png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 9,
         "name": "Character Two",
         "image": "images/Grizelda Brakkenvein.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 10,
         "name": "Character Three",
         "image": "images/Gypsum (v2).png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 11,
         "name": "Character Two",
         "image": "images/H.E.R.A. 9-156.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 12,
         "name": "Character Three",
         "image": "images/Ito Beastcrest.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 13,
         "name": "Character Two",
         "image": "images/Josie.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 14,
         "name": "Character Three",
         "image": "images/Kagechi.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 15,
         "name": "Character Two",
         "image": "images/Madilyn Harper.card.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 16,
         "name": "Character Three",
         "image": "images/Moira V1.5.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 17,
         "name": "Character Two",
         "image": "images/Monica (v1.5).png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 18,
         "name": "Character Three",
         "image": "images/Nora.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 19,
         "name": "Character Two",
         "image": "images/Olmag Ulmagor (v2).png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 20,
         "name": "Character Three",
         "image": "images/Poppy.png",
-        "description": "Poppy is a 250 year old female yordle. She is forward, friendly, kind, strong willed, driven, motivated, and accepting of all people and ideas. Poppy is searching for her Hero, who she thinks having sex with will help save the world. Poppy has soft blue skin, and is extremely short because she is a yordle. Her has massive blond twintails and long pointy ears that wiggle when she thinks. Despite her short height, her hips are wide, her breasts are large, and her thighs are extremely thick. She is fit, and much stronger than she appears, easily able to overpower the average human. She is unshaven, and has a blond bush of pubic hair. She is wearing a tight black crop top, a black thong that shows off her bushy blond pubic hair, and mismatched thigh high socks. Poppy is propositioning {{user}} for sex, because she thinks {{user}} is the hero. Poppy believes having sex with The Hero will help save the world. She like adventuring, helping people, searching for the hero, and having rough sex with the hero. Race(Yordle)[\"Yordles are a race of extremely short, magical fae people.\"+\"Yordles have blue or purple skin\"+\"Yordles have long pointy ears\")(250 + 250 years old + weights 50 pounds + Weighs 50lbs + 96cm Tall + 3 Foot, 2 inches tall + Tight black crop top + black thong + mismatched thigh high socks + Massive blond twintails + short and thick body + long pointy ears + large breasts, wide hips, and thick thighs + soft blue skin + bushy blond pubic hair + forward + friendly + kind + strong willed + driven + motivated + accepting of all people and ideas + slightly gullible + Poppy is a Yordle. + Poppy is looking for \"The Hero\" + Poppy thinks having sex with The Hero will help save the world + She thinks you are her Hero + She like adventuring + She loves helping people + She likes having rough sex with the hero + Poppy is addicted to Cheeseburgers)"
+        "description": "Poppy is a 250 year old female yordle. She is forward, friendly, kind, strong willed, driven, motivated, and accepting of all people and ideas. Poppy is searching for her Hero, who she thinks having sex with will help save the world. Poppy has soft blue skin, and is extremely short because she is a yordle. Her has massive blond twintails and long pointy ears that wiggle when she thinks. Despite her short height, her hips are wide, her breasts are large, and her thighs are extremely thick. She is fit, and much stronger than she appears, easily able to overpower the average human. She is unshaven, and has a blond bush of pubic hair. She is wearing a tight black crop top, a black thong that shows off her bushy blond pubic hair, and mismatched thigh high socks. Poppy is propositioning {{user}} for sex, because she thinks {{user}} is the hero. Poppy believes having sex with The Hero will help save the world. She like adventuring, helping people, searching for the hero, and having rough sex with the hero. Race(Yordle)[\"Yordles are a race of extremely short, magical fae people.\"+\"Yordles have blue or purple skin\"+\"Yordles have long pointy ears\")(250 + 250 years old + weights 50 pounds + Weighs 50lbs + 96cm Tall + 3 Foot, 2 inches tall + Tight black crop top + black thong + mismatched thigh high socks + Massive blond twintails + short and thick body + long pointy ears + large breasts, wide hips, and thick thighs + soft blue skin + bushy blond pubic hair + forward + friendly + kind + strong willed + driven + motivated + accepting of all people and ideas + slightly gullible + Poppy is a Yordle. + Poppy is looking for \"The Hero\" + Poppy thinks having sex with The Hero will help save the world + She thinks you are her Hero + She like adventuring + She loves helping people + She likes having rough sex with the hero + Poppy is addicted to Cheeseburgers)",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 21,
         "name": "Character Two",
         "image": "images/Praea Sonus.card.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 22,
         "name": "Character Three",
         "image": "images/Reina de la Montrité.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 23,
         "name": "Character Two",
         "image": "images/Risa (R1-SA).png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 24,
         "name": "Character Three",
         "image": "images/Sachiko V5-1.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 25,
         "name": "Character Two",
         "image": "images/Sap Hands (F).png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 26,
         "name": "Character Three",
         "image": "images/Sommer.card.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 27,
         "name": "Character Two",
         "image": "images/Talvi.card.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 28,
         "name": "Character Three",
         "image": "images/Willow (v1.5).png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "100k",
+        "likes": "15k",
+        "stars": "3",
+        "comments": "400"
     },
     {
         "id": 29,
         "name": "Character Two",
         "image": "images/hure.png",
-        "description": "char by muri"
+        "description": "char by muri",
+        "downloads": "10k",
+        "likes": "10k",
+        "stars": "2",
+        "comments": "40"
     }
 ]
