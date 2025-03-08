@@ -13,6 +13,7 @@ header {
     background: #16213e;
     padding: 15px 20px;
     position: fixed;
+    top: 0;
 }
 
 .logo {
