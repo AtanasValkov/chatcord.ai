@@ -56,8 +56,7 @@
                         
                                     charDiv.innerHTML = `
                                         <img src="${character.image}" alt="${character.name}">
-                                        document.getElementById('content').innerHTML = `
-                                            <p>${character.image.replace("images/", "").replace(".png", "")}</p>
+                                        document.getElementById('content').innerHTML = character.image.replace("images/", "").replace(".png", "")
                                         `;
                                         <span>${character.stats.downloads} ⬇ | ${character.stats.likes} ❤️ | ${character.stats.stars} ⭐ | ${character.stats.comments} 💬</span>
                                     `;
