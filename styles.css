@@ -60,10 +60,10 @@ nav a {
 
 .character-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 15px;
-    padding: 200px;
-    flex: 1;
+    max-width: 1200px;
+    margin: 20px auto;
 }
 
 .character {
