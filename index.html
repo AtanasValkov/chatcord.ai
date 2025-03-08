@@ -40,7 +40,7 @@
         </aside>
 
         <main>
-                <div class="character-grid" id="characterGrid"></div>
+                <div class="character-grid" id="characterGrid">
                     <script>
                         async function loadCharacters() {
                             const response = await fetch("characters.json");
@@ -70,6 +70,7 @@
                     
                         loadCharacters();
                     </script>
+                </div>
         </main>
         
         <aside class="details-panel" id="detailsPanel">
