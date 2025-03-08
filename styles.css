@@ -80,11 +80,11 @@ nav a {
 }
 
 .details-panel {
-    width: 250px;
+    width: 300px;
     background: #0f3460;
     padding: 20px;
     display: none;
-    position: absolute;
+    position: sticky;
     right: 0px;
 }
 
