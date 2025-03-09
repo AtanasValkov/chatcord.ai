@@ -62,7 +62,7 @@ nav a {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
     gap: 15px;
-    max-width: 1200px;
+    max-width: 1250px;
     padding: 0px 200px;
     margin: 20px auto;
 }
