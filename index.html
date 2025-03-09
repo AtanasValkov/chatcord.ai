@@ -27,7 +27,7 @@
             <img id="characterImage" src="" alt="Character">
             <h2 id="characterName">Default Name</h2>
             <p id="characterDesc">Description of the character...</p>
-            <button onclick="createBot(characterName, characterImage, characterDesc)">Create Bot</button>
+            <button onclick="createBot(characterName.textContent, characterImage.src, characterDesc.textContent)">Create Bot</button>
         </div>
     <div class="container">
         <aside class="sidebar">
@@ -74,15 +74,12 @@
                         }
 
                         function createBot(name, image, description) {
-                            let nameElement = document.getElementById(name);
-                            console.log("Trying to get name", nameElement);
-                            let imageElement = document.getElementById(image);
-                            let descriptionElement = document.getElementById(description);
+                            console.log("Trying to get name", name);
                             
                             var data = {
-                                "username": nameElement.textContent, // Extract text content
-                                "avatar_url": imageElement.src, // Extract image source
-                                "content": descriptionElement.textContent // Extract text content
+                                "username": name, // Extract text content
+                                "avatar_url": image, // Extract image source
+                                "content": description // Extract text content
                             };
                         
                             fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
