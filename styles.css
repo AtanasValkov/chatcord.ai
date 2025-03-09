@@ -96,6 +96,11 @@ nav a {
     border-radius: 8px;
 }
 
+.details-panel p {
+    max-height: 25vh;
+    overflow-y: auto;
+}
+
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
