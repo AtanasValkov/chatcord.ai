@@ -90,11 +90,14 @@
 
         function createBot(name, image, description) {
             
-                console.log("Trying to get element with ID:", name);
+            let nameElement = document.getElementById(name);
+            let imageElement = document.getElementById(image);
+            let descriptionElement = document.getElementById(description);
+            
             var data = {
-                "username": document.getElementById(name),
-                "avatar_url": document.getElementById(image).src,
-                "content": document.getElementById(description)
+                "username": nameElement.innerText, // Extract text content
+                "avatar_url": imageElement.src, // Extract image source
+                "content": descriptionElement.innerText // Extract text content
             };
         
             fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
