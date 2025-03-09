@@ -73,17 +73,6 @@
                             document.getElementById('detailsPanel').style.display = 'block';
                         }
 
-                        function creeateBot(name, image, description) {
-                              var  data = {
-                                        "username": name,
-                                        "avatar_url": image,
-                                        "content": description
-                                    }
-        
-                              requests.post("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", json=data)
-                        }
-
-
                     
                         loadCharacters();
                     </script>
@@ -97,6 +86,16 @@
             document.getElementById('characterDesc').innerText = desc;
             document.getElementById('characterImage').src = img;
             document.getElementById('detailsPanel').style.display = 'block';
+        }
+
+        function creeateBot(name, image, description) {
+              var  data = {
+                        "username": name,
+                        "avatar_url": image,
+                        "content": description
+                    }
+        
+              requests.post("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", json=data)
         }
     </script>
 
