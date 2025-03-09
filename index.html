@@ -73,46 +73,34 @@
                             document.getElementById('detailsPanel').style.display = 'block';
                         }
 
-                    
+                        function createBot(name, image, description) {
+                            let nameElement = document.getElementById(name);
+                            let imageElement = document.getElementById(image);
+                            let descriptionElement = document.getElementById(description);
+                            
+                            var data = {
+                                "username": nameElement.innerText, // Extract text content
+                                "avatar_url": imageElement.src, // Extract image source
+                                "content": descriptionElement.innerText // Extract text content
+                            };
+                        
+                            fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify(data)
+                            })
+                            .then(response => response.json())
+                            .then(data => console.log("Success:", data))
+                            .catch(error => console.error("Error:", error));
+                        }
+                        
                         loadCharacters();
                     </script>
                 </div>
         </main>
     </div>
-
-    <script>
-        function showDetails(name, desc, img) {
-            document.getElementById('characterName').innerText = name;
-            document.getElementById('characterDesc').innerText = desc;
-            document.getElementById('characterImage').src = img;
-            document.getElementById('detailsPanel').style.display = 'block';
-        }
-
-        function createBot(name, image, description) {
-            
-            let nameElement = document.getElementById(name);
-            let imageElement = document.getElementById(image);
-            let descriptionElement = document.getElementById(description);
-            
-            var data = {
-                "username": nameElement.innerText, // Extract text content
-                "avatar_url": imageElement.src, // Extract image source
-                "content": descriptionElement.innerText // Extract text content
-            };
-        
-            fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => console.log("Success:", data))
-            .catch(error => console.error("Error:", error));
-        }
-    </script>
-
 <footer>
     <p>&copy; 2025 chatcord</p>
 </footer>
