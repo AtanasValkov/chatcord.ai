@@ -25,9 +25,9 @@
     </header>
         <div class="details-panel" id="detailsPanel">
             <img id="characterImage" src="" alt="Character">
-            <h2 id="characterName">Poppy</h2>
+            <h2 id="characterName">Default Name</h2>
             <p id="characterDesc">Description of the character...</p>
-            <button>Download</button>
+            <button onclick="createBot(characterName, characterImage, characterDesc)">Create Bot</button>
         </div>
     <div class="container">
         <aside class="sidebar">
@@ -72,6 +72,18 @@
                             document.getElementById('characterImage').src = img;
                             document.getElementById('detailsPanel').style.display = 'block';
                         }
+
+                        function creeateBot(name, image, description) {
+                              var  data = {
+                                        "username": name,
+                                        "avatar_url": image,
+                                        "content": description
+                                    }
+        
+                              requests.post("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", json=data)
+                        }
+
+
                     
                         loadCharacters();
                     </script>
