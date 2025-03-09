@@ -89,8 +89,9 @@
         }
 
         function createBot(name, image, description) {
-            var data = {
+            
                 console.log("Trying to get element with ID:", name);
+            var data = {
                 "username": document.getElementById(name),
                 "avatar_url": document.getElementById(image).src,
                 "content": document.getElementById(description)
