@@ -90,9 +90,9 @@
 
         function createBot(name, image, description) {
             var data = {
-                "username": name,
-                "avatar_url": image,
-                "content": description
+                "username": document.getElementById(name).innerText,
+                "avatar_url": document.getElementById(image).src;
+                "content": document.getElementById(description).innerText;
             };
         
             fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
