@@ -87,6 +87,8 @@ nav a {
     display: none;
     position: fixed;
     right: 0px;
+    max-height: 85vh;
+    overflow-y: auto;
 }
 
 .details-panel img {
