@@ -79,9 +79,9 @@
                             let descriptionElement = document.getElementById(description);
                             
                             var data = {
-                                "username": nameElement.innerText, // Extract text content
+                                "username": nameElement.textContent, // Extract text content
                                 "avatar_url": imageElement.src, // Extract image source
-                                "content": descriptionElement.innerText // Extract text content
+                                "content": descriptionElement.textContent // Extract text content
                             };
                         
                             fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
