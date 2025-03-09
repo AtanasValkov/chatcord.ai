@@ -89,13 +89,22 @@
         }
 
         function createBot(name, image, description) {
-              var  data = {
-                        "username": name,
-                        "avatar_url": image,
-                        "content": description
-                    }
+            var data = {
+                "username": name,
+                "avatar_url": image,
+                "content": description
+            };
         
-              requests.post("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", json=data)
+            fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => console.log("Success:", data))
+            .catch(error => console.error("Error:", error));
         }
     </script>
 
