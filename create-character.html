@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Character</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: gray;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+        input, textarea {
+            background: #333;
+            color: white;
+        }
+        button {
+            background: #ff6600;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ff4500;
+        }
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .tag {
+            background: #555;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create a New Character</h2>
+        <form id="characterForm">
+            <input type="text" id="name" placeholder="Character Name" required>
+            <input type="file" id="imageUpload" accept="image/*">
+            <input type="url" id="imageUrl" placeholder="Or enter an image URL">
+            <textarea id="description" placeholder="Character Description"></textarea>
+            <input type="text" id="tagInput" placeholder="Add tags and press Enter">
+            <div class="tag-container" id="tagContainer"></div>
+            <button type="submit">Create Character</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById("characterForm");
+        const nameInput = document.getElementById("name");
+        const tagInput = document.getElementById("tagInput");
+        const tagContainer = document.getElementById("tagContainer");
+        let tags = [];
+
+        // Validate name input
+        function isValidName(name) {
+            const forbiddenSubstrings = ["@", "#", ":", "```", "discord"];
+            const forbiddenNames = ["everyone", "here"];
+            
+            if (name.length < 2 || name.length > 32) return false;
+            if (forbiddenNames.includes(name.toLowerCase())) return false;
+            return !forbiddenSubstrings.some(sub => name.includes(sub));
+        }
+
+        // Handle tag input
+        tagInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter" && tagInput.value.trim() !== "") {
+                event.preventDefault();
+                const newTag = tagInput.value.trim();
+                if (!tags.includes(newTag)) {
+                    tags.push(newTag);
+                    const tagElement = document.createElement("span");
+                    tagElement.classList.add("tag");
+                    tagElement.textContent = newTag;
+                    tagContainer.appendChild(tagElement);
+                    tagInput.value = "";
+                }
+            }
+        });
+
+        // Handle form submission
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const name = nameInput.value.trim();
+
+            if (!isValidName(name)) {
+                alert("Invalid name. Make sure it meets the criteria.");
+                return;
+            }
+
+            alert("Character created successfully!");
+            // Here, you would handle storing the data in your database
+        });
+    </script>
+</body>
+</html>
