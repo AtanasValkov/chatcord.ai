@@ -102,13 +102,13 @@
     <script>
         document.getElementById("characterForm").addEventListener("submit", function(event) {
             event.preventDefault();
-            var name = document.get.ElementById("characterName").innerText;
-            var image = document.get.ElementById("imageUpload").src;
+            var name = document.getElementById("characterName").innerText;
+            var image = document.getElementById("imageUpload").src;
             if (image == null) {
-                var image = document.get.ElementById("imageUrl").innerText;
+                var image = document.getElementById("imageUrl").innerText;
             }
-            var description = document.get.ElementById("charDescription").innerText;
-            
+            var description = document.getElementById("charDescription").innerText;
+            var tags = document.getElementById("tagContainer").innerText;
             var data = {
                 "username": name,
                 "avatar_url": image, // Extract image source
@@ -118,6 +118,13 @@
                   "title": "new character",
                   "description": image,
                   "color": 16711680,
+                  "fields": [
+                  {
+                    "name": "Tag 1",
+                    "value": "tags",
+                    "inline": true
+                  },
+                  ]
                 }
                 ],
             };
