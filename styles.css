@@ -156,20 +156,6 @@ footer {
     justify-content: center; /* Centers flex items horizontally */
     align-items: center; /* Centers flex items vertically */
 }
-
-/* character creator */
-
-input, textarea, button {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    max-width: 100%;
-}
-input, textarea {
-    background: #333;
-    color: white;
-}
 button {
     background: #ff6600;
     color: white;
@@ -177,15 +163,4 @@ button {
 }
 button:hover {
     background: #ff4500;
-}
-.tag-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
-.tag {
-    background: #555;
-    padding: 5px 10px;
-    border-radius: 5px;
-    display: inline-block;
 }
