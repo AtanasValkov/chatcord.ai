@@ -91,9 +91,9 @@
             <input type="file" id="imageUpload" accept="image/*">
             <input type="text" id="imageUrl" placeholder="Or enter image URL">
             <input type="text" id="characterName" placeholder="Character Name" required>
-            <textarea id="charDescription" class="description-input" placeholder="Character Description" cols="40" rows="5"></textarea>
+            <textarea id="charDescription" class="description-input" placeholder="Character Description" cols="40" rows="5" required></textarea>
             <div class="tags" id="tagContainer"></div>
-            <input type="text" id="tagInput" placeholder="Add tags and press Enter">
+            <input type="text" id="tagInput" placeholder="Press Enter after each Tag">
             <button type="submit">Create Character</button>
         </form>
         <a href="index.html" class="back-btn">Back</a>
@@ -102,7 +102,43 @@
     <script>
         document.getElementById("characterForm").addEventListener("submit", function(event) {
             event.preventDefault();
-            alert("Character created successfully!");
+            var name = document.get.ElementById("characterName").innerText;
+            var image = document.get.ElementById("imageUpload").src;
+            if (image == null) {
+                var image = document.get.ElementById("imageUrl").innerText;
+            }
+            var description = document.get.ElementById("charDescription").innerText;
+            
+            var data = {
+                "username": name,
+                "avatar_url": image, // Extract image source
+                "content": description, // Extract text content
+                "embeds": [
+                {
+                  "title": "new character",
+                  "description": image,
+                  "color": 16711680,
+                }
+                ],
+            };
+        
+            fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.status === 204) {
+                    console.log("Success: Message sent (204 No Content)");
+                    alert("Character created successfully!");
+                    return {}; // Return empty object to keep .json() format
+                }
+                return response.json(); // Parse only if there's content
+            })
+            .then(data => console.log("Success:", data))
+            .catch(error => console.error("Error:", error));
         });
 
         document.getElementById("tagInput").addEventListener("keypress", function(event) {
