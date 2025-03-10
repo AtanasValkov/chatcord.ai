@@ -80,9 +80,23 @@
                                 "username": name, // Extract text content
                                 "avatar_url": image, // Extract image source
                                 "content": description // Extract text content
-                                "image": {
-                                    "url": "https://example.com/image.png"
-                              },
+                                "embeds": [
+                                {
+                                  "title": "Example Embed",
+                                  "description": image,
+                                  "color": 16711680, 
+                                  "fields": [
+                                    {
+                                      "name": "Field 1",
+                                      "value": "Value 1",
+                                      "inline": true
+                                    },
+                                    {
+                                      "name": "Field 2",
+                                      "value": "Value 2",
+                                      "inline": true
+                                    }
+                                  ],
                             };
                         
                             fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
