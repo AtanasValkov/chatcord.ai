@@ -6,9 +6,9 @@
     <title>Create Character</title>
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
         body {
@@ -24,98 +24,109 @@
             padding: 20px;
             border-radius: 10px;
         }
-        input, textarea, button {
+        input, button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border-radius: 5px;
             border: none;
+            border-radius: 5px;
         }
-        input, textarea {
+        input {
             background: #333;
             color: white;
         }
         button {
             background: #ff6600;
             color: white;
+            font-size: 16px;
             cursor: pointer;
         }
         button:hover {
             background: #ff4500;
         }
-        .tag-container {
+        .tags {
             display: flex;
             flex-wrap: wrap;
             gap: 5px;
         }
         .tag {
-            background: #555;
+            background: #ff6600;
             padding: 5px 10px;
             border-radius: 5px;
+            cursor: pointer;
+        }
+        .tag:hover {
+            background: #ff4500;
+        }
+        .back-btn {
             display: inline-block;
+            background: #ff6600;
+            color: white;
+            padding: 10px 20px;
+            margin: 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .description-input {
+            width: 100%;
+            min-height: 50px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: none;
+            resize: none;
+            background: #333;
+            color: white;
         }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h2>Create a New Character</h2>
+        <h1>Create a New Character</h1>
         <form id="characterForm">
-            <input type="text" id="name" placeholder="Character Name" required>
             <input type="file" id="imageUpload" accept="image/*">
-            <input type="url" id="imageUrl" placeholder="Or enter an image URL">
-            <textarea id="description" placeholder="Character Description"></textarea>
+            <input type="text" id="imageUrl" placeholder="Or enter image URL">
+            <input type="text" id="characterName" placeholder="Character Name" required>
+            <input id="charDescription" class="description-input" placeholder="Character Description">
+            <div class="tags" id="tagContainer"></div>
             <input type="text" id="tagInput" placeholder="Add tags and press Enter">
-            <div class="tag-container" id="tagContainer"></div>
             <button type="submit">Create Character</button>
         </form>
+        <a href="index.html" class="back-btn">Back</a>
     </div>
 
     <script>
-        const form = document.getElementById("characterForm");
-        const nameInput = document.getElementById("name");
-        const tagInput = document.getElementById("tagInput");
-        const tagContainer = document.getElementById("tagContainer");
-        let tags = [];
+        document.getElementById("characterForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            alert("Character created successfully!");
+        });
 
-        // Validate name input
-        function isValidName(name) {
-            const forbiddenSubstrings = ["@", "#", ":", "```", "discord"];
-            const forbiddenNames = ["everyone", "here"];
-            
-            if (name.length < 2 || name.length > 32) return false;
-            if (forbiddenNames.includes(name.toLowerCase())) return false;
-            return !forbiddenSubstrings.some(sub => name.includes(sub));
-        }
-
-        // Handle tag input
-        tagInput.addEventListener("keypress", function(event) {
-            if (event.key === "Enter" && tagInput.value.trim() !== "") {
+        document.getElementById("tagInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
                 event.preventDefault();
-                const newTag = tagInput.value.trim();
-                if (!tags.includes(newTag)) {
-                    tags.push(newTag);
-                    const tagElement = document.createElement("span");
-                    tagElement.classList.add("tag");
-                    tagElement.textContent = newTag;
-                    tagContainer.appendChild(tagElement);
-                    tagInput.value = "";
+                const tagText = this.value.trim();
+                if (tagText) {
+                    const tag = document.createElement("span");
+                    tag.classList.add("tag");
+                    tag.textContent = tagText;
+                    tag.addEventListener("click", function() {
+                        this.remove();
+                    });
+                    document.getElementById("tagContainer").appendChild(tag);
+                    this.value = "";
                 }
             }
         });
 
-        // Handle form submission
-        form.addEventListener("submit", function(event) {
-            event.preventDefault();
-            const name = nameInput.value.trim();
-
-            if (!isValidName(name)) {
-                alert("Invalid name. Make sure it meets the criteria.");
-                return;
-            }
-
-            alert("Character created successfully!");
-            // Here, you would handle storing the data in your database
+        document.getElementById("charDescription").addEventListener("input", function() {
+            this.style.height = "auto";
+            this.style.height = (this.scrollHeight) + "px";
         });
     </script>
+
 </body>
 </html>
