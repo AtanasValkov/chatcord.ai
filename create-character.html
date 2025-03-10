@@ -102,15 +102,18 @@
     <script>
         document.getElementById("characterForm").addEventListener("submit", function(event) {
             event.preventDefault();
-            var name = document.getElementById("characterName").innerText;
+            var name = document.getElementById("characterName").value;
             console.log(name)
             var image = document.getElementById("imageUpload").src;
             if (image == null) {
-                var image = document.getElementById("imageUrl").innerText;
+                var image = document.getElementById("imageUrl").value;
             }
-            var description = document.getElementById("charDescription").innerText;
-            var tags = document.getElementById("tagContainer").innerText;
+            var description = document.getElementById("charDescription").value;
+           var tags = Array.from(document.querySelectorAll("#tagContainer .tag"))
+                    .map(tag => tag.textContent)
+                    .join(", ");
             console.log(tags)
+            
             var data = {
                 "username": name,
                 "avatar_url": image, // Extract image source
