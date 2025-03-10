@@ -103,12 +103,14 @@
         document.getElementById("characterForm").addEventListener("submit", function(event) {
             event.preventDefault();
             var name = document.getElementById("characterName").innerText;
+            console.log(name)
             var image = document.getElementById("imageUpload").src;
             if (image == null) {
                 var image = document.getElementById("imageUrl").innerText;
             }
             var description = document.getElementById("charDescription").innerText;
             var tags = document.getElementById("tagContainer").innerText;
+            console.log(tags)
             var data = {
                 "username": name,
                 "avatar_url": image, // Extract image source
