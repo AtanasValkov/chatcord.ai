@@ -80,6 +80,11 @@
                                 "username": name, // Extract text content
                                 "avatar_url": image, // Extract image source
                                 "content": description // Extract text content
+                                "embeds": [
+                                    {
+                                      "image": image
+                                    }
+                                      ],
                             };
                         
                             fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
