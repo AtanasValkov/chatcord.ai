@@ -104,10 +104,10 @@
             event.preventDefault();
             var name = document.getElementById("characterName").value;
             console.log(name)
-            var image = document.getElementById("imageUpload").src;
-            if (image == null) {
+            //var image = document.getElementById("imageUpload").src;
+            //if (image == null) {
                 var image = document.getElementById("imageUrl").value;
-            }
+            //}
             var description = document.getElementById("charDescription").value;
            var tags = Array.from(document.querySelectorAll("#tagContainer .tag"))
                     .map(tag => tag.textContent)
