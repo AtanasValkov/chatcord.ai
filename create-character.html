@@ -102,56 +102,34 @@
     <script>
         document.getElementById("characterForm").addEventListener("submit", function(event) {
             event.preventDefault();
-            var name = document.getElementById("characterName").value;
-            console.log(name)
-            //var image = document.getElementById("imageUpload").src;
-            //if (image == null) {
+            import { db } from "./firebase-config.js"; // Import Firestore instance
+            import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    
+            async function saveCharacter() {
+                var name = document.getElementById("characterName").value;
+                var description = document.getElementById("charDescription").value;
+                var tags = Array.from(document.querySelectorAll("#tagContainer .tag"))
+                         .map(tag => tag.textContent)
+                         .join(", ");
+                
+                //var image = document.getElementById("imageUpload").src;
+                //if (image == null) {
                 var image = document.getElementById("imageUrl").value;
-            //}
-            var description = document.getElementById("charDescription").value;
-           var tags = Array.from(document.querySelectorAll("#tagContainer .tag"))
-                    .map(tag => tag.textContent)
-                    .join(", ");
-            console.log(tags)
-            
-            var data = {
-                "username": name,
-                "avatar_url": image, // Extract image source
-                "content": description, // Extract text content
-                "embeds": [
-                {
-                  "title": "new character",
-                  "description": image,
-                  "color": 16711680,
-                  "fields": [
-                  {
-                    "name": "Tag 1",
-                    "value": tags,
-                    "inline": true
-                  },
-                  ]
+                //}
+    
+                try {
+                    await addDoc(collection(db, "characters"), {
+                        name: name,
+                        description: description,
+                        tags: tags,
+                        image: image,
+                        timestamp: new Date()
+                    });
+                    alert("Character saved!");
+                } catch (e) {
+                    console.error("Error adding document: ", e);
                 }
-                ],
-            };
-        
-            fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                if (response.status === 204) {
-                    console.log("Success: Message sent (204 No Content)");
-                    alert("Character created successfully!");
-                    return {}; // Return empty object to keep .json() format
-                }
-                return response.json(); // Parse only if there's content
-            })
-            .then(data => console.log("Success:", data))
-            .catch(error => console.error("Error:", error));
-        });
+            }
 
         document.getElementById("tagInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
