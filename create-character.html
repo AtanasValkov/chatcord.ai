@@ -100,11 +100,9 @@
     </div>
 
     <script type="module">
-        import { db } from "./firebase-config.js"; // Import Firestore instance
-        import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        
         document.getElementById("characterForm").addEventListener("submit", async function(event) {
             event.preventDefault();      
+            const WIX_API_URL = "https://atanasvalkov.wixsite.com/best-target-platform/_functions/postCharacter";  // Replace with your Wix site URL
             var name = document.getElementById("characterName").value;
             var description = document.getElementById("charDescription").value;
             var tags = Array.from(document.querySelectorAll("#tagContainer .tag"))
@@ -115,18 +113,29 @@
             //if (image == null) {
             var image = document.getElementById("imageUrl").value;
             //}
-    
+            
+            const newCharacter = {
+                name: name,
+                description: description,
+                tags: tags,
+                image: image
+            };
+        
             try {
-                await addDoc(collection(db, "characters"), {
-                    name: name,
-                    description: description,
-                    tags: tags,
-                    image: image,
-                    timestamp: new Date()
+                const response = await fetch(WIX_API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newCharacter)
                 });
-                alert("Character saved!");
-            } catch (e) {
-                console.error("Error adding document: ", e);
+        
+                const result = await response.json();
+                console.log("Character added:", result);
+                alert("Character added successfully!");
+            } catch (error) {
+                console.error("Error adding character:", error);
+                alert("There was an error adding the character.");
             }
         });
 
