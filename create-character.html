@@ -100,36 +100,37 @@
     </div>
 
     <script type="module">
+        import { db } from "./firebase-config.js"; // Import Firestore instance
+        import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        
         document.getElementById("characterForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            import { db } from "./firebase-config.js"; // Import Firestore instance
-            import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    
-            async function saveCharacter() {
-                var name = document.getElementById("characterName").value;
-                var description = document.getElementById("charDescription").value;
-                var tags = Array.from(document.querySelectorAll("#tagContainer .tag"))
-                         .map(tag => tag.textContent)
-                         .join(", ");
-                
-                //var image = document.getElementById("imageUpload").src;
-                //if (image == null) {
-                var image = document.getElementById("imageUrl").value;
-                //}
-    
-                try {
-                    await addDoc(collection(db, "characters"), {
-                        name: name,
-                        description: description,
-                        tags: tags,
-                        image: image,
-                        timestamp: new Date()
-                    });
-                    alert("Character saved!");
-                } catch (e) {
-                    console.error("Error adding document: ", e);
-                }
+        event.preventDefault();
+            
+        async function saveCharacter() {
+            var name = document.getElementById("characterName").value;
+            var description = document.getElementById("charDescription").value;
+            var tags = Array.from(document.querySelectorAll("#tagContainer .tag"))
+                     .map(tag => tag.textContent)
+                     .join(", ");
+            
+            //var image = document.getElementById("imageUpload").src;
+            //if (image == null) {
+            var image = document.getElementById("imageUrl").value;
+            //}
+
+            try {
+                await addDoc(collection(db, "characters"), {
+                    name: name,
+                    description: description,
+                    tags: tags,
+                    image: image,
+                    timestamp: new Date()
+                });
+                alert("Character saved!");
+            } catch (e) {
+                console.error("Error adding document: ", e);
             }
+        }
 
         document.getElementById("tagInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
