@@ -19,6 +19,7 @@
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+  const db = getFirestore(app);
 
 // Export the database instance so other scripts can use it
 export { db };
