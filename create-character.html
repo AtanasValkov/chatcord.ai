@@ -102,7 +102,6 @@
     <script type="module">
         document.getElementById("characterForm").addEventListener("submit", async function(event) {
             event.preventDefault();      
-            const WIX_API_URL = "https://atanasvalkov.wixsite.com/best-target-platform/_functions/postCharacter";  // Replace with your Wix site URL
             var name = document.getElementById("characterName").value;
             var description = document.getElementById("charDescription").value;
             var tags = Array.from(document.querySelectorAll("#tagContainer .tag"))
@@ -114,30 +113,44 @@
             var image = document.getElementById("imageUrl").value;
             //}
             
-            const newCharacter = {
-                name: name,
-                description: description,
-                tags: tags,
-                image: image
-            };
-        
-            try {
-                const response = await fetch(WIX_API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(newCharacter)
-                });
-        
-                const result = await response.json();
-                console.log("Character added:", result);
-                alert("Character added successfully!");
-            } catch (error) {
-                console.error("Error adding character:", error);
-                alert("There was an error adding the character.");
-            }
-        });
+            var data = {
+                 "username": name,
+                 "avatar_url": image, // Extract image source
+                 "content": description, // Extract text content
+                 "embeds": [
+                 {
+                   "title": "new character",
+                   "description": image,
+                   "color": 16711680,
+                   "fields": [
+                   {
+                     "name": "Tag 1",
+                     "value": tags,
+                     "inline": true
+                   },
+                   ]
+                 }
+                 ],
+             };
+ 
+             fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
+                 method: "POST",
+                 headers: {
+                     "Content-Type": "application/json"
+                 },
+                 body: JSON.stringify(data)
+             })
+             .then(response => {
+                 if (response.status === 204) {
+                     console.log("Success: Message sent (204 No Content)");
+                     alert("Character created successfully!");
+                     return {}; // Return empty object to keep .json() format
+                 }
+                 return response.json(); // Parse only if there's content
+             })
+             .then(data => console.log("Success:", data))
+             .catch(error => console.error("Error:", error));
+         });
 
         document.getElementById("tagInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
