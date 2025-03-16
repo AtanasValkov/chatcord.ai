@@ -48,8 +48,16 @@
                 <div class="character-grid" id="characterGrid">
                     <script>
                         async function loadCharacters() {
-                            const response = await fetch("characters.json");
-                            const characters = await response.json();
+                        fetch("http://192.168.0.108:5000/get-characters")
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Fetched Characters:", data);
+                            populateGrid(data);
+                        })
+                        .catch(error => console.error("Error fetching characters:", error));
+                        }
+                        
+                        function populateGrid(characters) {
                             const grid = document.getElementById("characterGrid");
                     
                             characters.forEach(character => {
@@ -65,7 +73,7 @@
                                 grid.appendChild(charDiv);
                             });
                         }
-                    
+
                         function showDetails(name, desc, img) {
                             document.getElementById('characterName').innerText = name;
                             document.getElementById('characterDesc').innerText = desc;
