@@ -89,6 +89,7 @@
         <h1>Create a New Character</h1>
         <form id="characterForm">
             <input type="file" id="imageUpload" accept="image/*">
+            <button id="uploadBtn">Upload Image</button>
             <input type="text" id="imageUrl" placeholder="Or enter image URL">
             <input type="text" id="characterName" placeholder="Character Name" required>
             <textarea id="charDescription" class="description-input" placeholder="Character Description" cols="40" rows="5" required></textarea>
@@ -100,6 +101,37 @@
     </div>
 
     <script type="module">
+        document.getElementById("uploadBtn").addEventListener("click", function() {
+            const file = document.getElementById("imageUpload").files[0];
+            if (!file) {
+                alert("Please select an image first.");
+                return;
+            }
+        
+            const formData = new FormData();
+            formData.append("image", file);
+        
+            fetch("https://api.imgur.com/3/image", {
+                method: "POST",
+                headers: {
+                    "Authorization": "Client-ID e5878f258cd03cf"
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("previewImage").src = data.data.link;
+                    document.getElementById("previewImage").style.display = "block";
+                    document.getElementById("imageUrl").value = data.data.link;
+                } else {
+                    alert("Upload failed!");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+
+        
         document.getElementById("characterForm").addEventListener("submit", async function(event) {
             event.preventDefault();      
             var name = document.getElementById("characterName").value;
@@ -151,6 +183,8 @@
              .then(data => console.log("Success:", data))
              .catch(error => console.error("Error:", error));
          });
+
+        
 
         document.getElementById("tagInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
