@@ -89,9 +89,7 @@
         <h1>Create a New Character</h1>
         <form id="characterForm">
             <input type="file" id="imageUpload" accept="image/*">
-            <button id="uploadBtn">Upload Image</button>
             <img id="previewImage" style="display: none; width: 200px;" />
-            <input type="text" id="imageUrl" placeholder="Or enter image URL">
             <input type="text" id="characterName" placeholder="Character Name" required>
             <textarea id="charDescription" class="description-input" placeholder="Character Description" cols="40" rows="5" required></textarea>
             <div class="tags" id="tagContainer"></div>
@@ -101,114 +99,121 @@
         <a href="index.html" class="back-btn">Back</a>
     </div>
 
-    <script type="module">
-        document.getElementById("uploadBtn").addEventListener("click", function() {
-            const file = document.getElementById("imageUpload").files[0];
-            if (!file) {
-                alert("Please select an image first.");
-                return;
+<script type="module">
+<input type="file" id="imageUpload" accept="image/*">
+<img id="previewImage" style="display: none; width: 200px;" />
+    let uploadedImageUrl = ""; // Variable to store the uploaded image URL
+    document.getElementById("imageUpload").addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+    
+        // 1️⃣ Show preview instantly
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById("previewImage").src = e.target.result;
+            document.getElementById("previewImage").style.display = "block";
+        };
+        reader.readAsDataURL(file); // Local preview
+    
+        // 2️⃣ Upload to Imgur automatically
+        const formData = new FormData();
+        formData.append("image", file);
+    
+        fetch("https://api.imgur.com/3/image", {
+            method: "POST",
+            headers: {
+                "Authorization": "Client-ID e5878f258cd03cf" // Replace with your Client ID
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 3️⃣ Replace local preview with uploaded image URL
+                document.getElementById("previewImage").src = data.data.link;
+                uploadedImageUrl = data.data.link; // Store Imgur URL in variable
+            } else {
+                alert("Upload failed!");
             }
-        
-            const formData = new FormData();
-            formData.append("image", file);
-        
-            fetch("https://api.imgur.com/3/image", {
-                method: "POST",
-                headers: {
-                    "Authorization": "Client-ID e5878f258cd03cf"
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById("previewImage").src = data.data.link;
-                    document.getElementById("previewImage").style.display = "block";
-                    document.getElementById("imageUrl").value = data.data.link;
-                } else {
-                    alert("Upload failed!");
-                }
-            })
-            .catch(error => console.error("Error:", error));
-        });
+        })
+        .catch(error => console.error("Error:", error));
+    });
+
 
         
-        document.getElementById("characterForm").addEventListener("submit", async function(event) {
-            event.preventDefault();      
-            var name = document.getElementById("characterName").value;
-            var description = document.getElementById("charDescription").value;
-            var tags = Array.from(document.querySelectorAll("#tagContainer .tag"))
-                     .map(tag => tag.textContent)
-                     .join(", ");
-            
-            //var image = document.getElementById("imageUpload").src;
-            //if (image == null) {
-            var image = document.getElementById("imageUrl").value;
-            //}
-            
-            var data = {
-                 "username": name,
-                 "avatar_url": image, // Extract image source
-                 "content": description, // Extract text content
-                 "embeds": [
-                 {
-                   "title": "new character",
-                   "description": image,
-                   "color": 16711680,
-                   "fields": [
-                   {
-                     "name": "Tag 1",
-                     "value": tags,
-                     "inline": true
-                   },
-                   ]
-                 }
-                 ],
-             };
- 
-             fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
-                 method: "POST",
-                 headers: {
-                     "Content-Type": "application/json"
-                 },
-                 body: JSON.stringify(data)
-             })
-             .then(response => {
-                 if (response.status === 204) {
-                     console.log("Success: Message sent (204 No Content)");
-                     alert("Character created successfully!");
-                     return {}; // Return empty object to keep .json() format
-                 }
-                 return response.json(); // Parse only if there's content
-             })
-             .then(data => console.log("Success:", data))
-             .catch(error => console.error("Error:", error));
-         });
-
+    document.getElementById("characterForm").addEventListener("submit", async function(event) {
+        event.preventDefault();      
+        var name = document.getElementById("characterName").value;
+        var description = document.getElementById("charDescription").value;
+        var tags = Array.from(document.querySelectorAll("#tagContainer .tag"))
+                 .map(tag => tag.textContent)
+                 .join(", ");
         
+        var image = uploadedImageUrl
+        
+        var data = {
+             "username": name,
+             "avatar_url": image, // Extract image source
+             "content": description, // Extract text content
+             "embeds": [
+             {
+               "title": "new character",
+               "description": image,
+               "color": 16711680,
+               "fields": [
+               {
+                 "name": "Tag 1",
+                 "value": tags,
+                 "inline": true
+               },
+               ]
+             }
+             ],
+         };
 
-        document.getElementById("tagInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                const tagText = this.value.trim();
-                if (tagText) {
-                    const tag = document.createElement("span");
-                    tag.classList.add("tag");
-                    tag.textContent = tagText;
-                    tag.addEventListener("click", function() {
-                        this.remove();
-                    });
-                    document.getElementById("tagContainer").appendChild(tag);
-                    this.value = "";
-                }
+         fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
+             method: "POST",
+             headers: {
+                 "Content-Type": "application/json"
+             },
+             body: JSON.stringify(data)
+         })
+         .then(response => {
+             if (response.status === 204) {
+                 console.log("Success: Message sent (204 No Content)");
+                 alert("Character created successfully!");
+                 return {}; // Return empty object to keep .json() format
+             }
+             return response.json(); // Parse only if there's content
+         })
+         .then(data => console.log("Success:", data))
+         .catch(error => console.error("Error:", error));
+     });
+
+    
+
+    document.getElementById("tagInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            const tagText = this.value.trim();
+            if (tagText) {
+                const tag = document.createElement("span");
+                tag.classList.add("tag");
+                tag.textContent = tagText;
+                tag.addEventListener("click", function() {
+                    this.remove();
+                });
+                document.getElementById("tagContainer").appendChild(tag);
+                this.value = "";
             }
-        });
+        }
+    });
 
-        document.getElementById("charDescription").addEventListener("input", function() {
-            this.style.height = "auto";
-            this.style.height = (this.scrollHeight) + "px";
-        });
-    </script>
+    document.getElementById("charDescription").addEventListener("input", function() {
+        this.style.height = "auto";
+        this.style.height = (this.scrollHeight) + "px";
+    });
+</script>
 
 </body>
 </html>
