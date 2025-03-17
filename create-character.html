@@ -128,28 +128,7 @@
             };
             reader2.readAsDataURL(file);
 
-            // Upload to Imgur automatically
-            const formData = new FormData();
-            formData.append("image", file);
-    
-        fetch("https://api.imgur.com/3/image", {
-            method: "POST",
-            headers: {
-                "Authorization": "Client-ID e5878f258cd03cf" // Replace with your Client ID
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // 3️⃣ Replace local preview with uploaded image URL
-                document.getElementById("previewImage").src = data.data.link;
-                uploadedImageUrl = data.data.link; // Store Imgur URL in variable
-            } else {
-                alert("Upload failed!");
-            }
-        })
-        .catch(error => console.error("Error:", error));
+
     });
 
 
