@@ -228,10 +228,7 @@
             document.getElementById("characterName").value = jsonData['name'];
     
             // 2. Set Persona
-            if jsonData['personality']:
-                let persona = jsonData['personality']
-            else:
-                let persona = jsonData['description']
+            let persona = jsonData['personality'] ? jsonData['personality'] : jsonData['description'];
             document.getElementById("charDescription").textContent = persona;
 
             // 3. Set Scenario
