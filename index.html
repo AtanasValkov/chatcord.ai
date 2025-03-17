@@ -52,7 +52,7 @@
                             const timeoutId = setTimeout(() => controller.abort(), 15000); // Timeout after 15 seconds
                 
                             try {
-                                const response = await fetch("https://192.168.0.108:5000/get-characters", {
+                                const response = await fetch("https://192.168.0.110:5000/get-characters", {
                                     signal: controller.signal
                                 });
                                 
