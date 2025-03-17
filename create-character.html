@@ -90,9 +90,16 @@
         <form id="characterForm">
             <input type="file" id="imageUpload" accept="image/*">
             <img id="previewImage" style="display: none; width: 200px;" />
+            <h2>Name</h2>
             <input type="text" id="characterName" placeholder="Character Name" required>
+            <h2>Persona</h2>
             <textarea id="charDescription" class="description-input" placeholder="Character Description" cols="40" rows="5" required></textarea>
+            <h2>Greeting</h2>
+            <textarea id="charGreeting" class="description-input" placeholder="Scenario" cols="40" rows="5" required></textarea>
+            <h2>Scenario</h2>
             <textarea id="charScenario" class="description-input" placeholder="Scenario" cols="40" rows="5" required></textarea>
+            <h2>Example Dialogue</h2>
+            <textarea id="charDialogue" class="description-input" placeholder="Scenario" cols="40" rows="5" required></textarea>
             <div class="tags" id="tagContainer"></div>
             <input type="text" id="tagInput" placeholder="Press Enter after each Tag">
             <button type="submit">Create Character</button>
@@ -231,10 +238,16 @@
             let persona = jsonData['personality'] ? jsonData['personality'] : jsonData['description'];
             document.getElementById("charDescription").textContent = persona;
 
-            // 3. Set Scenario
+            // 3. Set Greeting
+            document.getElementById("charGreeting").value = jsonData['first_mes'];
+
+            // 4. Set Scenario
             document.getElementById("charScenario").value = jsonData['scenario'];
+
+            // 5. Set Dialogue
+            document.getElementById("charDialogue").value = jsonData['mes_example'];
     
-            // 4. Add Tags
+            // 6. Add Tags
             const tagContainer = document.getElementById("tagContainer");
             tagContainer.innerHTML = '';  // Clear existing tags
             jsonData['data']['tags'].forEach(tag => {
