@@ -223,11 +223,6 @@
             let jsonString = atob(base64Str);
             let jsonData = JSON.parse(jsonString);
             document.getElementById("charDescription").textContent = JSON.stringify(jsonData, null, 4);
-
-            // Enable download button
-            const downloadBtn = document.getElementById("downloadJson");
-            downloadBtn.style.display = "block";
-            downloadBtn.onclick = () => downloadJSON(jsonData);
         } catch (e) {
             document.getElementById("charDescription").textContent = "Error decoding metadata.";
         }
