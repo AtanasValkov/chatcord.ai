@@ -229,9 +229,9 @@
     
             // 2. Set Persona
             if data['personality']:
-                let persona = data['personality']
+                let persona = jsonData['personality']
             else:
-                let persona = data['description']
+                let persona = jsonData['description']
             document.getElementById("charDescription").textContent = persona;
 
             // 3. Set Scenario
