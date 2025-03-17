@@ -112,7 +112,7 @@
             document.getElementById("previewImage").style.display = "block";
             parsePNGMetadata(e.target.result);
         };
-        reader.readAsDataURL(file); // Local preview
+        reader.readAsArrayBuffer(file); // Local preview
     
         // 2️⃣ Upload to Imgur automatically
         const formData = new FormData();
