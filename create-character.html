@@ -108,7 +108,6 @@
     </div>
 
 <script type="module">
-    let uploadedImageUrl = ""; // Variable to store the uploaded image URL
     document.getElementById("imageUpload").addEventListener("change", function(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -141,19 +140,19 @@
                  .map(tag => tag.textContent)
                  .join(", ");
         
-        var image = uploadedImageUrl
+        var image = file
         var greeting = document.getElementById("charGreeting").value;
         var scenario = document.getElementById("charScenario").value;
         var dialogue = document.getElementById("charDialogue").value;
         
         var data = {
              "username": name,
-             "avatar_url": image, // Extract image source
+             "avatar_url": "https://i.imgur.com/9X39AmP.jpeg", // Extract image source
              "content": description, // Extract text content
              "embeds": [
              {
                "title": "new character",
-               "description": image,
+               "description": "https://i.imgur.com/9X39AmP.jpeg",
                "color": 16711680,
                "fields": [
                {
@@ -179,6 +178,7 @@
                ]
              }
              ],
+            "image": image,
          };
 
          fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
