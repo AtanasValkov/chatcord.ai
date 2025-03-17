@@ -108,6 +108,7 @@
     </div>
 
 <script type="module">
+    var imageFile;
     document.getElementById("imageUpload").addEventListener("change", function(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -140,7 +141,6 @@
                  .map(tag => tag.textContent)
                  .join(", ");
         
-        var image = file
         var greeting = document.getElementById("charGreeting").value;
         var scenario = document.getElementById("charScenario").value;
         var dialogue = document.getElementById("charDialogue").value;
@@ -178,7 +178,7 @@
                ]
              }
              ],
-            "image": image,
+            "image": imageFile,
          };
 
          fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
