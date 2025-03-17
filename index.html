@@ -64,12 +64,13 @@
                             characters.forEach(character => {
                                 const charDiv = document.createElement("div");
                                 charDiv.classList.add("character");
-                                charDiv.onclick = () => showDetails(character.image.replace("images/", "").replace(".png", ""), character.description, character.image);
+                                charDiv.onclick = () => showDetails(character.name, character.persona, character.avatar, character.tags);
                     
                                 charDiv.innerHTML = `
-                                    <img src="${character.image}" alt="${character.name}">
-                                    <p>${character.image.replace("images/", "").replace(".png", "")}</p>
+                                    <img src="${character.avatar}" alt="${character.name}">
+                                    <p>${character.name}</p>
                                     <span>${character.stats.downloads} ⬇ | ${character.stats.likes} ❤️ | ${character.stats.stars} ⭐ | ${character.stats.comments} 💬</span>
+                                    <span>${character.tags}</span>
                                 `;
                                 grid.appendChild(charDiv);
                             });
