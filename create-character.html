@@ -110,6 +110,7 @@
         reader.onload = function(e) {
             document.getElementById("previewImage").src = e.target.result;
             document.getElementById("previewImage").style.display = "block";
+            parsePNGMetadata(e.target.result);
         };
         reader.readAsDataURL(file); // Local preview
     
@@ -188,7 +189,43 @@
          .catch(error => console.error("Error:", error));
      });
 
-    
+    function parsePNGMetadata(arrayBuffer) {
+        const dataView = new DataView(arrayBuffer);
+        let offset = 8; // PNG header size
+        
+        while (offset < dataView.byteLength) {
+            let chunkLength = dataView.getUint32(offset);
+            let chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset + 4, 4));
+
+            if (chunkType === "tEXt") {  // Metadata chunk
+                let chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkLength);
+                let textData = new TextDecoder().decode(chunkData);
+
+                if (textData.startsWith("chara")) { 
+                    let base64Data = textData.split("\u0000")[1]; // Extract after null separator
+                    decodeBase64JSON(base64Data);
+                    return;
+                }
+            }
+            offset += 12 + chunkLength;
+        }
+        document.getElementById("charDescription").textContent = "Not a tavern card.";
+    }
+
+    function decodeBase64JSON(base64Str) {
+        try {
+            let jsonString = atob(base64Str);
+            let jsonData = JSON.parse(jsonString);
+            document.getElementById("charDescription").textContent = JSON.stringify(jsonData, null, 4);
+
+            // Enable download button
+            const downloadBtn = document.getElementById("downloadJson");
+            downloadBtn.style.display = "block";
+            downloadBtn.onclick = () => downloadJSON(jsonData);
+        } catch (e) {
+            document.getElementById("charDescription").textContent = "Error decoding metadata.";
+        }
+    }
 
     document.getElementById("tagInput").addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
