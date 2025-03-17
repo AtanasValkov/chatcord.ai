@@ -222,7 +222,23 @@
         try {
             let jsonString = atob(base64Str);
             let jsonData = JSON.parse(jsonString);
-            document.getElementById("charDescription").textContent = JSON.stringify(jsonData, null, 4);
+            
+            // 1. Set Character Name
+            document.getElementById("characterName").value = jsonData['char_name'];
+    
+            // 2. Set Description (char_persona and world_scenario)
+            let description = `Persona: ${jsonData['char_persona']}\n\nScenario: ${jsonData['world_scenario']}`;
+            document.getElementById("charDescription").textContent = description;
+    
+            // 3. Add Tags
+            const tagContainer = document.getElementById("tagContainer");
+            tagContainer.innerHTML = '';  // Clear existing tags
+            jsonData['data']['tags'].forEach(tag => {
+                let tagElement = document.createElement("span");
+                tagElement.classList.add("tag");
+                tagElement.textContent = tag;
+                tagContainer.appendChild(tagElement);
+            });
         } catch (e) {
             document.getElementById("charDescription").textContent = "Error decoding metadata.";
         }
