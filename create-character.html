@@ -105,18 +105,24 @@
         const file = event.target.files[0];
         if (!file) return;
     
-        // 1️⃣ Show preview instantly
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById("previewImage").src = e.target.result;
-            document.getElementById("previewImage").style.display = "block";
-            parsePNGMetadata(e.target.result);
-        };
-        reader.readAsArrayBuffer(file); // Local preview
-    
-        // 2️⃣ Upload to Imgur automatically
-        const formData = new FormData();
-        formData.append("image", file);
+            //  Read as ArrayBuffer for metadata extraction
+            const reader1 = new FileReader();
+            reader1.onload = function(e) {
+                parsePNGMetadata(e.target.result);
+            };
+            reader1.readAsArrayBuffer(file);
+
+            // Read as DataURL for previewing the image
+            const reader2 = new FileReader();
+            reader2.onload = function(e) {
+                document.getElementById("previewImage").src = e.target.result;
+                document.getElementById("previewImage").style.display = "block";
+            };
+            reader2.readAsDataURL(file);
+
+            // Upload to Imgur automatically
+            const formData = new FormData();
+            formData.append("image", file);
     
         fetch("https://api.imgur.com/3/image", {
             method: "POST",
