@@ -133,40 +133,28 @@
         
     document.getElementById("characterForm").addEventListener("submit", async function(event) {
         event.preventDefault();      
-        const fileInput = document.getElementById("fileInput");
-            const statusMessage = document.getElementById("statusMessage");
 
-            if (!fileInput.files.length) {
-                statusMessage.textContent = "Please select a file.";
-                statusMessage.style.color = "red";
-                return;
+        const formData = new FormData();
+        formData.append("file", imageFile);
+
+        try {
+            const response = await fetch("http://192.168.0.110:5000/upload-image", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert("Character created successfully!");
+            } else {
+                alert("Error: " + (data.error || "Unknown error");
             }
-
-            const file = fileInput.files[0];
-            const formData = new FormData();
-            formData.append("file", file);
-
-            try {
-                const response = await fetch("http://192.168.0.110:5000/upload-image", {
-                    method: "POST",
-                    body: formData
-                });
-
-                const data = await response.json();
-                
-                if (response.ok) {
-                    statusMessage.textContent = "Upload successful: " + data.filename;
-                    statusMessage.style.color = "green";
-                } else {
-                    statusMessage.textContent = "Error: " + (data.error || "Unknown error");
-                    statusMessage.style.color = "red";
-                }
-            } catch (error) {
-                statusMessage.textContent = "Upload failed. Please try again.";
-                statusMessage.style.color = "red";
-                console.error("Upload Error:", error);
-            }
-        });
+        } catch (error) {
+            alert("Upload failed. Please try again.");
+            console.error("Upload Error:", error);
+        }
+    });
 
     function parsePNGMetadata(arrayBuffer) {
         const dataView = new DataView(arrayBuffer);
