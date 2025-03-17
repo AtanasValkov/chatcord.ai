@@ -163,6 +163,9 @@
                  .join(", ");
         
         var image = uploadedImageUrl
+        var greeting = document.getElementById("charGreeting").value;
+        var scenario = document.getElementById("charScenario").value;
+        var dialogue = document.getElementById("charDialogue").value;
         
         var data = {
              "username": name,
@@ -175,8 +178,23 @@
                "color": 16711680,
                "fields": [
                {
-                 "name": "Tag 1",
+                 "name": "Tags",
                  "value": tags,
+                 "inline": true
+               },
+               {
+                 "name": "greeting",
+                 "value": greeting,
+                 "inline": true
+               },
+               {
+                 "name": "scenario",
+                 "value": scenario,
+                 "inline": true
+               },
+                {
+                 "name": "dialogue",
+                 "value": dialogue,
                  "inline": true
                },
                ]
