@@ -112,7 +112,7 @@
     document.getElementById("imageUpload").addEventListener("change", function(event) {
         const file = event.target.files[0];
         if (!file) return;
-    
+            imageFile = file;
             //  Read as ArrayBuffer for metadata extraction
             const reader1 = new FileReader();
             reader1.onload = function(e) {
@@ -127,77 +127,46 @@
                 document.getElementById("previewImage").style.display = "block";
             };
             reader2.readAsDataURL(file);
-
-
     });
 
 
         
     document.getElementById("characterForm").addEventListener("submit", async function(event) {
         event.preventDefault();      
-        var name = document.getElementById("characterName").value;
-        var description = document.getElementById("charDescription").value;
-        var tags = Array.from(document.querySelectorAll("#tagContainer .tag"))
-                 .map(tag => tag.textContent)
-                 .join(", ");
-        
-        var greeting = document.getElementById("charGreeting").value;
-        var scenario = document.getElementById("charScenario").value;
-        var dialogue = document.getElementById("charDialogue").value;
-        
-        var data = {
-             "username": name,
-             "content": description, // Extract text content
-             "embeds": [
-             {
-               "title": "new character",
-               "description": "",
-               "color": 16711680,
-               "fields": [
-               {
-                 "name": "Tags",
-                 "value": tags,
-                 "inline": true
-               },
-               {
-                 "name": "greeting",
-                 "value": greeting,
-                 "inline": true
-               },
-               {
-                 "name": "scenario",
-                 "value": scenario,
-                 "inline": true
-               },
-                {
-                 "name": "dialogue",
-                 "value": dialogue,
-                 "inline": true
-               },
-               ]
-             }
-             ],
-            "image": imageFile,
-         };
+        const fileInput = document.getElementById("fileInput");
+            const statusMessage = document.getElementById("statusMessage");
 
-         fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
-             method: "POST",
-             headers: {
-                 "Content-Type": "application/json"
-             },
-             body: JSON.stringify(data)
-         })
-         .then(response => {
-             if (response.status === 204) {
-                 console.log("Success: Message sent (204 No Content)");
-                 alert("Character created successfully!");
-                 return {}; // Return empty object to keep .json() format
-             }
-             return response.json(); // Parse only if there's content
-         })
-         .then(data => console.log("Success:", data))
-         .catch(error => console.error("Error:", error));
-     });
+            if (!fileInput.files.length) {
+                statusMessage.textContent = "Please select a file.";
+                statusMessage.style.color = "red";
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const response = await fetch("http://192.168.0.110:5000/upload-image", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusMessage.textContent = "Upload successful: " + data.filename;
+                    statusMessage.style.color = "green";
+                } else {
+                    statusMessage.textContent = "Error: " + (data.error || "Unknown error");
+                    statusMessage.style.color = "red";
+                }
+            } catch (error) {
+                statusMessage.textContent = "Upload failed. Please try again.";
+                statusMessage.style.color = "red";
+                console.error("Upload Error:", error);
+            }
+        });
 
     function parsePNGMetadata(arrayBuffer) {
         const dataView = new DataView(arrayBuffer);
