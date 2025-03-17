@@ -92,6 +92,7 @@
             <img id="previewImage" style="display: none; width: 200px;" />
             <input type="text" id="characterName" placeholder="Character Name" required>
             <textarea id="charDescription" class="description-input" placeholder="Character Description" cols="40" rows="5" required></textarea>
+            <textarea id="charScenario" class="description-input" placeholder="Scenario" cols="40" rows="5" required></textarea>
             <div class="tags" id="tagContainer"></div>
             <input type="text" id="tagInput" placeholder="Press Enter after each Tag">
             <button type="submit">Create Character</button>
@@ -224,13 +225,19 @@
             let jsonData = JSON.parse(jsonString);
             
             // 1. Set Character Name
-            document.getElementById("characterName").value = jsonData['char_name'];
+            document.getElementById("characterName").value = jsonData['name'];
     
-            // 2. Set Description (char_persona and world_scenario)
-            let description = `Persona: ${jsonData['char_persona']}\n\nScenario: ${jsonData['world_scenario']}`;
-            document.getElementById("charDescription").textContent = description;
+            // 2. Set Persona
+            if data['personality']:
+                let persona = data['personality']
+            else:
+                let persona = data['description']
+            document.getElementById("charDescription").textContent = persona;
+
+            // 3. Set Scenario
+            document.getElementById("charScenario").value = jsonData['scenario'];
     
-            // 3. Add Tags
+            // 4. Add Tags
             const tagContainer = document.getElementById("tagContainer");
             tagContainer.innerHTML = '';  // Clear existing tags
             jsonData['data']['tags'].forEach(tag => {
