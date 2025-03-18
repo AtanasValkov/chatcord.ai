@@ -182,35 +182,39 @@
     function decodeBase64JSON(base64Str) {
         try {
             let jsonString = atob(base64Str);
-            let jsonData = JSON.parse(jsonString);
-            console.error("char:", jsonData);
+            let jsonData = JSON.parse(jsonString);        
             // 1. Set Character Name
-            document.getElementById("characterName").value = jsonData['name'];
-    
+            document.getElementById("characterName").value = jsonData['name'] || '';
+        
             // 2. Set Persona
             let persona = jsonData['personality'] ? jsonData['personality'] : jsonData['description'];
-            document.getElementById("charDescription").textContent = persona;
-
+            document.getElementById("charDescription").textContent = persona || 'No description available.';
+        
             // 3. Set Greeting
-            document.getElementById("charGreeting").value = jsonData['first_mes'];
-
+            document.getElementById("charGreeting").value = jsonData['first_mes'] || '';
+        
             // 4. Set Scenario
-            document.getElementById("charScenario").value = jsonData['scenario'];
-
+            document.getElementById("charScenario").value = jsonData['scenario'] || '';
+        
             // 5. Set Dialogue
-            document.getElementById("charDialogue").value = jsonData['mes_example'];
-    
-            // 6. Add Tags
+            document.getElementById("charDialogue").value = jsonData['mes_example'] || '';
+        
+            // 6. Add Tags (Only if `tags` exists and is an array)
             const tagContainer = document.getElementById("tagContainer");
             tagContainer.innerHTML = '';  // Clear existing tags
-            jsonData['data']['tags'].forEach(tag => {
-                let tagElement = document.createElement("span");
-                tagElement.classList.add("tag");
-                tagElement.textContent = tag;
-                tagContainer.appendChild(tagElement);
-            });
+        
+            if (jsonData['data'] && Array.isArray(jsonData['data']['tags'])) {
+                jsonData['data']['tags'].forEach(tag => {
+                    let tagElement = document.createElement("span");
+                    tagElement.classList.add("tag");
+                    tagElement.textContent = tag;
+                    tagContainer.appendChild(tagElement);
+                });
+            } else {
+                console.warn("No tags found.");
+            }
         } catch (e) {
-            document.getElementById("charDescription").textContent = "Error decoding metadata.";
+            console.error("Error decoding metadata:", e);
         }
     }
 
