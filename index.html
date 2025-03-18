@@ -26,8 +26,8 @@
         <div class="details-panel" id="detailsPanel">
             <img id="characterImage" src="" alt="Character">
             <h2 id="characterName">Default Name</h2>
-            <p id="characterDesc">Description of the character...</p>
             <div class="tags" id="characterTags">Tag</div>
+            <p id="characterDesc">Description of the character...</p>
             <button onclick="createBot(characterName.textContent, characterImage.src, characterDesc.textContent)">Create Bot</button>
         </div>
     <div class="container">
@@ -84,8 +84,20 @@
                                     <img src="${imageUrl}" alt="${character.name}">
                                     <p>${character.name}</p>
                                     <span>${0} ⬇ | ${0} ❤️ | ${0} ⭐ | ${0} 💬</span>
-                                    <div>${character.data.tags}</div>
+                                    <div class="tags" id="characterTags"></div>
+                                    <div>${character.data.tags.join(", ")}</div>
                                 `;
+                                
+                                let characterTags = charDiv.querySelector("#characterTags");
+                                characterTags.innerHTML = ''; // Clear existing content
+                                
+                                character.data.tags.forEach(tag => {
+                                    let tagElement = document.createElement("span");
+                                    tagElement.classList.add("tag");
+                                    tagElement.textContent = tag;
+                                    characterTags.appendChild(tagElement); // Append tags to the correct container
+                                });
+                                
                                 grid.appendChild(charDiv);
                                 })
                                 .catch(error => console.error('Error loading image:', error));
