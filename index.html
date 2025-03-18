@@ -69,15 +69,15 @@
                                 .then(response => response.arrayBuffer())  // Convert response to Blob
                                 .then(arrayBuffer => {
                                 const uint8Array = new Uint8Array(arrayBuffer);
-                                character = parsePNGMetadata(arrayBuffer);  // Process the image data
+                                character = parsePNGMetadata(arrayBuffer);  // Process the image data <span>${character.stats.downloads} ⬇ | ${character.stats.likes} ❤️ | ${character.stats.stars} ⭐ | ${character.stats.comments} 💬</span>
                                 
                                 charDiv.classList.add("character");
-                                charDiv.onclick = () => showDetails(character.name, character.persona, character.avatar, character.tags);
+                                charDiv.onclick = () => showDetails(character.name, character.persona, arrayBuffer, character.data.tags);
                     
                                 charDiv.innerHTML = `
                                     <img src="${character.avatar}" alt="${character.name}">
                                     <p>${character.name}</p>
-                                    <span>${character.stats.downloads} ⬇ | ${character.stats.likes} ❤️ | ${character.stats.stars} ⭐ | ${character.stats.comments} 💬</span>
+
                                     <span>${character.tags}</span>
                                 `;
                                 grid.appendChild(charDiv);
