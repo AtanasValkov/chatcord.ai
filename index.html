@@ -62,46 +62,56 @@
                         
                         function populateGrid(imageFiles) {
                             const grid = document.getElementById("characterGrid");
-                    
+                        
                             imageFiles.forEach(imageFile => {
                                 const charDiv = document.createElement("div");
                                 
                                 fetch(`https://192.168.0.110:5000/get-characters/${imageFile}`)
-                                .then(response => response.arrayBuffer())  // Convert response to Blob
+                                .then(response => response.arrayBuffer())  // Convert response to ArrayBuffer
                                 .then(arrayBuffer => {
-                                const uint8Array = new Uint8Array(arrayBuffer);
-                                character = parsePNGMetadata(arrayBuffer);  // Process the image data 
+                                    const uint8Array = new Uint8Array(arrayBuffer);
+                                    const character = parsePNGMetadata(arrayBuffer);  // Process the image data 
+                                        
+                                    // Convert ArrayBuffer to Blob
+                                    const blob = new Blob([arrayBuffer], { type: "image/png" });
+                                    const imageUrl = URL.createObjectURL(blob);
+                        
+                                    charDiv.classList.add("character");
+                                    charDiv.onclick = () => showDetails(
+                                        character.name || "Unknown Character",
+                                        character.scenario || "No scenario available.",
+                                        imageUrl,
+                                        character.data?.tags || [] // Ensure tags is always an array
+                                    );
+                        
+                                    charDiv.innerHTML = `
+                                        <img src="${imageUrl}" alt="${character.name || 'Unknown'}">
+                                        <p>${character.name || 'Unknown'}</p>
+                                        <div>${0} ⬇ | ${0} ❤️ | ${0} ⭐ | ${0} 💬</div>
+                                        <div class="tags" id="characterTags"></div>
+                                    `;
+                        
+                                    let characterTags = charDiv.querySelector("#characterTags");
+                                    characterTags.innerHTML = ''; // Clear existing content
                                     
-                                // Convert ArrayBuffer to Blob
-                                const blob = new Blob([arrayBuffer], { type: "image/png" }); // Adjust MIME type if needed
-                                const imageUrl = URL.createObjectURL(blob); // Create a temporary URL for the image
-     
-                                
-                                charDiv.classList.add("character");
-                                charDiv.onclick = () => showDetails(character.name, character.scenario, imageUrl, character.data.tags);
-                    
-                                charDiv.innerHTML = `
-                                    <img src="${imageUrl}" alt="${character.name}">
-                                    <p>${character.name}</p>
-                                    <div>${0} ⬇ | ${0} ❤️ | ${0} ⭐ | ${0} 💬</div>
-                                    <div class="tags" id="characterTags"></div>
-                                `;
-                                
-                                let characterTags = charDiv.querySelector("#characterTags");
-                                characterTags.innerHTML = ''; // Clear existing content
-                                
-                                character.data.tags.forEach(tag => {
-                                    let tagElement = document.createElement("span");
-                                    tagElement.classList.add("tag");
-                                    tagElement.textContent = tag;
-                                    characterTags.appendChild(tagElement); // Append tags to the correct container
-                                });
-                                
-                                grid.appendChild(charDiv);
+                                    // Ensure character.data.tags exists and is an array
+                                    if (Array.isArray(character.data?.tags)) {
+                                        character.data.tags.forEach(tag => {
+                                            let tagElement = document.createElement("span");
+                                            tagElement.classList.add("tag");
+                                            tagElement.textContent = tag;
+                                            characterTags.appendChild(tagElement);
+                                        });
+                                    } else {
+                                        console.warn(`No tags found for character: ${character.name}`);
+                                    }
+                        
+                                    grid.appendChild(charDiv);
                                 })
                                 .catch(error => console.error('Error loading image:', error));
                             });
                         }
+
 
                         function parsePNGMetadata(arrayBuffer) {
                             const dataView = new DataView(arrayBuffer);
@@ -136,20 +146,28 @@
                         }
 
                         function showDetails(name, desc, img, tags) {
-                            document.getElementById('characterName').innerText = name;
-                            document.getElementById('characterDesc').innerText = desc;
-                            document.getElementById('characterImage').src = img;
-                            document.getElementById('characterTags').innerText = tags;
+                            document.getElementById('characterName').innerText = name || 'Unknown Character';
+                            document.getElementById('characterDesc').innerText = desc || 'No description available.';
+                            document.getElementById('characterImage').src = img || 'default-image.jpg';
+                        
                             const tagContainer = document.getElementById("characterTags");
                             tagContainer.innerHTML = '';  // Clear existing tags
-                            tags.forEach(tag => {
-                                let tagElement = document.createElement("span");
-                                tagElement.classList.add("tag");
-                                tagElement.textContent = tag;
-                                tagContainer.appendChild(tagElement);
-                            })
+                        
+                            // Ensure tags is a valid array before looping
+                            if (Array.isArray(tags)) {
+                                tags.forEach(tag => {
+                                    let tagElement = document.createElement("span");
+                                    tagElement.classList.add("tag");
+                                    tagElement.textContent = tag;
+                                    tagContainer.appendChild(tagElement);
+                                });
+                            } else {
+                                console.warn("Tags is missing or not an array:", tags);
+                            }
+                        
                             document.getElementById('detailsPanel').style.display = 'block';
                         }
+
 
                         function createBot(name, image, description) {
                             console.log("Trying to get name", name);
