@@ -65,12 +65,16 @@
                             imageFiles.forEach(imageFile => {
                                 const charDiv = document.createElement("div");
                                 
-                                characterImage = `https://192.168.0.110:5000/get-characters/${imageFile}`;
+                                fetch(`https://192.168.0.110:5000/get-characters/${imageFile}`)
+                                .then(response => response.blob())  // Convert response to Blob
+                                .then(blob => {
                                 const reader = new FileReader();
                                 reader.onload = function(e) {
-                                  character = parsePNGMetadata(e.target.result);
+                                    character = parsePNGMetadata(e.target.result);  // Process the image data
                                 };
-                                reader.readAsDataURL(characterImage);
+                                    reader.readAsDataURL(blob);  // Now, it's a valid Blob for FileReader
+                                })
+                                .catch(error => console.error('Error loading image:', error));
                                 
                                 charDiv.classList.add("character");
                                 charDiv.onclick = () => showDetails(character.name, character.persona, character.avatar, character.tags);
