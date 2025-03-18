@@ -73,10 +73,10 @@
 
                                 
                                 charDiv.classList.add("character");
-                                charDiv.onclick = () => showDetails(character.name, character.persona, imageFile, character.data.tags);
+                                charDiv.onclick = () => showDetails(character.name, character.persona, response, character.data.tags);
                     
                                 charDiv.innerHTML = `
-                                    <img src="${imageFile}" alt="${character.name}">
+                                    <img src="${response}" alt="${character.name}">
                                     <p>${character.name}</p>
                                     <span>${0} ⬇ | ${0} ❤️ | ${0} ⭐ | ${0} 💬</span>
                                     <div>${character.data.tags}</div>
