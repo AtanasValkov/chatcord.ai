@@ -27,6 +27,7 @@
             <img id="characterImage" src="" alt="Character">
             <h2 id="characterName">Default Name</h2>
             <p id="characterDesc">Description of the character...</p>
+            <span id="characterTags">Tag</span>
             <button onclick="createBot(characterName.textContent, characterImage.src, characterDesc.textContent)">Create Bot</button>
         </div>
     <div class="container">
@@ -77,7 +78,7 @@
      
                                 
                                 charDiv.classList.add("character");
-                                charDiv.onclick = () => showDetails(character.name, character.persona, imageUrl, character.data.tags);
+                                charDiv.onclick = () => showDetails(character.name, character.scenario, imageUrl, character.data.tags);
                     
                                 charDiv.innerHTML = `
                                     <img src="${imageUrl}" alt="${character.name}">
@@ -123,10 +124,11 @@
                             }
                         }
 
-                        function showDetails(name, desc, img) {
+                        function showDetails(name, desc, img, tags) {
                             document.getElementById('characterName').innerText = name;
                             document.getElementById('characterDesc').innerText = desc;
                             document.getElementById('characterImage').src = img;
+                            document.getElementById('characterTags').src = tags;
                             document.getElementById('detailsPanel').style.display = 'block';
                         }
 
