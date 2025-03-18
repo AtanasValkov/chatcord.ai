@@ -68,10 +68,8 @@
                                 fetch(`https://192.168.0.110:5000/get-characters/${imageFile}`)
                                 .then(response => response.arrayBuffer())  // Convert response to Blob
                                 .then(arrayBuffer => {
-                                    const uint8Array = new Uint8Array(arrayBuffer);
-                                    character = parsePNGMetadata(arrayBuffer);  // Process the image data
-
-                                .catch(error => console.error('Error loading image:', error));
+                                const uint8Array = new Uint8Array(arrayBuffer);
+                                character = parsePNGMetadata(arrayBuffer);  // Process the image data
                                 
                                 charDiv.classList.add("character");
                                 charDiv.onclick = () => showDetails(character.name, character.persona, character.avatar, character.tags);
@@ -84,6 +82,7 @@
                                 `;
                                 grid.appendChild(charDiv);
                                 })
+                                .catch(error => console.error('Error loading image:', error));
                             });
                         }
 
