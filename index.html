@@ -70,7 +70,7 @@
                                 reader.onload = function(e) {
                                   character = parsePNGMetadata(e.target.result);
                                 };
-                                reader.readAsArrayBuffer(characterImage);
+                                reader.readAsDataURL(characterImage);
                                 
                                 charDiv.classList.add("character");
                                 charDiv.onclick = () => showDetails(character.name, character.persona, character.avatar, character.tags);
