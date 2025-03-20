@@ -50,7 +50,7 @@
                     <script>
                         async function loadCharacters() {
                             // Fetch image filenames from Flask server
-                            fetch('https://192.168.0.110:5000/get-characters')  // Replace with your actual Flask server URL
+                            fetch('https://chatcord-server.onrender.com/get-characters')  // Replace with your actual Flask server URL
                                 .then(response => response.json())
                                 .then(imageFiles => {
                                     populateGrid(imageFiles);
@@ -66,7 +66,7 @@
                             imageFiles.forEach(imageFile => {
                                 const charDiv = document.createElement("div");
                                 
-                                fetch(`https://192.168.0.110:5000/get-characters/${imageFile}`)
+                                fetch(`https://chatcord-server.onrender.com/get-characters/${imageFile}`)
                                 .then(response => response.arrayBuffer())  // Convert response to ArrayBuffer
                                 .then(arrayBuffer => {
                                     const uint8Array = new Uint8Array(arrayBuffer);
@@ -185,7 +185,7 @@
                                 ],
                             };
                         
-                            fetch("https://discord.com/api/webhooks/1348278406416175215/n0mDSPFAHf47EsBfR7kley-sW7nJWD_UeZ94GNbNyCnvzMr45pOLw8mHSnwqjmxCDjnu", {
+                            fetch("https://discord.com/api/webhooks/1352061720067309589/UONc3FvNtzfmeIygz_PFfIxpvQfkgxqTWSEdY1QB_2jada9MyIkZTQ9XRp46AzVOcZCu", {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json"
