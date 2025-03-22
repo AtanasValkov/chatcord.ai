@@ -137,8 +137,7 @@
         event.preventDefault();      
 
         const formData = new FormData();
-        formData.append("json", jsonData);
-        console.warn(jsonData);
+        formData.append("json", JSON.stringify(jsonData));
         formData.append("file", imageFile);
 
         try {
