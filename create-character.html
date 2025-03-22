@@ -118,7 +118,14 @@
             //  Read as ArrayBuffer for metadata extraction
             const reader1 = new FileReader();
             reader1.onload = function(e) {
-                parsePNGMetadata(e.target.result);
+                const arrayBuffer = e.target.result;
+                const newArrayBuffer = removePNGMetadata(arrayBuffer);
+                // Step 3: Create a new File object from the modified ArrayBuffer (without metadata)
+                const newBlob = new Blob([newArrayBuffer], { type: 'image/jpg' });
+                const newFile = new File([newBlob], file.name, { type: 'image/jpg' });
+                // Set the new imageFile without metadata
+                imageFile = newFile;
+                parsePNGMetadata(arrayBuffer);
             };
             reader1.readAsArrayBuffer(file);
 
@@ -130,6 +137,49 @@
             };
             reader2.readAsDataURL(file);
     });
+
+    // Function to remove metadata from PNG
+    function removePNGMetadata(arrayBuffer) {
+        const dataView = new DataView(arrayBuffer);
+        let offset = 8; // PNG header size
+        const chunks = [];
+    
+        while (offset < dataView.byteLength) {
+            let chunkLength = dataView.getUint32(offset);
+            let chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset + 4, 4));
+    
+            // If the chunk is metadata (tEXt, zTXt, iTXt), we skip it
+            if (chunkType === "tEXt" || chunkType === "zTXt" || chunkType === "iTXt") {
+                offset += 12 + chunkLength;
+                continue; // Skip metadata chunks
+            }
+    
+            // Otherwise, we add the chunk to the list
+            let chunkData = new Uint8Array(arrayBuffer, offset, 12 + chunkLength);
+            chunks.push(chunkData);
+    
+            offset += 12 + chunkLength; // Move to the next chunk
+        }
+    
+        // Rebuild the PNG file without the metadata
+        let newArrayBuffer = rebuildPNG(chunks);
+        return newArrayBuffer;
+    }
+    
+    function rebuildPNG(chunks) {
+        const header = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]); // PNG header
+        let newBuffer = new Uint8Array(header.length + chunks.reduce((sum, chunk) => sum + chunk.length, 0));
+        newBuffer.set(header, 0);
+        let offset = header.length;
+    
+        // Append chunks to the new array
+        for (let chunk of chunks) {
+            newBuffer.set(chunk, offset);
+            offset += chunk.length;
+        }
+    
+        return newBuffer.buffer;
+    }
 
 
         
