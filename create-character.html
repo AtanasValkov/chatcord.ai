@@ -184,6 +184,7 @@
         try {
             let jsonString = atob(base64Str);
             let jsonData = JSON.parse(jsonString);        
+            console.warn(jsonData);
             // 1. Set Character Name
             document.getElementById("characterName").value = jsonData['name'] || '';
         
