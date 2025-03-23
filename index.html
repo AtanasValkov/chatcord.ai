@@ -66,7 +66,7 @@
                                     if (data.user) {
                                         // Store user data in localStorage
                                         localStorage.setItem("user", JSON.stringify(data.user));
-                                        window.history.replaceState({}, document.title, + "/chatcord.ai/index.html");
+                                        window.location.href = "index.html";
                                         const user = JSON.parse(localStorage.getItem("user"));
                                         if (user) {
                                             document.getElementById("loginButton").textContent = "Logout";
