@@ -43,17 +43,28 @@
                 <li><input type="checkbox"> Furry</li>
                 <li><input type="checkbox"> THICC</li>
             </ul>
-            <div id="content">Loading...</div>
         </aside>
 
         <main>
                 <div class="character-grid" id="characterGrid">
                     <script>
                         async function loadCharacters() {
-                            fetch("https://chatcord-server.onrender.com/callback")
-                                .then(response => response.text())
-                                .then(data => document.getElementById("content").innerHTML = data)
+                            // Extract 'code' from the URL
+                            const urlParams = new URLSearchParams(window.location.search);
+                            const code = urlParams.get("code");
+                            
+                            if (code) {
+                                // Send 'code' to Flask backend
+                                fetch("https://your-render-app.onrender.com/callback?code=" + code, {
+                                    method: "GET",
+                                    mode: "cors",
+                                    credentials: "include"  // If using Flask sessions
+                                })
+                                .then(response => response.json())
+                                .then(data => console.log("Server Response:", data))
                                 .catch(error => console.error("Error:", error));
+                            }
+
                             // Fetch image filenames from Flask server
                             fetch('https://chatcord-server.onrender.com/get-characters')  // Replace with your actual Flask server URL
                                 .then(response => response.json())
