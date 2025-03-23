@@ -55,7 +55,7 @@
                             
                             if (code) {
                                 // Send 'code' to Flask backend
-                                fetch("https://your-render-app.onrender.com/callback?code=" + code, {
+                                fetch("https://chatcord-server.onrender.com/callback?code=" + code, {
                                     method: "GET",
                                     mode: "cors",
                                     credentials: "include"  // If using Flask sessions
