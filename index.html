@@ -10,7 +10,7 @@
     <header>
         <div class="logo" id="logo">ChatCord</div>
         <nav>
-            <a href="create-character.html">Create-A-Character</a>
+            <a onclick="createCharacter()">Create-A-Character</a>
             <a href="#">My Bots</a>
             <a href="#" id = "profileButton">Guest</a>
             <a href="#">Subscribe</a>
@@ -219,7 +219,16 @@
                             document.getElementById('detailsPanel').style.display = 'block';
                         }
 
-
+                        function createCharacter() {
+                            const user = JSON.parse(localStorage.getItem("user"));
+                            if (user) {
+                                window.location.href = "create-character.html";
+                            }
+                            else {
+                                alert("Only logged in users can create characters."
+                            }
+                        }
+                        
                         function createBot(name, image, description) {
                             console.log("Trying to get name", name);
                             
