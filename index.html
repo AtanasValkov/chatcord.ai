@@ -12,7 +12,7 @@
         <nav>
             <a href="create-character.html">Create-A-Character</a>
             <a href="#">My Bots</a>
-            <a href="#">Profile</a>
+            <a href="#" id = "profileButton">Guest</a>
             <a href="#">Subscribe</a>
             <a href="#">Rules</a>
             <a href="https://chatcord-server.onrender.com/login" id="loginButton">Login</a>
@@ -56,9 +56,10 @@
                             
                             if (user) {
                                 document.getElementById("loginButton").textContent = "Logout";
+                                document.getElementById("profileButton").textContent = user.name;
                                 document.getElementById("loginButton").href = "#";
                                 document.getElementById("loginButton").onclick = logout;
-                                document.getElementById("logo").style.backgroundImage = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
+                                document.getElementById("logo").style.background = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
                             }
                             else if (code) {
                                 // Send 'code' to Flask backend
@@ -77,8 +78,10 @@
                                         const user = JSON.parse(localStorage.getItem("user"));
                                         if (user) {
                                             document.getElementById("loginButton").textContent = "Logout";
-                                            document.getElementById("loginButton").onClick = "logout()";
-                                            document.getElementById("logo").backgroundImage = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
+                                            document.getElementById("profileButton").textContent = user.name;
+                                            document.getElementById("loginButton").href = "#";
+                                            document.getElementById("loginButton").onclick = logout;
+                                            document.getElementById("logo").background = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
                                         }
                                     }
                                 })
@@ -102,6 +105,7 @@
                             localStorage.removeItem("user");  // Clear user data from localStorage
                             window.location.href = "index.html";  // Redirect to login page
                             document.getElementById("loginButton").textContent = "Login";
+                            document.getElementById("profileButton").textContent = "Guest";
                             document.getElementById("loginButton").addAttribute("href");
                             document.getElementById("loginButton").href = "https://chatcord-server.onrender.com/login";
                         }
