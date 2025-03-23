@@ -68,9 +68,11 @@
                                         // Store user data in localStorage
                                         localStorage.setItem("user", JSON.stringify(data.user));
                                         window.history.replaceState({}, document.title, "/" + "index.html");
-                                        document.getElementById("loginButton").textContent = user.username;
-                                        document.getElementById("loginButton").removeAttribute("href");
-                                        document.getElementById("avatar").src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
+                                        const user = JSON.parse(localStorage.getItem("user"));
+                                        if (user) {
+                                            document.getElementById("loginButton").textContent = user.username;
+                                            document.getElementById("loginButton").removeAttribute("href");
+                                            document.getElementById("avatar").src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
                                     }
                                 })
 
