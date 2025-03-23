@@ -59,7 +59,7 @@
                                 document.getElementById("profileButton").textContent = user.username;
                                 document.getElementById("loginButton").href = "#";
                                 document.getElementById("loginButton").onclick = logout;
-                                document.getElementById("logo").style.background = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
+                                document.getElementById("logo").style.backgroundImage = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
                             }
                             else if (code) {
                                 // Send 'code' to Flask backend
@@ -81,7 +81,7 @@
                                             document.getElementById("profileButton").textContent = user.username;
                                             document.getElementById("loginButton").href = "#";
                                             document.getElementById("loginButton").onclick = logout;
-                                            document.getElementById("logo").background = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
+                                            document.getElementById("logo").backgroundImage = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
                                         }
                                     }
                                 })
@@ -108,6 +108,7 @@
                             document.getElementById("profileButton").textContent = "Guest";
                             document.getElementById("loginButton").addAttribute("href");
                             document.getElementById("loginButton").href = "https://chatcord-server.onrender.com/login";
+                            document.getElementById("logo").removeAttribute("backgroundImage");   
                         }
                         
                         function populateGrid(imageFiles) {
