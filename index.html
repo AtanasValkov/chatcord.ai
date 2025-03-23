@@ -43,12 +43,17 @@
                 <li><input type="checkbox"> Furry</li>
                 <li><input type="checkbox"> THICC</li>
             </ul>
+            <div id="content">Loading...</div>
         </aside>
 
         <main>
                 <div class="character-grid" id="characterGrid">
                     <script>
                         async function loadCharacters() {
+                            fetch("https://your-render-app.onrender.com/")
+                                .then(response => response.text())
+                                .then(data => document.getElementById("content").innerHTML = data)
+                                .catch(error => console.error("Error:", error));
                             // Fetch image filenames from Flask server
                             fetch('https://chatcord-server.onrender.com/get-characters')  // Replace with your actual Flask server URL
                                 .then(response => response.json())
