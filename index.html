@@ -70,7 +70,7 @@
                                         const user = JSON.parse(localStorage.getItem("user"));
                                         if (user) {
                                             document.getElementById("loginButton").textContent = "Logout";
-                                            document.getElementById("loginButton").removeAttribute("href");
+                                            document.getElementById("loginButton").onClick = "logout()";
                                             document.getElementById("logo").backgroundImage = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
                                         }
                                     }
