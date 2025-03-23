@@ -187,11 +187,35 @@
         event.preventDefault();      
         
         const user = JSON.parse(localStorage.getItem("user"));
-        jsonData.userID = user.id;
+        
+        if (jsonData) {
+            jsonData.userID = user.id;
+        }
+        else {
+            const tagContainer = document.getElementById("tagContainer");            
+            // Select all tag children within the container
+            const tags = tagContainer.querySelectorAll(".tag"); // Assuming tags have a class 'tag'
+            // Extract text content from each tag and store in an array
+            const tagsArray = Array.from(tags).map(tag => tag.textContent.trim());
+            // Convert to JSON
+            const tagData = JSON.stringify({ tags: tagsArray });
+            
+            jsonData = {
+            "name": document.getElementById("characterName").value,
+            "personality": document.getElementById("charDescription").textContent,
+            "first_mes": document.getElementById("charGreeting").value,
+            "scenario": document.getElementById("charScenario").value,
+            "mes_example": document.getElementById("charDialogue").value,
+            "data": {
+                "tags": tagData
+            },
+            "userID": user.id
+        }
+            
         const formData = new FormData();
         formData.append("json", JSON.stringify(jsonData));
         formData.append("file", imageFile);
-
+    
         try {
             //const response = await fetch("https://192.168.0.110:5000/upload-image", {
             const response = await fetch("https://chatcord-server.onrender.com/upload_json", {
