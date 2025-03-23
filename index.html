@@ -56,7 +56,7 @@
                             
                             if (user) {
                                 document.getElementById("loginButton").textContent = "Logout";
-                                document.getElementById("profileButton").textContent = user.name;
+                                document.getElementById("profileButton").textContent = user.username;
                                 document.getElementById("loginButton").href = "#";
                                 document.getElementById("loginButton").onclick = logout;
                                 document.getElementById("logo").style.background = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
@@ -78,7 +78,7 @@
                                         const user = JSON.parse(localStorage.getItem("user"));
                                         if (user) {
                                             document.getElementById("loginButton").textContent = "Logout";
-                                            document.getElementById("profileButton").textContent = user.name;
+                                            document.getElementById("profileButton").textContent = user.username;
                                             document.getElementById("loginButton").href = "#";
                                             document.getElementById("loginButton").onclick = logout;
                                             document.getElementById("logo").background = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
