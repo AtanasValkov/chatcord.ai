@@ -57,8 +57,8 @@
                             if (user) {
                                 document.getElementById("loginButton").textContent = "Logout";
                                 document.getElementById("loginButton").href = "#";
-                                document.getElementById("loginButton").onClick = "logout()";
-                                document.getElementById("logo").backgroundImage = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
+                                document.getElementById("loginButton").onclick = logout;
+                                document.getElementById("logo").style.backgroundImage = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
                             }
                             else if (code) {
                                 // Send 'code' to Flask backend
