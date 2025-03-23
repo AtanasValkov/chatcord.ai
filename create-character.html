@@ -185,7 +185,9 @@
         
     document.getElementById("characterForm").addEventListener("submit", async function(event) {
         event.preventDefault();      
-
+        
+        const user = JSON.parse(localStorage.getItem("user"));
+        jsonData.userID = user.id;
         const formData = new FormData();
         formData.append("json", JSON.stringify(jsonData));
         formData.append("file", imageFile);
