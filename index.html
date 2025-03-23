@@ -15,7 +15,8 @@
             <a href="#">Profile</a>
             <a href="#">Subscribe</a>
             <a href="#">Rules</a>
-            <a href="https://chatcord-server.onrender.com/login">Login</a>
+            <a href="https://chatcord-server.onrender.com/login" id="loginButton">Login</a>
+            <img src="" id="avatar">
             <a href="https://discord.gg/PEWCwNAv" target="_blank">
                 <img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" 
                      alt="Join ChatCord">
@@ -61,7 +62,18 @@
                                     credentials: "include"  // If using Flask sessions
                                 })
                                 .then(response => response.json())
-                                .then(data => console.log("Server Response:", data))
+                                .then(data => {
+                                    console.log("User data:", data);
+                                    if (data.user) {
+                                        // Store user data in localStorage
+                                        localStorage.setItem("user", JSON.stringify(data.user));
+                                        window.history.replaceState({}, document.title, "/" + "index.html");
+                                        document.getElementById("loginButton").textContent = user.username;
+                                        document.getElementById("loginButton").removeAttribute("href");
+                                        document.getElementById("avatar").src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
+                                    }
+                                }
+
                                 .catch(error => console.error("Error:", error));
                             }
 
