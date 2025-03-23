@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <div class="logo">ChatCord</div>
+        <div class="logo" id="logo">ChatCord</div>
         <nav>
             <a href="create-character.html">Create-A-Character</a>
             <a href="#">My Bots</a>
@@ -16,7 +16,6 @@
             <a href="#">Subscribe</a>
             <a href="#">Rules</a>
             <a href="https://chatcord-server.onrender.com/login" id="loginButton">Login</a>
-            <img src="" id="avatar">
             <a href="https://discord.gg/PEWCwNAv" target="_blank">
                 <img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" 
                      alt="Join ChatCord">
@@ -70,9 +69,9 @@
                                         window.history.replaceState({}, document.title, "/" + "index.html");
                                         const user = JSON.parse(localStorage.getItem("user"));
                                         if (user) {
-                                            document.getElementById("loginButton").textContent = user.username;
+                                            document.getElementById("loginButton").textContent = "Logout";
                                             document.getElementById("loginButton").removeAttribute("href");
-                                            document.getElementById("avatar").src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
+                                            document.getElementById("logo").backgroundImage = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
                                         }
                                     }
                                 })
@@ -89,6 +88,15 @@
                                 .catch(error => {
                                     console.error('Error loading images:', error);
                             });
+                        }
+
+                        // Logout function
+                        function logout() {
+                            localStorage.removeItem("user");  // Clear user data from localStorage
+                            window.location.href = "index.html";  // Redirect to login page
+                            document.getElementById("loginButton").textContent = "Login";
+                            document.getElementById("loginButton").addAttribute("href");
+                            document.getElementById("loginButton").href = "https://chatcord-server.onrender.com/login";
                         }
                         
                         function populateGrid(imageFiles) {
