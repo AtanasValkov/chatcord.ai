@@ -209,22 +209,19 @@
         event.preventDefault();
     
         const user = JSON.parse(localStorage.getItem("user"));
-    
-        if (!jsonData) {
-            const tags = Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim());
-    
-            jsonData = {
-                "name": document.getElementById("characterName").value,
-                "personality": document.getElementById("charDescription").value,
-                "first_mes": document.getElementById("charGreeting").value,
-                "scenario": document.getElementById("charScenario").value,
-                "mes_example": document.getElementById("charDialogue").value,
-                "data": { "tags": tags },
-                "userID": user.id
-            };
-        } else {
-            jsonData.userID = user.id;
-        }
+        const tags = Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim());
+        
+        alert(tags)
+        jsonData = {
+            "char_name": document.getElementById("characterName").value,
+            "char_persona": document.getElementById("charDescription").value,
+            "char_greeting": document.getElementById("charGreeting").value,
+            "world_scenario": document.getElementById("charScenario").value,
+            "example_dialogue": document.getElementById("charDialogue").value,
+            "tags": tags,
+            "userID": user.id
+        };
+
     
         const formData = new FormData();
         formData.append("json", JSON.stringify(jsonData));
@@ -294,6 +291,9 @@
                     let tagElement = document.createElement("span");
                     tagElement.classList.add("tag");
                     tagElement.textContent = tag;
+                    tagElement.addEventListener("click", function() {
+                    this.remove();
+                    });
                     tagContainer.appendChild(tagElement);
                 });
             } else {
