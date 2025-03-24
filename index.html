@@ -130,15 +130,16 @@
                                 `;
                         
                                 let characterTags = charDiv.querySelector("#characterTags");
-                                (character.tags || []).forEach(tag => {
+                                const tags = Array.isArray(character.tags) ? character.tags : [];  
+                                tags.forEach(tag => {
                                     let tagElement = document.createElement("span");
                                     tagElement.classList.add("tag");
                                     tagElement.textContent = tag;
                                     characterTags.appendChild(tagElement);
                                 });
-                        
+                                
                                 grid.appendChild(charDiv);
-                            });
+                            };
                         }
 
                         // Logout function
