@@ -202,12 +202,12 @@
             
             jsonData = {
             "name": document.getElementById("characterName").value,
-            "personality": document.getElementById("charDescription").textContent,
+            "personality": document.getElementById("charDescription").value,
             "first_mes": document.getElementById("charGreeting").value,
             "scenario": document.getElementById("charScenario").value,
             "mes_example": document.getElementById("charDialogue").value,
             "data": {
-                "tags": tagData
+                "tags": tagsArray
             },
             "userID": user.id
             }
