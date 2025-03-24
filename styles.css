@@ -150,6 +150,7 @@ h2 {
 .tags {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center; /* Centers the tags */
     gap: 5px;
 }
 .tag {
