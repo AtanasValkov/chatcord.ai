@@ -48,7 +48,7 @@
         <main>
                 <div class="character-grid" id="characterGrid">
                     <script>
-                        async function loadCharacters() {
+                        async function verifyUser() {
                             // Extract 'code' from the URL
                             const urlParams = new URLSearchParams(window.location.search);
                             const code = urlParams.get("code");
@@ -88,15 +88,56 @@
 
                                 .catch(error => console.error("Error:", error));
                             }
+                        }
+                        
+                        async function loadCharacters() {
+                            try {
+                                // Fetch character data from JSON file on the server
+                                const response = await fetch('https://chatcord-server.onrender.com/get-characters');
+                                const characters = await response.json();
+                        
+                                if (characters.error) {
+                                    console.error('Error:', characters.error);
+                                    return;
+                                }
+                        
+                                populateGrid(characters);
+                            } catch (error) {
+                                console.error('Error loading characters:', error);
+                            }
+                        }
 
-                            // Fetch image filenames from Flask server
-                            fetch('https://chatcord-server.onrender.com/get-characters')  // Replace with your actual Flask server URL
-                                .then(response => response.json())
-                                .then(imageFiles => {
-                                    populateGrid(imageFiles);
-                                })
-                                .catch(error => {
-                                    console.error('Error loading images:', error);
+                        function populateGrid(characters) {
+                            const grid = document.getElementById("characterGrid");
+                            grid.innerHTML = ""; // Clear existing content
+                        
+                            Object.entries(characters).forEach(([id, character]) => {
+                                const charDiv = document.createElement("div");
+                                const imageUrl = `https://chatcord-server.onrender.com/get-characters/${id}`;
+                        
+                                charDiv.onclick = () => showDetails(
+                                    character.char_name || "Unknown Character",
+                                    character.world_scenario || "No scenario available.",
+                                    imageUrl,
+                                    character.tags || []
+                                );
+                                                        
+                                charDiv.innerHTML = `
+                                    <img src="${imageUrl}" alt="${character.name || 'Unknown'}">
+                                    <p>${character.char_name || 'Unknown'}</p>
+                                    <div>${character.stats.downloads || 0} ⬇ | ${character.stats.likes || 0} ❤️ | ${character.stats.stars || 0} ⭐ | ${character.stats.comments || 0} 💬</div>
+                                    <div class="characterTags"></div>
+                                `;
+                        
+                                let characterTags = charDiv.querySelector("#characterTags");
+                                (character.tags || []).forEach(tag => {
+                                    let tagElement = document.createElement("span");
+                                    tagElement.classList.add("tag");
+                                    tagElement.textContent = tag;
+                                    characterTags.appendChild(tagElement);
+                                });
+                        
+                                grid.appendChild(charDiv);
                             });
                         }
 
@@ -111,90 +152,6 @@
                             document.getElementById("logo").removeAttribute("backgroundImage");   
                         }
                         
-                        function populateGrid(imageFiles) {
-                            const grid = document.getElementById("characterGrid");
-                        
-                            imageFiles.forEach(imageFile => {
-                                const charDiv = document.createElement("div");
-                                
-                                fetch(`https://chatcord-server.onrender.com/get-characters/${imageFile}`)
-                                .then(response => response.arrayBuffer())  // Convert response to ArrayBuffer
-                                .then(arrayBuffer => {
-                                    const uint8Array = new Uint8Array(arrayBuffer);
-                                    const character = parsePNGMetadata(arrayBuffer);  // Process the image data 
-                                        
-                                    // Convert ArrayBuffer to Blob
-                                    const blob = new Blob([arrayBuffer], { type: "image/png" });
-                                    const imageUrl = URL.createObjectURL(blob);
-                        
-                                    charDiv.classList.add("character");
-                                    charDiv.onclick = () => showDetails(
-                                        character.name || "Unknown Character",
-                                        character.scenario || "No scenario available.",
-                                        imageUrl,
-                                        character.data?.tags || [] // Ensure tags is always an array
-                                    );
-                        
-                                    charDiv.innerHTML = `
-                                        <img src="${imageUrl}" alt="${character.name || 'Unknown'}">
-                                        <p>${character.name || 'Unknown'}</p>
-                                        <div>${0} ⬇ | ${0} ❤️ | ${0} ⭐ | ${0} 💬</div>
-                                        <div class="tags" id="characterTags"></div>
-                                    `;
-                        
-                                    let characterTags = charDiv.querySelector("#characterTags");
-                                    characterTags.innerHTML = ''; // Clear existing content
-                                    
-                                    // Ensure character.data.tags exists and is an array
-                                    if (Array.isArray(character.data?.tags)) {
-                                        character.data.tags.forEach(tag => {
-                                            let tagElement = document.createElement("span");
-                                            tagElement.classList.add("tag");
-                                            tagElement.textContent = tag;
-                                            characterTags.appendChild(tagElement);
-                                        });
-                                    } else {
-                                        console.warn(`No tags found for character: ${character.name}`);
-                                    }
-                        
-                                    grid.appendChild(charDiv);
-                                })
-                                .catch(error => console.error('Error loading image:', error));
-                            });
-                        }
-
-
-                        function parsePNGMetadata(arrayBuffer) {
-                            const dataView = new DataView(arrayBuffer);
-                            let offset = 8; // PNG header size
-                            
-                            while (offset < dataView.byteLength) {
-                                let chunkLength = dataView.getUint32(offset);
-                                let chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset + 4, 4));
-                    
-                                if (chunkType === "tEXt") {  // Metadata chunk
-                                    let chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkLength);
-                                    let textData = new TextDecoder().decode(chunkData);
-                    
-                                    if (textData.startsWith("chara")) { 
-                                        let base64Data = textData.split("\u0000")[1]; // Extract after null separator
-                                        return decodeBase64JSON(base64Data);
-                                    }
-                                }
-                                offset += 12 + chunkLength;
-                            }
-                            document.getElementById("charDescription").textContent = "Not a tavern card.";
-                        }
-                    
-                        function decodeBase64JSON(base64Str) {
-                            try {
-                                let jsonString = atob(base64Str);
-                                let jsonData = JSON.parse(jsonString);
-                                return jsonData;
-                            } catch (e) {
-                                document.getElementById("charDesc").textContent = "Error decoding metadata.";
-                            }
-                        }
 
                         function showDetails(name, desc, img, tags) {
                             document.getElementById('characterName').innerText = name || 'Unknown Character';
@@ -262,6 +219,7 @@
                             .then(data => console.log("Success:", data))
                             .catch(error => console.error("Error:", error));
                         }
+                        verifyUser();
                         loadCharacters();
                     </script>
                 </div>
