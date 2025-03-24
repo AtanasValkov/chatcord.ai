@@ -113,6 +113,7 @@
                         
                             Object.entries(characters).forEach(([id, character]) => {
                                 const charDiv = document.createElement("div");
+                                charDiv.classList.add("character");
                                 const imageUrl = `https://chatcord-server.onrender.com/get-characters/${id}`;
                         
                                 charDiv.onclick = () => showDetails(
@@ -123,7 +124,7 @@
                                 );
                                                         
                                 charDiv.innerHTML = `
-                                    <img src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+                                    <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
                                     <p>${character.char_name || 'Unknown'}</p>
                                     <div>${character.stats.downloads || 0} ⬇ | ${character.stats.likes || 0} ❤️ | ${character.stats.stars || 0} ⭐ | ${character.stats.comments || 0} 💬</div>
                                     <div id="characterTags"></div>
