@@ -211,7 +211,6 @@
         const user = JSON.parse(localStorage.getItem("user"));
         const tags = Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim());
         
-        alert(tags)
         jsonData = {
             "char_name": document.getElementById("characterName").value,
             "char_persona": document.getElementById("charDescription").value,
