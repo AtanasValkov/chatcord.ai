@@ -76,7 +76,9 @@ nav a {
 }
 
 .character img {
-    width: 100%;
+    width: 100%;        /* Ensures it fills the container width */
+    height: 200px;      /* Set a fixed height for consistency */
+    object-fit: cover;  /* Crops the image while maintaining aspect ratio */
     border-radius: 8px;
 }
 
