@@ -282,6 +282,10 @@
             if (response.ok) {
                 alert("Character created successfully!");
                 this.reset();
+                document.getElementById("previewImage").src = "";
+                document.getElementById("charDescription").textContent = "";
+                const tagContainer = document.getElementById("tagContainer");
+                tagContainer.innerHTML = '';
             } else {
                 alert("Error: " + (data.error || "Unknown error"));
             }
