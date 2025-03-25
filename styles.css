@@ -60,7 +60,7 @@ nav a {
 
 .character-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
     gap: 15px;
     max-width: 1250px;
     padding: 0px 200px;
@@ -73,7 +73,10 @@ nav a {
     border-radius: 8px;
     text-align: center;
     cursor: pointer;
+    width: 200px; /* Ensures uniform card size */
+    max-width: 100%; /* Prevents stretching beyond a reasonable size */
 }
+
 
 .character img {
     width: 100%;        /* Ensures it fills the container width */
