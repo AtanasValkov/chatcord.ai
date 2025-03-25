@@ -270,9 +270,13 @@
                             .then(data => console.log("Success:", data))
                             .catch(error => console.error("Error:", error));
                         }
-                        verifyUser();
-                        loadTags();
-                        loadCharacters();
+
+                        async function initialize() {
+                            await verifyUser();
+                            await loadTags();
+                            loadCharacters(); // Then load characters
+                        }
+                        initialize();
                     </script>
                 </div>
         </main>
