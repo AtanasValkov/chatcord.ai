@@ -61,7 +61,7 @@ nav a {
 .character-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-    gap: 15px;
+    gap: 38px;
     max-width: 1250px;
     padding: 0px 200px;
     margin: 20px auto;
