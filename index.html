@@ -100,7 +100,7 @@
                                     if (["Male", "Female", "NSFW", "SFW"].includes(tag)) {
                                         state = 'checked';
                                     }
-                                    listItem.innerHTML = `<input type="checkbox" data-tag="${tag}" state> ${tag}`;
+                                    listItem.innerHTML = `<input type="checkbox" data-tag="${tag}" '${state}'> ${tag}`;
                                     listItem.addEventListener('change', () => loadCharacters()); // Reload characters on change
                                     tagList.appendChild(listItem);                             
                                     
