@@ -149,8 +149,6 @@
     document.getElementById("imageUpload").addEventListener("change", function(event) {
         const file = event.target.files[0];
         if (!file) return;
-        const form = document.getElementById("characterForm");
-        form.innerHTML = ""; 
         imageFile = file;
     
         // Read as ArrayBuffer for metadata processing
@@ -283,6 +281,7 @@
     
             if (response.ok) {
                 alert("Character created successfully!");
+                this.reset();
             } else {
                 alert("Error: " + (data.error || "Unknown error"));
             }
