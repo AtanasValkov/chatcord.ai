@@ -182,7 +182,7 @@ h2 {
     appearance: none;
     -webkit-appearance: none;
     background-color: #fff;
-    border: 1px solid red;
+    border: 2px solid red;
     width: 20px;
     height: 20px;
     cursor: pointer;
@@ -200,7 +200,7 @@ h2 {
 .exclude-checkbox:checked::after {
     content: "✖";  /* The "X" mark */
     color: #fff;
-    font-size: 14px;
+    font-size: 17px;
     position: absolute;
     top: -4px;
     left: 0px;
