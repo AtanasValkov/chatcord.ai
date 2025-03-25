@@ -28,8 +28,10 @@
             <h2 id="characterName">Default Name</h2>
             <div class="tags" id="characterTags">Tag</div>
             <p id="characterDesc">Description of the character...</p>
-            <button onclick="createBot(characterName.textContent, characterImage.src, characterDesc.textContent)">Create Bot</button>
-            <div id="madeBy"></div>
+            <div id="details-panel-madeBy">
+                <button onclick="createBot(characterName.textContent, characterImage.src, characterDesc.textContent)">Create Bot</button>
+                <div id="madeBy"></div>
+            </div>
         </div>
     <div class="container">
         <aside class="sidebar">
@@ -216,7 +218,7 @@
 
                             const madeByDiv = document.getElementById("madeBy");
                             madeByDiv.innerHTML = `
-                                <p>Made by <strong>${username}</strong></p>
+                                <p style="margin: 0 10px;">Uploaded by <strong>${username}</strong></p>
                                 <img src="https://cdn.discordapp.com/avatars/${ID}/${avatar}.png"
                                      alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
                             `;
