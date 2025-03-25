@@ -121,14 +121,15 @@
                                     excludeCheckbox.type = "checkbox";
                                     excludeCheckbox.className = "exclude-checkbox";
                                     excludeCheckbox.dataset.tag = tag;
-                        
+                                    if (["NSFW"].includes(tag)) {
+                                        excludeCheckbox.checked = true;
+                                    }
                                     excludeCheckbox.addEventListener("change", loadCharacters);
                         
                                     // Append the elements in order: include checkbox, tag label, then exclude checkbox with its label
                                     listItem.appendChild(includeCheckbox);
                                     listItem.appendChild(tagLabel);
                                     listItem.appendChild(excludeCheckbox);
-                                    listItem.appendChild(excludeLabel);
                         
                                     tagList.appendChild(listItem);
                                 });
