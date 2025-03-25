@@ -106,6 +106,17 @@ nav a {
     overflow-y: auto;
 }
 
+.details-panel-madeBy {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust spacing */
+}
+.madeBy {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
