@@ -176,6 +176,35 @@ h2 {
 .tag:hover {
     background: #ff4500;
 }
+
+/* Hide default appearance and style the checkbox */
+.exclude-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #fff;
+    border: 2px solid red;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    position: relative;
+    margin-left: 8px;
+    vertical-align: middle;
+    border-radius: 3px; /* Optional: makes the checkbox corners rounded */
+}
+
+/* When the exclude checkbox is checked, show a red background with an "X" */
+.exclude-checkbox:checked {
+    background-color: red;
+}
+
+.exclude-checkbox:checked::after {
+    content: "✖";  /* The "X" mark */
+    color: #fff;
+    font-size: 14px;
+    position: absolute;
+    top: 1px;
+    left: 4px;
+}
         /* Footer */
 footer {
     background: rgba(0, 0, 0, 0.8);
