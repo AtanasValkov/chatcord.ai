@@ -247,7 +247,6 @@
         const tags = new Set(
             Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim())
         );
-
         // Get Gender and SFW/NSFW values
         const gender = document.getElementById("genderSelect").value;
         const rating = document.getElementById("sfwSelect").value;
@@ -262,7 +261,7 @@
             "char_greeting": document.getElementById("charGreeting").value,
             "world_scenario": document.getElementById("charScenario").value,
             "example_dialogue": document.getElementById("charDialogue").value,
-            "tags": tags,
+            "tags": Array.from(tags),
             "userID": user.id
         };
 
