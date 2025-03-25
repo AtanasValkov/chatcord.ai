@@ -99,17 +99,48 @@
                         
                                 tags.forEach(tag => {
                                     const listItem = document.createElement("li");
-                                    const state = ["Male", "Female", "SFW"].includes(tag) ? "checked" : ""; //tags that are on by default
-                                    
-                                    listItem.innerHTML = `<input type="checkbox" data-tag="${tag}" ${state}> ${tag}`;
-                                    listItem.querySelector("input").addEventListener("change", loadCharacters);
+                        
+                                    // Create the include checkbox (left side)
+                                    const includeCheckbox = document.createElement("input");
+                                    includeCheckbox.type = "checkbox";
+                                    includeCheckbox.className = "include-checkbox";
+                                    includeCheckbox.dataset.tag = tag;
+                                    // Set default state as desired (example: some tags start checked)
+                                    if (["Male", "Female", "SFW"].includes(tag)) {
+                                        includeCheckbox.checked = true;
+                                    }
+                                    includeCheckbox.addEventListener("change", loadCharacters);
+                        
+                                    // Create a label for the tag text
+                                    const tagLabel = document.createElement("span");
+                                    tagLabel.textContent = tag;
+                                    tagLabel.style.margin = "0 8px";  // spacing between checkboxes and text
+                        
+                                    // Create the exclude checkbox (right side)
+                                    const excludeCheckbox = document.createElement("input");
+                                    excludeCheckbox.type = "checkbox";
+                                    excludeCheckbox.className = "exclude-checkbox";
+                                    excludeCheckbox.dataset.tag = tag;
+                                    // You can style this checkbox or add an adjacent icon (for example, a minus sign)
+                                    const excludeLabel = document.createElement("span");
+                                    excludeLabel.textContent = "✖";  // this can indicate a block
+                                    excludeLabel.style.marginLeft = "4px";
+                        
+                                    excludeCheckbox.addEventListener("change", loadCharacters);
+                        
+                                    // Append the elements in order: include checkbox, tag label, then exclude checkbox with its label
+                                    listItem.appendChild(includeCheckbox);
+                                    listItem.appendChild(tagLabel);
+                                    listItem.appendChild(excludeCheckbox);
+                                    listItem.appendChild(excludeLabel);
+                        
                                     tagList.appendChild(listItem);
                                 });
                             } catch (error) {
                                 console.error("Error loading tags:", error);
                             }
                         }
-                                                
+
                         async function loadCharacters() {
                             try {
                                 // Fetch character data from JSON file on the server
@@ -130,18 +161,22 @@
                         function populateGrid(characters) {
                             const grid = document.getElementById("characterGrid");
                             grid.innerHTML = ""; // Clear existing content
-                            // Get selected tags
-                            const selectedTags = getSelectedTags();
-                            const nsfwSelected = selectedTags.includes("NSFW");
                             
+                            // Get filtering criteria from the two sets of checkboxes
+                            const includeTags = getIncludeTags();
+                            const excludeTags = getExcludeTags();
+
                             Object.entries(characters).forEach(([id, character]) => {
-                                // If NSFW is not selected but the character has NSFW, skip them
-                                if (!nsfwSelected && character.tags.includes("NSFW")) {
+                                // Block character if any of its tags are in the exclusion list.
+                                if (character.tags.some(tag => excludeTags.includes(tag))) {
                                     return;
                                 }
-                                if (!character.tags.some(tag => selectedTags.includes(tag))) {
-                                    return; // Skip this character if none of its tags match
+                                
+                                // If any include filters are active, the character must have at least one of those tags.
+                                if (includeTags.length > 0 && !character.tags.some(tag => includeTags.includes(tag))) {
+                                    return;
                                 }
+                                
                                 const charDiv = document.createElement("div");
                                 charDiv.classList.add("character");
                                 const imageUrl = `https://chatcord-server.onrender.com/get-characters/${id}`;
@@ -176,12 +211,17 @@
                             });
                         }
 
-                        function getSelectedTags() {
-                            return Array.from(document.querySelectorAll('.sidebar ul input[type="checkbox"]:checked'))
+                        function getIncludeTags() {
+                            // Returns tags for which the include checkbox is checked.
+                            return Array.from(document.querySelectorAll('.sidebar ul .include-checkbox:checked'))
                                 .map(checkbox => checkbox.dataset.tag);
                         }
 
-
+                        function getExcludeTags() {
+                            // Returns tags for which the exclude checkbox is checked.
+                            return Array.from(document.querySelectorAll('.sidebar ul .exclude-checkbox:checked'))
+                                .map(checkbox => checkbox.dataset.tag);
+                        }
 
                         // Logout function
                         function logout() {
