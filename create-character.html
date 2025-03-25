@@ -81,9 +81,9 @@
             background: #333;
             color: white;
         }
-        .suggestions { position: absolute; background: white; border: 1px solid #ccc; max-height: 150px; overflow-y: auto; width: 200px; }
-        .suggestion-item { padding: 5px; cursor: pointer; }
-        .suggestion-item:hover { background: #f0f0f0; }
+        .suggestions { position: absolute; background: #ff6600; border: 1px solid #ccc; max-height: 150px; overflow-y: auto; width: 200px; }
+        .suggestion-item { padding: 5px; cursor: pointer; color: white;}
+        .suggestion-item:hover { background: #ff4500; }
         
     </style>
 </head>
@@ -244,7 +244,17 @@
         event.preventDefault();
     
         const user = JSON.parse(localStorage.getItem("user"));
-        const tags = Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim());
+        const tags = new Set(
+            Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim())
+        );
+
+        // Get Gender and SFW/NSFW values
+        const gender = document.getElementById("genderSelect").value;
+        const rating = document.getElementById("sfwSelect").value;
+        
+        // Add them to the Set if they are not empty
+        if (gender) tags.add(gender);
+        if (rating) tags.add(rating);
         
         jsonData = {
             "char_name": document.getElementById("characterName").value,
