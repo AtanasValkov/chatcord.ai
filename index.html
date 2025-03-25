@@ -92,7 +92,24 @@
                                 .catch(error => console.error("Error:", error));
                             }
                         }
+
+                        async function loadTags() {
+                            try {
+                                const response = await fetch('https://chatcord-server.onrender.com/get-tags');
+                                const tags = await response.json();
+                                const tagList = document.querySelector(".sidebar ul");
+                                tagList.innerHTML = ""; // Clear previous tags
                         
+                                tags.forEach(tag => {
+                                    const listItem = document.createElement("li");
+                                    listItem.innerHTML = `<input type="checkbox" data-tag="${tag}" checked> ${tag}`;
+                                    tagList.appendChild(listItem);
+                                });
+                            } catch (error) {
+                                console.error("Error loading tags:", error);
+                            }
+                        }
+                                                
                         async function loadCharacters() {
                             try {
                                 // Fetch character data from JSON file on the server
@@ -238,6 +255,7 @@
                             .catch(error => console.error("Error:", error));
                         }
                         verifyUser();
+                        loadTags();
                         loadCharacters();
                     </script>
                 </div>
