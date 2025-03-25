@@ -96,14 +96,11 @@
                         
                                 tags.forEach(tag => {
                                     const listItem = document.createElement("li");
-                                    let state = 'unchecked';
-                                    if (["Male", "Female", "NSFW", "SFW"].includes(tag)) {
-                                        state = 'checked';
-                                    }
-                                    listItem.innerHTML = `<input type="checkbox" data-tag="${tag}" '${state}'> ${tag}`;
-                                    listItem.addEventListener('change', () => loadCharacters()); // Reload characters on change
-                                    tagList.appendChild(listItem);                             
+                                    const state = ["Male", "Female", "NSFW", "SFW"].includes(tag) ? "checked" : "";
                                     
+                                    listItem.innerHTML = `<input type="checkbox" data-tag="${tag}" ${state}> ${tag}`;
+                                    listItem.querySelector("input").addEventListener("change", loadCharacters);
+                                    tagList.appendChild(listItem);
                                 });
                             } catch (error) {
                                 console.error("Error loading tags:", error);
@@ -168,8 +165,8 @@
                         }
 
                         function getSelectedTags() {
-                            return Array.from(document.querySelectorAll('#tagFilters input[type="checkbox"]:checked'))
-                                .map(checkbox => checkbox.value);
+                            return Array.from(document.querySelectorAll('.sidebar ul input[type="checkbox"]:checked'))
+                                .map(checkbox => checkbox.dataset.tag);
                         }
 
 
