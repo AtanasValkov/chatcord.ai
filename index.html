@@ -129,7 +129,13 @@
                             grid.innerHTML = ""; // Clear existing content
                             // Get selected tags
                             const selectedTags = getSelectedTags();
+                            const nsfwSelected = selectedTags.includes("NSFW");
+                            
                             Object.entries(characters).forEach(([id, character]) => {
+                                // If NSFW is not selected but the character has NSFW, skip them
+                                if (!nsfwSelected && character.tags.includes("NSFW")) {
+                                    return;
+                                }
                                 if (!character.tags.some(tag => selectedTags.includes(tag))) {
                                     return; // Skip this character if none of its tags match
                                 }
