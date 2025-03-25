@@ -109,8 +109,14 @@
                                     if (["Male", "Female", "SFW"].includes(tag)) {
                                         includeCheckbox.checked = true;
                                     }
-                                    includeCheckbox.addEventListener("change", loadCharacters);
-                        
+                                    includeCheckbox.addEventListener("change", () => {
+                                        // If include is checked, uncheck exclude for the same tag
+                                        if (includeCheckbox.checked) {
+                                            excludeCheckbox.checked = false;
+                                        }
+                                        loadCharacters();
+                                    });
+
                                     // Create a label for the tag text
                                     const tagLabel = document.createElement("span");
                                     tagLabel.textContent = tag;
@@ -124,8 +130,13 @@
                                     if (["NSFW"].includes(tag)) {
                                         excludeCheckbox.checked = true;
                                     }
-                                    excludeCheckbox.addEventListener("change", loadCharacters);
-                        
+                                    excludeCheckbox.addEventListener("change", () => {
+                                        // If exclude is checked, uncheck include for the same tag
+                                        if (excludeCheckbox.checked) {
+                                            includeCheckbox.checked = false;
+                                        }
+                                        loadCharacters();
+                                    });
                                     // Append the elements in order: include checkbox, tag label, then exclude checkbox with its label
                                     listItem.appendChild(includeCheckbox);
                                     listItem.appendChild(tagLabel);
