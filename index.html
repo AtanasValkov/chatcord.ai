@@ -96,7 +96,7 @@
                         
                                 tags.forEach(tag => {
                                     const listItem = document.createElement("li");
-                                    const state = ["Male", "Female", "NSFW", "SFW"].includes(tag) ? "checked" : "";
+                                    const state = ["Male", "Female", "SFW"].includes(tag) ? "checked" : ""; //tags that are on by default
                                     
                                     listItem.innerHTML = `<input type="checkbox" data-tag="${tag}" ${state}> ${tag}`;
                                     listItem.querySelector("input").addEventListener("change", loadCharacters);
