@@ -149,7 +149,8 @@
     document.getElementById("imageUpload").addEventListener("change", function(event) {
         const file = event.target.files[0];
         if (!file) return;
-    
+        form = document.getElementById("characterForm");
+        form.innerHTML = ""; 
         imageFile = file;
     
         // Read as ArrayBuffer for metadata processing
