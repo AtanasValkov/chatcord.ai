@@ -39,12 +39,6 @@
                 <li><input type="checkbox" value="Male"> Male</li>
                 <li><input type="checkbox" value="NSFW"> NSFW</li>
                 <li><input type="checkbox" value="SFW" checked> SFW</li>
-                <li><input type="checkbox" value="OC" checked> OC</li>
-                <li><input type="checkbox" value="Furry"> Furry</li>
-                <li><input type="checkbox" value="Bop"> Bop</li>
-                <li><input type="checkbox" value="LOL"> LOL</li>
-                <li><input type="checkbox" value="Bitchy"> Bitchy</li>
-                <li><input type="checkbox" value="WHY"> WHY</li>
             </ul>
         </aside>
 
@@ -102,8 +96,14 @@
                         
                                 tags.forEach(tag => {
                                     const listItem = document.createElement("li");
-                                    listItem.innerHTML = `<input type="checkbox" data-tag="${tag}" checked> ${tag}`;
-                                    tagList.appendChild(listItem);
+                                    let state = 'unchecked';
+                                    if (["Male", "Female", "NSFW", "SFW"].includes(tag)) {
+                                        state = 'checked';
+                                    }
+                                    listItem.innerHTML = `<input type="checkbox" data-tag="${tag}" state> ${tag}`;
+                                    listItem.addEventListener('change', () => loadCharacters()); // Reload characters on change
+                                    tagList.appendChild(listItem);                             
+                                    
                                 });
                             } catch (error) {
                                 console.error("Error loading tags:", error);
@@ -172,9 +172,7 @@
                                 .map(checkbox => checkbox.value);
                         }
 
-                        document.querySelectorAll('#tagFilters input[type="checkbox"]').forEach(checkbox => {
-                            checkbox.addEventListener('change', () => loadCharacters()); // Reload characters on change
-                        });
+
 
                         // Logout function
                         function logout() {
