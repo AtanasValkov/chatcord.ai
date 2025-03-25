@@ -353,6 +353,7 @@
                 suggestion.addEventListener("click", function () {
                     addTag(tag);
                     suggestionsDiv.innerHTML = "";
+                    document.getElementById("tagInput").value = "";
                 });
                 suggestionsDiv.appendChild(suggestion);
             });
