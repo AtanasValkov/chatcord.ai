@@ -359,9 +359,9 @@
                 return;
             }
     
-            const filteredTags = existingTags.filter(tag => 
-                typeof tag === "string" && tag.toLowerCase().startsWith(inputVal)
-            );
+            const filteredTags = existingTags
+                .map(tagTuple => tagTuple[0])  // Extract tag names
+                .filter(tag => typeof tag === "string" && tag.toLowerCase().startsWith(inputVal));
     
             filteredTags.forEach(tag => {
                 const suggestion = document.createElement("div");
