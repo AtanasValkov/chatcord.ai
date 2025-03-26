@@ -47,14 +47,20 @@
 
         <main>
                 <div class="sort-controls">
-                    <label for="sortOptions">Sort by:</label>
-                    <select id="sortOptions">
-                        <option value="downloads">Downloads</option>
-                        <option value="likes">Likes</option>
-                        <option value="comments">Comments</option>
-                        <option value="stars">Stars</option>
-                        <option value="date">Date Created</option>
-                    </select>
+                  <label for="sortOptions">Sort by:</label>
+                  <select id="sortOptions">
+                    <option value="downloads">Downloads</option>
+                    <option value="likes">Likes</option>
+                    <option value="comments">Comments</option>
+                    <option value="stars">Stars</option>
+                    <option value="date">Date Created</option>
+                  </select>
+                
+                  <label for="sortOrder">Order:</label>
+                  <select id="sortOrder">
+                    <option value="desc">Descending</option>
+                    <option value="asc">Ascending</option>
+                  </select>
                 </div>
             
                 <div class="character-grid" id="characterGrid">
@@ -171,31 +177,45 @@
                                     return;
                                 }
 
-                                // Sort the object entries by the selected sort option
+                                // Get the selected sort option and order
                                 const sortOption = document.getElementById("sortOptions").value;
+                                const sortOrder = document.getElementById("sortOrder").value; // "asc" or "desc"
+                                // Listen for changes in both sort controls and reload characters on change
+                                document.getElementById("sortOptions").addEventListener("change", loadCharacters);
+                                document.getElementById("sortOrder").addEventListener("change", loadCharacters);
+
+                                // Default sorting in our comparator is descending, so multiplier reverses it if ascending.
+                                const multiplier = sortOrder === "asc" ? -1 : 1;
                         
                                 // Convert the object into an array of [id, character] pairs, then sort it
-                                const sortedEntries = Object.entries(characters).sort(([idA, charA], [idB, charB]) => {
+                                const sortedEntries = Object.entries(data).sort(([idA, charA], [idB, charB]) => {
+                                    let diff = 0;
                                     switch (sortOption) {
                                         case "downloads":
-                                            return (charB.stats?.downloads || 0) - (charA.stats?.downloads || 0);
+                                            diff = (charB.stats?.downloads || 0) - (charA.stats?.downloads || 0);
+                                            break;
                                         case "likes":
-                                            return (charB.stats?.likes || 0) - (charA.stats?.likes || 0);
+                                            diff = (charB.stats?.likes || 0) - (charA.stats?.likes || 0);
+                                            break;
                                         case "comments":
-                                            return (charB.stats?.comments || 0) - (charA.stats?.comments || 0);
+                                            diff = (charB.stats?.comments || 0) - (charA.stats?.comments || 0);
+                                            break;
                                         case "stars":
-                                            return (charB.stats?.stars || 0) - (charA.stats?.stars || 0);
+                                            diff = (charB.stats?.stars || 0) - (charA.stats?.stars || 0);
+                                            break;
                                         case "date":
-                                            return new Date(charB.createdAt) - new Date(charA.createdAt);
+                                            diff = new Date(charB.date_created) - new Date(charA.date_created);
+                                            break;
                                         default:
-                                            return 0;
+                                            diff = 0;
                                     }
+                                    return multiplier * diff;
                                 });
                         
                                 // Rebuild the sorted object from the sorted entries
                                 const sortedCharacters = Object.fromEntries(sortedEntries);
-
                         
+                                // Pass the sorted object to populateGrid
                                 populateGrid(sortedCharacters);
                             } catch (error) {
                                 console.error('Error loading characters:', error);
