@@ -46,6 +46,16 @@
         </aside>
 
         <main>
+                <div class="sort-controls">
+                    <label for="sortOptions">Sort by:</label>
+                    <select id="sortOptions">
+                        <option value="downloads">Downloads</option>
+                        <option value="likes">Likes</option>
+                        <option value="comments">Comments</option>
+                        <option value="stars">Stars</option>
+                        <option value="date">Date Created</option>
+                    </select>
+                </div>
                 <div class="character-grid" id="characterGrid">
                     <script>
                         async function verifyUser() {
@@ -159,6 +169,28 @@
                                     console.error('Error:', characters.error);
                                     return;
                                 }
+
+                                // Get selected sort option
+                                const sortOption = document.getElementById("sortOptions").value;
+                        
+                                // Sort characters based on the selected option
+                                characters.sort((a, b) => {
+                                    switch (sortOption) {
+                                        case "downloads":
+                                            return (b.stats.downloads || 0) - (a.stats.downloads || 0);
+                                        case "likes":
+                                            return (b.stats.likes || 0) - (a.stats.likes || 0);
+                                        case "comments":
+                                            return (b.stats.comments || 0) - (a.stats.comments || 0);
+                                        case "stars":
+                                            return (b.stats.stars || 0) - (a.stats.stars || 0);
+                                        case "date":
+                                            return new Date(b.createdAt) - new Date(a.createdAt);
+                                        default:
+                                            return 0;
+                                    }
+                                });
+
                         
                                 populateGrid(characters);
                             } catch (error) {
@@ -230,6 +262,10 @@
                             return Array.from(document.querySelectorAll('.sidebar ul .exclude-checkbox:checked'))
                                 .map(checkbox => checkbox.dataset.tag);
                         }
+
+                        document.getElementById("sortOptions").addEventListener("change", function() {
+                            loadCharacters(); // Reload characters when sorting changes
+                        });
 
                         // Logout function
                         function logout() {
