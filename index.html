@@ -355,37 +355,9 @@
                         const favoriteBtn = document.getElementById('favoriteBtn');
                         const thumbsUpBtn = document.getElementById('thumbsUpBtn');
                         const thumbsDownBtn = document.getElementById('thumbsDownBtn');
-                        
-                        // Toggle the filled class for the heart button
-                        favoriteBtn.addEventListener('click', function() {
-                          favoriteBtn.classList.toggle('filled');
-                        });
 
-                        // Example debounce function
-                        function debounce(func, delay) {
-                          let timer;
-                          return function(...args) {
-                            if (timer) clearTimeout(timer);
-                            timer = setTimeout(() => func.apply(this, args), delay);
-                          };
-                        }
-                        
-                        // Usage with your favorite button
-                        favoriteBtn.addEventListener('click', debounce(() => {
-                            // Check if user is logged in
-                            const user = JSON.parse(localStorage.getItem("user"));
-                            
-                            if (!user) {
-                                alert("Please log in to favorite characters.");
-                                return;
-                            }
-                          favoriteBtn.classList.toggle('filled');
-                          // Send request to update favorite on server
-                          // updateFavorite(characterId, favoriteBtn.classList.contains('filled'));
-                        }, 1000)); // 1000ms debounce delay
-                        
-                        // Add event listeners for thumbs up and thumbs down buttons
-                        thumbsUpBtn.addEventListener('click', debounce(() => {
+                        // Adding event listener for the thumbs-up button
+                        favoriteBtn.addEventListener('click', () => {
                             // Check if user is logged in
                             const user = JSON.parse(localStorage.getItem("user"));
                             
@@ -393,23 +365,85 @@
                                 alert("Please log in to like characters.");
                                 return;
                             }
-                          // Remove active class from thumbs-down and add to thumbs-up
-                          thumbsDownBtn.classList.remove('active');
-                          thumbsUpBtn.classList.toggle('active');
-                        }, 1000)); // 1000ms debounce delay
                         
-                        thumbsDownBtn.addEventListener('click', debounce(() => {
+                            // Change the fav button color immediately
+                            favoriteBtn.classList.toggle('filled');
+                        
+                            // Apply debounce to handle the request/logic after a delay
+                            debounce(() => {
+                                // Perform the action after debounce, e.g., sending the request or updating data
+                                console.log('Debounced action after 1000ms');
+                                
+                                // Example action: You can send the like/dislike update here
+                                // Example: updateLikeStatus(characterId, true);
+                                
+                            }, 1000)();
+                        }, false);
+                        
+                        // Adding event listener for the thumbs-up button
+                        thumbsUpBtn.addEventListener('click', () => {
                             // Check if user is logged in
                             const user = JSON.parse(localStorage.getItem("user"));
                             
                             if (!user) {
-                                alert("Please log in to dislike characters.");
+                                alert("Please log in to like characters.");
                                 return;
                             }
-                          // Remove active class from thumbs-up and add to thumbs-down
-                          thumbsUpBtn.classList.remove('active');
-                          thumbsDownBtn.classList.toggle('active');
-                        }, 1000)); // 1000ms debounce delay
+                        
+                            // Change the thumbs-up button color immediately
+                            thumbsUpBtn.classList.add('active'); // Make the button red immediately
+                        
+                            // Remove active class from thumbs-down button if it's present
+                            thumbsDownBtn.classList.remove('active');
+                        
+                            // Apply debounce to handle the request/logic after a delay
+                            debounce(() => {
+                                // Perform the action after debounce, e.g., sending the request or updating data
+                                console.log('Debounced action after 1000ms');
+                                
+                                // Example action: You can send the like/dislike update here
+                                // Example: updateLikeStatus(characterId, true);
+                                
+                            }, 1000)();
+                        }, false);
+                        
+                        // Debounce function definition
+                        function debounce(func, delay) {
+                            let timer;
+                            return function() {
+                                if (timer) clearTimeout(timer); // Clear the previous timer if it exists
+                                timer = setTimeout(() => {
+                                    func.apply(this, arguments); // Execute the function after the delay
+                                }, delay);
+                            };
+                        }
+                        
+                        // Adding event listener for the thumbs-up button
+                        thumbsDownBtn.addEventListener('click', () => {
+                            // Check if user is logged in
+                            const user = JSON.parse(localStorage.getItem("user"));
+                            
+                            if (!user) {
+                                alert("Please log in to like characters.");
+                                return;
+                            }
+                        
+                            // Change the thumbs-down button color immediately
+                            thumbsDownBtn.classList.add('active'); // Make the button red immediately
+                        
+                            // Remove active class from thumbs-up button if it's present
+                            thumbsUpBtn.classList.remove('active');
+                        
+                            // Apply debounce to handle the request/logic after a delay
+                            debounce(() => {
+                                // Perform the action after debounce, e.g., sending the request or updating data
+                                console.log('Debounced action after 1000ms');
+                                
+                                // Example action: You can send the like/dislike update here
+                                // Example: updateLikeStatus(characterId, true);
+                                
+                            }, 1000)();
+                        }, false);
                         
                         function createBot(name, image, description) {
                             console.log("Trying to get name", name);
