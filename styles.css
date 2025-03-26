@@ -205,6 +205,9 @@ h2 {
     top: -4px;
     left: 0px;
 }
+.sort-controls {
+    margin-left: 170px;
+}
         /* Footer */
 footer {
     background: rgba(0, 0, 0, 0.8);
