@@ -170,29 +170,32 @@
                                     return;
                                 }
 
-                                // Get selected sort option
+                                // Sort the object entries by the selected sort option
                                 const sortOption = document.getElementById("sortOptions").value;
                         
-                                // Sort characters based on the selected option
-                                characters.sort((a, b) => {
+                                // Convert the object into an array of [id, character] pairs, then sort it
+                                const sortedEntries = Object.entries(data).sort(([idA, charA], [idB, charB]) => {
                                     switch (sortOption) {
                                         case "downloads":
-                                            return (b.stats.downloads || 0) - (a.stats.downloads || 0);
+                                            return (charB.stats?.downloads || 0) - (charA.stats?.downloads || 0);
                                         case "likes":
-                                            return (b.stats.likes || 0) - (a.stats.likes || 0);
+                                            return (charB.stats?.likes || 0) - (charA.stats?.likes || 0);
                                         case "comments":
-                                            return (b.stats.comments || 0) - (a.stats.comments || 0);
+                                            return (charB.stats?.comments || 0) - (charA.stats?.comments || 0);
                                         case "stars":
-                                            return (b.stats.stars || 0) - (a.stats.stars || 0);
+                                            return (charB.stats?.stars || 0) - (charA.stats?.stars || 0);
                                         case "date":
-                                            return new Date(b.createdAt) - new Date(a.createdAt);
+                                            return new Date(charB.createdAt) - new Date(charA.createdAt);
                                         default:
                                             return 0;
                                     }
                                 });
+                        
+                                // Rebuild the sorted object from the sorted entries
+                                const sortedCharacters = Object.fromEntries(sortedEntries);
 
                         
-                                populateGrid(characters);
+                                populateGrid(sortedCharacters);
                             } catch (error) {
                                 console.error('Error loading characters:', error);
                             }
