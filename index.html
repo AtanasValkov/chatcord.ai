@@ -182,11 +182,13 @@
                                 // Get the selected sort option and order
                                 const sortOption = document.getElementById("sortOptions").value;
                                 const sortOrder = document.getElementById("sortOrder").value; // "asc" or "desc"
+                                const charactersCopy = JSON.parse(JSON.stringify(characters));
+
 
                                 // Default sorting in our comparator is descending, so multiplier reverses it if ascending.
                                 const multiplier = sortOrder === "asc" ? -1 : 1;
                                 // Convert the object into an array of [id, character] pairs, then sort it
-                                const sortedEntries = Object.entries(characters).sort(([idA, charA], [idB, charB]) => {
+                                const sortedEntries = Object.entries(charactersCopy).sort(([idA, charA], [idB, charB]) => {
                                     let diff = 0;
                                     switch (sortOption) {
                                         case "downloads":
@@ -218,8 +220,8 @@
                                 });
                         
                                 // Rebuild the sorted object from the sorted entries
-                                let sortedCharacters = Object.fromEntries(sortedEntries);
-                                console.error(sortedCharacters)
+                                const sortedCharacters = Object.fromEntries(sortedEntries);
+                                console.error(sortedEntries)
                                 // Pass the sorted object to populateGrid
                                 populateGrid(sortedCharacters);
                             } catch (error) {
