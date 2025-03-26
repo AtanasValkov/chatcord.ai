@@ -362,13 +362,15 @@
                         
                         // Add event listeners for thumbs up and thumbs down buttons
                         thumbsUpBtn.addEventListener('click', function() {
-                          thumbsUpBtn.style.color = '#4caf50';  // Green color for thumbs-up
-                          thumbsDownBtn.style.color = '#ccc';  // Reset thumbs-down color
+                          // Remove active class from thumbs-down and add to thumbs-up
+                          thumbsDownBtn.classList.remove('active');
+                          thumbsUpBtn.classList.toggle('active');
                         });
                         
                         thumbsDownBtn.addEventListener('click', function() {
-                          thumbsDownBtn.style.color = '#f44336';  // Red color for thumbs-down
-                          thumbsUpBtn.style.color = '#ccc';  // Reset thumbs-up color
+                          // Remove active class from thumbs-up and add to thumbs-down
+                          thumbsUpBtn.classList.remove('active');
+                          thumbsDownBtn.classList.toggle('active');
                         });
                         
                         function createBot(name, image, description) {
