@@ -381,7 +381,7 @@
                             }
                           favoriteBtn.classList.toggle('filled');
                           // Send request to update favorite on server
-                          updateFavorite(characterId, favoriteBtn.classList.contains('filled'));
+                          // updateFavorite(characterId, favoriteBtn.classList.contains('filled'));
                         }, 1000)); // 1000ms debounce delay
                         
                         // Add event listeners for thumbs up and thumbs down buttons
@@ -396,7 +396,7 @@
                           // Remove active class from thumbs-down and add to thumbs-up
                           thumbsDownBtn.classList.remove('active');
                           thumbsUpBtn.classList.toggle('active');
-                        });
+                        }, 1000)); // 1000ms debounce delay
                         
                         thumbsDownBtn.addEventListener('click', debounce(() => {
                             // Check if user is logged in
@@ -409,7 +409,7 @@
                           // Remove active class from thumbs-up and add to thumbs-down
                           thumbsUpBtn.classList.remove('active');
                           thumbsDownBtn.classList.toggle('active');
-                        });
+                        }, 1000)); // 1000ms debounce delay
                         
                         function createBot(name, image, description) {
                             console.log("Trying to get name", name);
