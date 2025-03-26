@@ -174,7 +174,7 @@
                                 const sortOption = document.getElementById("sortOptions").value;
                         
                                 // Convert the object into an array of [id, character] pairs, then sort it
-                                const sortedEntries = Object.entries(data).sort(([idA, charA], [idB, charB]) => {
+                                const sortedEntries = Object.entries(characters).sort(([idA, charA], [idB, charB]) => {
                                     switch (sortOption) {
                                         case "downloads":
                                             return (charB.stats?.downloads || 0) - (charA.stats?.downloads || 0);
