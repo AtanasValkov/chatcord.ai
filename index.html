@@ -210,8 +210,6 @@
                                         case "date":
                                             // Compare dates (already properly formatted ISO 8601)
                                             diff = new Date(charB.createdAt) - new Date(charA.createdAt);
-                                            console.log("date")
-                                            console.log(diff)
                                             break;
                                         default:
                                             diff = 0;
@@ -220,10 +218,9 @@
                                 });
                         
                                 // Rebuild the sorted object from the sorted entries
-                                const sortedCharacters = Object.fromEntries(sortedEntries);
-                                console.error(sortedEntries)
+                                const sortedCharacters = new Map(sortedEntries);
                                 // Pass the sorted object to populateGrid
-                                populateGrid(sortedCharacters);
+                                populateGrid(Object.fromEntries(sortedCharacters));
                             } catch (error) {
                                 console.error('Error loading characters:', error);
                             }
