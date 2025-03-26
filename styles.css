@@ -137,14 +137,14 @@ nav a {
 /* Thumbs-up active color and background change */
 .thumbs-up.active {
     color: #fff;
-    background-color: #4caf50;  /* Green background when active */
+    color: #4caf50;  /* Green background when active */
     transform: scale(1.2);  /* Slightly enlarge when active */
 }
 
 /* Thumbs-down active color and background change */
 .thumbs-down.active {
     color: #fff;
-    background-color: #f44336;  /* Red background when active */
+    color: #f44336;  /* Red background when active */
     transform: scale(1.2);  /* Slightly enlarge when active */
 }
 
