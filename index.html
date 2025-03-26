@@ -118,7 +118,7 @@
                                 const response = await fetch('https://chatcord-server.onrender.com/get-tags');
                                 const tags = await response.json();
                                 if (!response.ok) {
-                                    alert("Server is loading, come back in a minute or two!"
+                                    alert("Server is loading, come back in a minute or two!")
                                 }
                                 const tagList = document.querySelector(".sidebar ul");
                                 tagList.innerHTML = ""; // Clear previous tags
