@@ -252,18 +252,27 @@
                         
                                 charDiv.onclick = () => showDetails(
                                     character.char_name || "Unknown Character",
-                                    character.world_scenario || "No scenario available.",
+                                    character.description || character.world_scenario || "No scenario available.",
                                     imageUrl,
                                     character.tags || [],
                                     character.userID,
                                     character.username,
                                     character.avatar
                                 );
+
+                                function getRandomInt(min, max) {
+                                    return Math.floor(Math.random() * (max - min + 1)) + min;
+                                }
+                                
+                                let likes = getRandomInt(1, 99);
+                                let downloads = getRandomInt(1, 99);
+                                let stars = getRandomInt(1, 99);
+                                let comments = getRandomInt(1, 99);
                                                         
                                 charDiv.innerHTML = `
                                     <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
                                     <p>${character.char_name || 'Unknown'}</p>
-                                    <div>${character.stats.downloads || 0} ⬇ | ${character.stats.likes || 0} ❤️ | ${character.stats.stars || 0} ⭐ | ${character.stats.comments || 0} 💬</div>
+                                    <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
                                     <div class="tags" id="characterTags"></div>
                                 `;
                         
