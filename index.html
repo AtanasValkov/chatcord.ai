@@ -191,18 +191,23 @@
                                     let diff = 0;
                                     switch (sortOption) {
                                         case "downloads":
-                                            diff = (charB.stats?.downloads || 0) - (charA.stats?.downloads || 0);
+                                            // Convert to numbers for correct sorting
+                                            diff = (parseInt(charB.stats?.downloads, 10) || 0) - (parseInt(charA.stats?.downloads, 10) || 0);
                                             break;
                                         case "likes":
-                                            diff = (charB.stats?.likes || 0) - (charA.stats?.likes || 0);
+                                            // Convert to numbers for correct sorting
+                                            diff = (parseInt(charB.stats?.likes, 10) || 0) - (parseInt(charA.stats?.likes, 10) || 0);
                                             break;
                                         case "comments":
-                                            diff = (charB.stats?.comments || 0) - (charA.stats?.comments || 0);
+                                            // Convert to numbers for correct sorting
+                                            diff = (parseInt(charB.stats?.comments, 10) || 0) - (parseInt(charA.stats?.comments, 10) || 0);
                                             break;
                                         case "stars":
-                                            diff = (charB.stats?.stars || 0) - (charA.stats?.stars || 0);
+                                            // Convert to numbers for correct sorting
+                                            diff = (parseInt(charB.stats?.stars, 10) || 0) - (parseInt(charA.stats?.stars, 10) || 0);
                                             break;
                                         case "date":
+                                            // Compare dates (already properly formatted ISO 8601)
                                             diff = new Date(charB.createdAt) - new Date(charA.createdAt);
                                             break;
                                         default:
