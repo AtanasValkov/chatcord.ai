@@ -188,7 +188,7 @@
                                 const multiplier = sortOrder === "asc" ? -1 : 1;
                         
                                 // Convert the object into an array of [id, character] pairs, then sort it
-                                const sortedEntries = Object.entries(data).sort(([idA, charA], [idB, charB]) => {
+                                const sortedEntries = Object.entries(characters).sort(([idA, charA], [idB, charB]) => {
                                     let diff = 0;
                                     switch (sortOption) {
                                         case "downloads":
@@ -204,7 +204,7 @@
                                             diff = (charB.stats?.stars || 0) - (charA.stats?.stars || 0);
                                             break;
                                         case "date":
-                                            diff = new Date(charB.date_created) - new Date(charA.date_created);
+                                            diff = new Date(charB.createdAt) - new Date(charA.createdAt);
                                             break;
                                         default:
                                             diff = 0;
