@@ -134,15 +134,21 @@ nav a {
     transition: color 0.3s ease;
 }
 
-/* Change color on hover */
-.thumbs-up:hover, .thumbs-down:hover {
+/* Thumb up active color */
+.thumbs-up.active {
     color: #4caf50;  /* Green for thumbs-up */
 }
 
-/* Thumb down color on hover */
-.thumbs-down:hover {
+/* Thumb down active color */
+.thumbs-down.active {
     color: #f44336;  /* Red for thumbs-down */
 }
+
+/* Hover effect */
+.thumbs-up:hover, .thumbs-down:hover {
+    opacity: 0.7;
+}
+
 
 .details-panel-madeBy {
     display: flex;
