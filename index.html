@@ -97,9 +97,9 @@
                                 const tagList = document.querySelector(".sidebar ul");
                                 tagList.innerHTML = ""; // Clear previous tags
                         
-                                tags.forEach(tag => {
-                                    const listItem = document.createElement("li");
-                        
+                                    tags.forEach(([tag, frequency]) => {  // Destructure name and count
+                                        const listItem = document.createElement("li");
+                                         
                                     // Create the include checkbox (left side)
                                     const includeCheckbox = document.createElement("input");
                                     includeCheckbox.type = "checkbox";
@@ -119,9 +119,9 @@
 
                                     // Create a label for the tag text
                                     const tagLabel = document.createElement("span");
-                                    tagLabel.textContent = tag;
+                                    tagLabel.textContent = `${tag} (${frequency})`;  // Display count next to tag name
                                     tagLabel.style.margin = "0 8px";  // spacing between checkboxes and text
-                        
+                                                
                                     // Create the exclude checkbox (right side)
                                     const excludeCheckbox = document.createElement("input");
                                     excludeCheckbox.type = "checkbox";
