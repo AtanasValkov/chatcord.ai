@@ -121,8 +121,9 @@ nav a {
 }
 
 /* When heart is clicked and filled */
-.favorite.filled {
+.favorite.active {
     color: red;
+    transform: scale(1.2);  
 }
 
 /* Style for thumbs up and thumbs down icons */
@@ -149,7 +150,7 @@ nav a {
 }
 
 /* Hover effect */
-.thumbs-up:hover, .thumbs-down:hover {
+.thumbs-up:hover, .thumbs-down:hover, .favorite:hover {
     opacity: 0.7;
 }
 
