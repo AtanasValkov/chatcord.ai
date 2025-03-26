@@ -99,12 +99,14 @@
             <h2>Persona</h2>
             <textarea id="charDescription" class="description-input" placeholder="Character Description" cols="40" rows="5" required></textarea>
             <h2>Greeting</h2>
-            <textarea id="charGreeting" class="description-input" placeholder="Scenario" cols="40" rows="5" required></textarea>
+            <textarea id="charGreeting" class="description-input" placeholder="Greeting" cols="40" rows="5" required></textarea>
             <h2>Scenario</h2>
             <textarea id="charScenario" class="description-input" placeholder="Scenario" cols="40" rows="5" required></textarea>
             <h2>Example Dialogue</h2>
-            <textarea id="charDialogue" class="description-input" placeholder="Scenario" cols="40" rows="5" required></textarea>
+            <textarea id="charDialogue" class="description-input" placeholder="Example Dialogue" cols="40" rows="5" required></textarea>
             <div>
+            <h2>Display Text</h2>
+            <textarea id="displayText" class="description-input" placeholder="Text shown on the frontpage" cols="40" rows="5" required></textarea>
                 <label for="genderSelect">Gender:</label>
                 <select id="genderSelect" required>
                     <option value="">Select Gender</option>
@@ -260,6 +262,7 @@
             "char_greeting": document.getElementById("charGreeting").value,
             "world_scenario": document.getElementById("charScenario").value,
             "example_dialogue": document.getElementById("charDialogue").value,
+            "description": document.getElementById("displayText").value,
             "tags": Array.from(tags),
             "userID": user.id,
             "username": user.username,
