@@ -25,8 +25,12 @@
     </header>
         <div class="details-panel" id="detailsPanel">
             <img id="characterImage" src="" alt="Character">
-            <h2 id="characterName">Default Name</h2>    
-            <span class="favorite" id="favoriteBtn">&#x2764;</span>
+            <div class="details-panel-like">
+                <h2 id="characterName">Default Name</h2>
+                <span class="favorite" id="favoriteBtn">&#x2764;</span> <!-- Heart icon for favorite -->
+                <span class="thumbs-up" id="thumbsUpBtn">&#128077;</span> <!-- Thumbs up icon -->
+                <span class="thumbs-down" id="thumbsDownBtn">&#128078;</span> <!-- Thumbs down icon -->
+            </div>
             <div class="tags" id="characterTags">Tag</div>
             <p id="characterDesc">Description of the character...</p>
             <div class="details-panel-madeBy" id="details-panel-madeBy">
@@ -346,12 +350,25 @@
                             }
                         }
 
-                        // Select the heart icon and the character name
+                        // Select the heart, thumbs-up, and thumbs-down icons
                         const favoriteBtn = document.getElementById('favoriteBtn');
+                        const thumbsUpBtn = document.getElementById('thumbsUpBtn');
+                        const thumbsDownBtn = document.getElementById('thumbsDownBtn');
                         
-                        // Toggle the filled class when clicked
+                        // Toggle the filled class for the heart button
                         favoriteBtn.addEventListener('click', function() {
                           favoriteBtn.classList.toggle('filled');
+                        });
+                        
+                        // Add event listeners for thumbs up and thumbs down buttons
+                        thumbsUpBtn.addEventListener('click', function() {
+                          thumbsUpBtn.style.color = '#4caf50';  // Green color for thumbs-up
+                          thumbsDownBtn.style.color = '#ccc';  // Reset thumbs-down color
+                        });
+                        
+                        thumbsDownBtn.addEventListener('click', function() {
+                          thumbsDownBtn.style.color = '#f44336';  // Red color for thumbs-down
+                          thumbsUpBtn.style.color = '#ccc';  // Reset thumbs-up color
                         });
                         
                         function createBot(name, image, description) {
