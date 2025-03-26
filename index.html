@@ -25,7 +25,8 @@
     </header>
         <div class="details-panel" id="detailsPanel">
             <img id="characterImage" src="" alt="Character">
-            <h2 id="characterName">Default Name</h2>
+            <h2 id="characterName">Default Name</h2>    
+            <span class="favorite" id="favoriteBtn">&#x2764;</span>
             <div class="tags" id="characterTags">Tag</div>
             <p id="characterDesc">Description of the character...</p>
             <div class="details-panel-madeBy" id="details-panel-madeBy">
@@ -344,6 +345,14 @@
                                 alert("Only logged in users can create characters.")
                             }
                         }
+
+                        // Select the heart icon and the character name
+                        const favoriteBtn = document.getElementById('favoriteBtn');
+                        
+                        // Toggle the filled class when clicked
+                        favoriteBtn.addEventListener('click', function() {
+                          favoriteBtn.classList.toggle('filled');
+                        });
                         
                         function createBot(name, image, description) {
                             console.log("Trying to get name", name);
