@@ -442,6 +442,12 @@
                                 alert("Please log in to like characters.");
                                 return;
                             }
+
+                            // Change the thumbs-up button color immediately
+                            thumbsDownBtn.classList.toggle('active'); // Make the button red immediately
+                        
+                            // Remove active class from thumbs-down button if it's present
+                            thumbsUpBtn.classList.remove('active');
                         
                             // If no request is scheduled, debounce the request
                             if (!requestScheduled) {
