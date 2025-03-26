@@ -134,14 +134,18 @@ nav a {
     transition: color 0.3s ease;
 }
 
-/* Thumb up active color */
+/* Thumbs-up active color and background change */
 .thumbs-up.active {
-    color: #4caf50;  /* Green for thumbs-up */
+    color: #fff;
+    background-color: #4caf50;  /* Green background when active */
+    transform: scale(1.2);  /* Slightly enlarge when active */
 }
 
-/* Thumb down active color */
+/* Thumbs-down active color and background change */
 .thumbs-down.active {
-    color: #f44336;  /* Red for thumbs-down */
+    color: #fff;
+    background-color: #f44336;  /* Red background when active */
+    transform: scale(1.2);  /* Slightly enlarge when active */
 }
 
 /* Hover effect */
