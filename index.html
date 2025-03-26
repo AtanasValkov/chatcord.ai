@@ -360,15 +360,52 @@
                         favoriteBtn.addEventListener('click', function() {
                           favoriteBtn.classList.toggle('filled');
                         });
+
+                        // Example debounce function
+                        function debounce(func, delay) {
+                          let timer;
+                          return function(...args) {
+                            if (timer) clearTimeout(timer);
+                            timer = setTimeout(() => func.apply(this, args), delay);
+                          };
+                        }
+                        
+                        // Usage with your favorite button
+                        favoriteBtn.addEventListener('click', debounce(() => {
+                            // Check if user is logged in
+                            const user = JSON.parse(localStorage.getItem("user"));
+                            
+                            if (!user) {
+                                alert("Please log in to favorite characters.");
+                                return;
+                            }
+                          favoriteBtn.classList.toggle('filled');
+                          // Send request to update favorite on server
+                          updateFavorite(characterId, favoriteBtn.classList.contains('filled'));
+                        }, 1000)); // 1000ms debounce delay
                         
                         // Add event listeners for thumbs up and thumbs down buttons
-                        thumbsUpBtn.addEventListener('click', function() {
+                        thumbsUpBtn.addEventListener('click', debounce(() => {
+                            // Check if user is logged in
+                            const user = JSON.parse(localStorage.getItem("user"));
+                            
+                            if (!user) {
+                                alert("Please log in to like characters.");
+                                return;
+                            }
                           // Remove active class from thumbs-down and add to thumbs-up
                           thumbsDownBtn.classList.remove('active');
                           thumbsUpBtn.classList.toggle('active');
                         });
                         
-                        thumbsDownBtn.addEventListener('click', function() {
+                        thumbsDownBtn.addEventListener('click', debounce(() => {
+                            // Check if user is logged in
+                            const user = JSON.parse(localStorage.getItem("user"));
+                            
+                            if (!user) {
+                                alert("Please log in to dislike characters.");
+                                return;
+                            }
                           // Remove active class from thumbs-up and add to thumbs-down
                           thumbsUpBtn.classList.remove('active');
                           thumbsDownBtn.classList.toggle('active');
