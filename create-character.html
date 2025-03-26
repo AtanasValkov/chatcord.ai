@@ -348,13 +348,21 @@
         }
     }
 
-     document.getElementById("tagInput").addEventListener("input", function () {
+    document.getElementById("tagInput").addEventListener("input", function () {
         const inputVal = this.value.trim().toLowerCase();
         const suggestionsDiv = document.getElementById("suggestions");
-        suggestionsDiv.innerHTML = ""; 
-
+        suggestionsDiv.innerHTML = "";
+    
         if (inputVal) {
-            const filteredTags = existingTags.filter(tag => tag.toLowerCase().startsWith(inputVal));
+            if (!Array.isArray(existingTags)) {
+                console.error("existingTags is not an array:", existingTags);
+                return;
+            }
+    
+            const filteredTags = existingTags.filter(tag => 
+                typeof tag === "string" && tag.toLowerCase().startsWith(inputVal)
+            );
+    
             filteredTags.forEach(tag => {
                 const suggestion = document.createElement("div");
                 suggestion.textContent = tag;
