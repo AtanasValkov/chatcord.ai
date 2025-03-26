@@ -106,6 +106,19 @@ nav a {
     overflow-y: auto;
 }
 
+/* Style for the heart icon */
+.favorite {
+    font-size: 24px;
+    color: #ccc;  /* Heart outline color */
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+/* When heart is clicked and filled */
+.favorite.filled {
+    color: red;  /* Heart fill color */
+}
+
 .details-panel-madeBy {
     display: flex;
     align-items: center;
