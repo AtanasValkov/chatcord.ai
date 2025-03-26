@@ -106,17 +106,42 @@ nav a {
     overflow-y: auto;
 }
 
-/* Style for the heart icon */
+.details-panel-like {
+    display: flex;
+    align-items: center;
+}
+
+/* Style for the heart icon (favorite) */
 .favorite {
     font-size: 24px;
-    color: #ccc;  /* Heart outline color */
+    color: #ccc;
     cursor: pointer;
+    margin-left: 15px;
     transition: color 0.3s ease;
 }
 
 /* When heart is clicked and filled */
 .favorite.filled {
-    color: red;  /* Heart fill color */
+    color: red;
+}
+
+/* Style for thumbs up and thumbs down icons */
+.thumbs-up, .thumbs-down {
+    font-size: 24px;
+    color: #ccc;
+    cursor: pointer;
+    margin-left: 15px;
+    transition: color 0.3s ease;
+}
+
+/* Change color on hover */
+.thumbs-up:hover, .thumbs-down:hover {
+    color: #4caf50;  /* Green for thumbs-up */
+}
+
+/* Thumb down color on hover */
+.thumbs-down:hover {
+    color: #f44336;  /* Red for thumbs-down */
 }
 
 .details-panel-madeBy {
