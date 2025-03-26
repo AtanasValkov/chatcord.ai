@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Created Characters</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .character {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .character h3 {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>My Characters</h1>
+  <div id="character-list">Loading characters...</div>
+
+  <script>
+    // Example user object stored in localStorage, make sure to set this appropriately
+    // localStorage.setItem('user', JSON.stringify({ id: "193659362152022017" }));
+
+    async function loadCharacters() {
+      try {
+        const response = await fetch('https://chatcord-server.onrender.com/get-characters');
+        const data = await response.json();
+
+        // Get the current user's ID from localStorage
+        const user = JSON.parse(localStorage.getItem('user'));
+        const myUserId = user ? user.id : null;
+        if (!myUserId) {
+          document.getElementById('character-list').innerText = "User not logged in or user ID missing.";
+          return;
+        }
+
+        // Filter characters by userID
+        // Assuming your JSON is an object where each key is a character identifier.
+        const myCharacters = Object.values(data).filter(character => character.userID === myUserId);
+
+        // Create HTML for each character
+        if (myCharacters.length === 0) {
+          document.getElementById('character-list').innerText = "No characters found.";
+          return;
+        }
+
+        const characterListEl = document.getElementById('character-list');
+        characterListEl.innerHTML = ""; // Clear loading text
+
+        myCharacters.forEach(character => {
+          const characterEl = document.createElement('div');
+          characterEl.classList.add('character');
+
+          // Display character name, greeting, and additional info as needed
+          characterEl.innerHTML = `
+            <h3>${character.char_name}</h3>
+            <p><strong>Persona:</strong> ${character.char_persona}</p>
+            <p><strong>Greeting:</strong> ${character.char_greeting}</p>
+            <p><strong>World Scenario:</strong> ${character.world_scenario}</p>
+            <p><strong>Example Dialogue:</strong> ${character.example_dialogue}</p>
+            <p><strong>Tags:</strong> ${character.tags.join(", ")}</p>
+          `;
+
+          characterListEl.appendChild(characterEl);
+        });
+      } catch (error) {
+        console.error("Error fetching characters:", error);
+        document.getElementById('character-list').innerText = "Failed to load characters.";
+      }
+    }
+
+    // Call the function on page load
+    window.addEventListener('DOMContentLoaded', loadCharacters);
+  </script>
+</body>
+</html>
