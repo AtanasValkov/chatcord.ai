@@ -180,12 +180,7 @@
                                 // Get the selected sort option and order
                                 const sortOption = document.getElementById("sortOptions").value;
                                 const sortOrder = document.getElementById("sortOrder").value; // "asc" or "desc"
-                                sortOption.addEventListener("change", () => {
-                                        loadCharacters();
-                                    });
-                                sortOrder.addEventListener("change", () => {
-                                        loadCharacters();
-                                    });
+
                                 // Default sorting in our comparator is descending, so multiplier reverses it if ascending.
                                 const multiplier = sortOrder === "asc" ? -1 : 1;
                         
@@ -299,7 +294,10 @@
                             document.getElementById("loginButton").href = "https://chatcord-server.onrender.com/login";
                             document.getElementById("logo").removeAttribute("backgroundImage");   
                         }
-                        
+
+                        // Add event listeners on the elements (outside of loadCharacters)
+                        document.getElementById("sortOptions").addEventListener("change", loadCharacters);
+                        document.getElementById("sortOrder").addEventListener("change", loadCharacters);
 
                         function showDetails(name, desc, img, tags, ID, username, avatar) {
                             document.getElementById('characterName').innerText = name || 'Unknown Character';
