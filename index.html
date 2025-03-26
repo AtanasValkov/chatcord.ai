@@ -185,7 +185,7 @@
 
                                 // Default sorting in our comparator is descending, so multiplier reverses it if ascending.
                                 const multiplier = sortOrder === "asc" ? -1 : 1;
-                        
+                                console.log(multiplier)
                                 // Convert the object into an array of [id, character] pairs, then sort it
                                 const sortedEntries = Object.entries(characters).sort(([idA, charA], [idB, charB]) => {
                                     let diff = 0;
@@ -193,22 +193,32 @@
                                         case "downloads":
                                             // Convert to numbers for correct sorting
                                             diff = (parseInt(charB.stats?.downloads, 10) || 0) - (parseInt(charA.stats?.downloads, 10) || 0);
+                                            console.log("down")
+                                            console.log(diff)
                                             break;
                                         case "likes":
                                             // Convert to numbers for correct sorting
                                             diff = (parseInt(charB.stats?.likes, 10) || 0) - (parseInt(charA.stats?.likes, 10) || 0);
+                                                                                        console.log("like")
+                                            console.log(diff)
                                             break;
                                         case "comments":
                                             // Convert to numbers for correct sorting
                                             diff = (parseInt(charB.stats?.comments, 10) || 0) - (parseInt(charA.stats?.comments, 10) || 0);
+                                                                                        console.log("com")
+                                            console.log(diff)
                                             break;
                                         case "stars":
                                             // Convert to numbers for correct sorting
                                             diff = (parseInt(charB.stats?.stars, 10) || 0) - (parseInt(charA.stats?.stars, 10) || 0);
+                                            console.log("stars")
+                                            console.log(diff)
                                             break;
                                         case "date":
                                             // Compare dates (already properly formatted ISO 8601)
                                             diff = new Date(charB.createdAt) - new Date(charA.createdAt);
+                                                                                        console.log("date")
+                                            console.log(diff)
                                             break;
                                         default:
                                             diff = 0;
