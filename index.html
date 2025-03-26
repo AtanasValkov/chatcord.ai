@@ -184,7 +184,7 @@
                                 const sortOrder = document.getElementById("sortOrder").value; // "asc" or "desc"
 
                                 // Default sorting in our comparator is descending, so multiplier reverses it if ascending.
-                                const multiplier = sortOrder === "asc" ? -1 : 1;
+                                const multiplier = sortOrder === "Ascending" ? -1 : 1;
                         
                                 // Convert the object into an array of [id, character] pairs, then sort it
                                 const sortedEntries = Object.entries(characters).sort(([idA, charA], [idB, charB]) => {
