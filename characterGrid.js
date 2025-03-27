@@ -1,10 +1,6 @@
-export function populateGrid(characters) {
+export function populateGrid(characters, includeTags = [], excludeTags = [], showDetails) {
     const grid = document.getElementById("characterGrid");
     grid.innerHTML = ""; // Clear existing content
-
-    // Get filtering criteria from the two sets of checkboxes
-    const includeTags = getIncludeTags();
-    const excludeTags = getExcludeTags();
 
     characters.forEach(([id, character]) => {
         // Block character if any of its tags are in the exclusion list.
@@ -20,16 +16,18 @@ export function populateGrid(characters) {
         const charDiv = document.createElement("div");
         charDiv.classList.add("character");
         const imageUrl = `https://chatcord-server.onrender.com/get-characters/${id}`;
-
-        charDiv.onclick = () => showDetails(
-            character.char_name || "Unknown Character",
-            character.description || character.world_scenario || "No scenario available.",
-            imageUrl,
-            character.tags || [],
-            character.userID,
-            character.username,
-            character.avatar
-        );
+        
+        if (showDetails) {
+            charDiv.onclick = () => showDetails(
+                character.char_name || "Unknown Character",
+                character.description || character.world_scenario || "No scenario available.",
+                imageUrl,
+                character.tags || [],
+                character.userID,
+                character.username,
+                character.avatar
+            );
+        }
 
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -59,3 +57,191 @@ export function populateGrid(characters) {
         grid.appendChild(charDiv);
     });
 }
+
+function showDetails(name, desc, img, tags, ID, username, avatar) {
+    document.getElementById('characterName').innerText = name || 'Unknown Character';
+    document.getElementById('characterDesc').innerText = desc || 'No description available.';
+    document.getElementById('characterImage').src = img || 'default-image.jpg';
+
+    const tagContainer = document.getElementById("characterTags");
+    tagContainer.innerHTML = '';  // Clear existing tags
+
+    // Ensure tags is a valid array before looping
+    if (Array.isArray(tags)) {
+        tags.forEach(tag => {
+            let tagElement = document.createElement("span");
+            tagElement.classList.add("tag");
+            tagElement.textContent = tag;
+            tagContainer.appendChild(tagElement);
+        });
+    } else {
+        console.warn("Tags is missing or not an array:", tags);
+    }
+
+
+    const madeByDiv = document.getElementById("madeBy");
+    madeByDiv.innerHTML = `
+        <p style="margin: 0 10px;">Uploaded by <strong>${username}</strong></p>
+        <img src="https://cdn.discordapp.com/avatars/${ID}/${avatar}.png"
+             alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
+    `;
+    
+
+    document.getElementById('detailsPanel').style.display = 'block';
+}
+
+// Function to hide details panel
+export function hideDetails() {
+    document.getElementById('detailsPanel').style.display = 'none';
+}
+
+// Select the heart, thumbs-up, and thumbs-down icons
+const favoriteBtn = document.getElementById('favoriteBtn');
+const thumbsUpBtn = document.getElementById('thumbsUpBtn');
+const thumbsDownBtn = document.getElementById('thumbsDownBtn');
+// Flag to track if a request is already debounced
+let requestScheduled = false;
+// Adding event listener for the thumbs-up button
+favoriteBtn.addEventListener('click', () => {
+    // Check if user is logged in
+    const user = JSON.parse(localStorage.getItem("user"));
+    
+    if (!user) {
+        alert("Please log in to like characters.");
+        return;
+    }
+
+    // Change the fav button color immediately
+    favoriteBtn.classList.toggle('active');
+
+    // If no request is scheduled, debounce the request
+    if (!requestScheduled) {
+        requestScheduled = true; // Mark that a request is scheduled
+
+        // Debounced function to execute the request after 1000ms
+        setTimeout(() => {
+            // Perform the action here (e.g., send the request)
+            console.log('fav executed after 1000ms');
+
+            // Reset the flag once the action has been executed
+            requestScheduled = false;
+
+            // Example of sending a request (e.g., update like status):
+            // updateLikeStatus(characterId, true);
+        }, 1000);
+    }
+}, false);
+
+// Adding event listener for the thumbs-up button
+thumbsUpBtn.addEventListener('click', () => {
+    // Check if user is logged in
+    const user = JSON.parse(localStorage.getItem("user"));
+    
+    if (!user) {
+        alert("Please log in to like characters.");
+        return;
+    }
+
+    // Change the thumbs-up button color immediately
+    thumbsUpBtn.classList.toggle('active'); // Make the button red immediately
+
+    // Remove active class from thumbs-down button if it's present
+    thumbsDownBtn.classList.remove('active');
+
+    // If no request is scheduled, debounce the request
+    if (!requestScheduled) {
+        requestScheduled = true; // Mark that a request is scheduled
+
+        // Debounced function to execute the request after 1000ms
+        setTimeout(() => {
+            // Perform the action here (e.g., send the request)
+            console.log('like executed after 1000ms');
+
+            // Reset the flag once the action has been executed
+            requestScheduled = false;
+
+            // Example of sending a request (e.g., update like status):
+            // updateLikeStatus(characterId, true);
+        }, 1000);
+    }
+}, false);
+
+// Debounce function definition
+function debounce(func, delay) {
+    let timer;
+    return function() {
+        if (timer) clearTimeout(timer); // Clear the previous timer if it exists
+        timer = setTimeout(() => {
+            func.apply(this, arguments); // Execute the function after the delay
+        }, delay);
+    };
+}
+
+// Adding event listener for the thumbs-up button
+thumbsDownBtn.addEventListener('click', () => {
+    // Check if user is logged in
+    const user = JSON.parse(localStorage.getItem("user"));
+    
+    if (!user) {
+        alert("Please log in to like characters.");
+        return;
+    }
+
+    // Change the thumbs-up button color immediately
+    thumbsDownBtn.classList.toggle('active'); // Make the button red immediately
+
+    // Remove active class from thumbs-down button if it's present
+    thumbsUpBtn.classList.remove('active');
+
+    // If no request is scheduled, debounce the request
+    if (!requestScheduled) {
+        requestScheduled = true; // Mark that a request is scheduled
+
+        // Debounced function to execute the request after 1000ms
+        setTimeout(() => {
+            // Perform the action here (e.g., send the request)
+            console.log('dislike executed after 1000ms');
+
+            // Reset the flag once the action has been executed
+            requestScheduled = false;
+
+            // Example of sending a request (e.g., update like status):
+            // updateLikeStatus(characterId, true);
+        }, 1000);
+    }
+}, false);
+
+function createBot(name, image, description) {
+    console.log("Trying to get name", name);
+    
+    var data = {
+        "username": name, // Extract text content
+        "avatar_url": image, // Extract image source
+        "content": description, // Extract text content
+        "embeds": [
+        {
+          "title": "create",
+          "description": image,
+          "color": 16711680,
+        }
+        ],
+    };
+
+    fetch("https://discord.com/api/webhooks/1352061720067309589/UONc3FvNtzfmeIygz_PFfIxpvQfkgxqTWSEdY1QB_2jada9MyIkZTQ9XRp46AzVOcZCu", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.status === 204) {
+            console.log("Success: Message sent (204 No Content)");
+            return {}; // Return empty object to keep .json() format
+        }
+        return response.json(); // Parse only if there's content
+    })
+    .then(data => console.log("Success:", data))
+    .catch(error => console.error("Error:", error));
+}
+
