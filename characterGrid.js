@@ -1,4 +1,4 @@
-export function populateGrid(characters, includeTags = [], excludeTags = [], showDetails) {
+export function populateGrid(characters, includeTags = [], excludeTags = [], showDetailsOnClick) {
     const grid = document.getElementById("characterGrid");
     grid.innerHTML = ""; // Clear existing content
 
@@ -17,7 +17,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         charDiv.classList.add("character");
         const imageUrl = `https://chatcord-server.onrender.com/get-characters/${id}`;
         
-        if (showDetails) {
+        if (showDetailsOnClick) {
             charDiv.onclick = () => showDetails(
                 character.char_name || "Unknown Character",
                 character.description || character.world_scenario || "No scenario available.",
