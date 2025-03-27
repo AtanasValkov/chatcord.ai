@@ -12,7 +12,7 @@
         <div class="logo" id="logo">ChatCord</div>
         <nav>
             <a title="Click to go to character creator" href="PleaseEnableJavascript.html" onclick="createCharacter(); return false">Create-A-Character</a>
-            <a href="profile.html" id = "profileButton">Guest</a>
+            <a title="Click to go to profile page" id = "profileButton" href="PleaseEnableJavascript.html" onclick="profilePage(); return false">Guest</a>
             <a href="#">Subscribe</a>
             <a href="#">Rules</a>
             <a href="https://chatcord-server.onrender.com/login" id="loginButton">Login</a>
@@ -263,6 +263,16 @@
                             }
                             else {
                                 alert("Only logged in users can create characters.")
+                            }
+                        }
+
+                        function profilePage() {
+                            const user = JSON.parse(localStorage.getItem("user"));
+                            if (user) {
+                                window.location.href = "profile.html";
+                            }
+                            else {
+                                alert("Only logged in users can see their profile.")
                             }
                         }
 
