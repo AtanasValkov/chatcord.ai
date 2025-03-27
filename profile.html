@@ -21,7 +21,7 @@
           const user = JSON.parse(localStorage.getItem('user'));
           const myUserId = user ? user.id : null;
           if (!myUserId) {
-            document.getElementById('character-list').innerText = "User not logged in or user ID missing.";
+            document.getElementById('characterGrid').innerText = "User not logged in or user ID missing.";
             return;
           }
   
@@ -33,7 +33,7 @@
   
         } catch (error) {
           console.error("Error fetching characters:", error);
-          document.getElementById('character-list').innerText = "Failed to load characters.";
+          document.getElementById('characterGrid').innerText = "Failed to load characters.";
         }
       }
   
