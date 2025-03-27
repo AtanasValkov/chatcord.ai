@@ -26,9 +26,8 @@
           }
   
           // Filter characters by userID
-          // Assuming your JSON is an object where each key is a character identifier.
-          const myCharacters = Object.values(data).filter(character => character.userID === myUserId);
-  
+          const myCharacters = Object.entries(data).filter(([id, character]) => character.userID === myUserId);
+
           populateGrid(myCharacters,[], [], false);
   
         } catch (error) {
