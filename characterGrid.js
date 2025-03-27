@@ -1,3 +1,4 @@
+let showDetailsOnClick = false
 export function populateGrid(characters, includeTags = [], excludeTags = [], showDetailsOnClick) {
     const grid = document.getElementById("characterGrid");
     grid.innerHTML = ""; // Clear existing content
@@ -95,76 +96,112 @@ export function hideDetails() {
     document.getElementById('detailsPanel').style.display = 'none';
 }
 
-// Select the heart, thumbs-up, and thumbs-down icons
-const favoriteBtn = document.getElementById('favoriteBtn');
-const thumbsUpBtn = document.getElementById('thumbsUpBtn');
-const thumbsDownBtn = document.getElementById('thumbsDownBtn');
-// Flag to track if a request is already debounced
-let requestScheduled = false;
-// Adding event listener for the thumbs-up button
-favoriteBtn.addEventListener('click', () => {
-    // Check if user is logged in
-    const user = JSON.parse(localStorage.getItem("user"));
+if (showDetailsOnClick) {
+    // Select the heart, thumbs-up, and thumbs-down icons
+    const favoriteBtn = document.getElementById('favoriteBtn');
+    const thumbsUpBtn = document.getElementById('thumbsUpBtn');
+    const thumbsDownBtn = document.getElementById('thumbsDownBtn');
+    // Flag to track if a request is already debounced
+    let requestScheduled = false;
+    // Adding event listener for the thumbs-up button
+    favoriteBtn.addEventListener('click', () => {
+        // Check if user is logged in
+        const user = JSON.parse(localStorage.getItem("user"));
+        
+        if (!user) {
+            alert("Please log in to like characters.");
+            return;
+        }
     
-    if (!user) {
-        alert("Please log in to like characters.");
-        return;
-    }
-
-    // Change the fav button color immediately
-    favoriteBtn.classList.toggle('active');
-
-    // If no request is scheduled, debounce the request
-    if (!requestScheduled) {
-        requestScheduled = true; // Mark that a request is scheduled
-
-        // Debounced function to execute the request after 1000ms
-        setTimeout(() => {
-            // Perform the action here (e.g., send the request)
-            console.log('fav executed after 1000ms');
-
-            // Reset the flag once the action has been executed
-            requestScheduled = false;
-
-            // Example of sending a request (e.g., update like status):
-            // updateLikeStatus(characterId, true);
-        }, 1000);
-    }
-}, false);
-
-// Adding event listener for the thumbs-up button
-thumbsUpBtn.addEventListener('click', () => {
-    // Check if user is logged in
-    const user = JSON.parse(localStorage.getItem("user"));
+        // Change the fav button color immediately
+        favoriteBtn.classList.toggle('active');
     
-    if (!user) {
-        alert("Please log in to like characters.");
-        return;
-    }
+        // If no request is scheduled, debounce the request
+        if (!requestScheduled) {
+            requestScheduled = true; // Mark that a request is scheduled
+    
+            // Debounced function to execute the request after 1000ms
+            setTimeout(() => {
+                // Perform the action here (e.g., send the request)
+                console.log('fav executed after 1000ms');
+    
+                // Reset the flag once the action has been executed
+                requestScheduled = false;
+    
+                // Example of sending a request (e.g., update like status):
+                // updateLikeStatus(characterId, true);
+            }, 1000);
+        }
+    }, false);
+    
+    // Adding event listener for the thumbs-up button
+    thumbsUpBtn.addEventListener('click', () => {
+        // Check if user is logged in
+        const user = JSON.parse(localStorage.getItem("user"));
+        
+        if (!user) {
+            alert("Please log in to like characters.");
+            return;
+        }
+    
+        // Change the thumbs-up button color immediately
+        thumbsUpBtn.classList.toggle('active'); // Make the button red immediately
+    
+        // Remove active class from thumbs-down button if it's present
+        thumbsDownBtn.classList.remove('active');
+    
+        // If no request is scheduled, debounce the request
+        if (!requestScheduled) {
+            requestScheduled = true; // Mark that a request is scheduled
+    
+            // Debounced function to execute the request after 1000ms
+            setTimeout(() => {
+                // Perform the action here (e.g., send the request)
+                console.log('like executed after 1000ms');
+    
+                // Reset the flag once the action has been executed
+                requestScheduled = false;
+    
+                // Example of sending a request (e.g., update like status):
+                // updateLikeStatus(characterId, true);
+            }, 1000);
+        }
+    }, false);
 
-    // Change the thumbs-up button color immediately
-    thumbsUpBtn.classList.toggle('active'); // Make the button red immediately
-
-    // Remove active class from thumbs-down button if it's present
-    thumbsDownBtn.classList.remove('active');
-
-    // If no request is scheduled, debounce the request
-    if (!requestScheduled) {
-        requestScheduled = true; // Mark that a request is scheduled
-
-        // Debounced function to execute the request after 1000ms
-        setTimeout(() => {
-            // Perform the action here (e.g., send the request)
-            console.log('like executed after 1000ms');
-
-            // Reset the flag once the action has been executed
-            requestScheduled = false;
-
-            // Example of sending a request (e.g., update like status):
-            // updateLikeStatus(characterId, true);
-        }, 1000);
-    }
-}, false);
+    // Adding event listener for the thumbs-up button
+    thumbsDownBtn.addEventListener('click', () => {
+        // Check if user is logged in
+        const user = JSON.parse(localStorage.getItem("user"));
+        
+        if (!user) {
+            alert("Please log in to like characters.");
+            return;
+        }
+    
+        // Change the thumbs-up button color immediately
+        thumbsDownBtn.classList.toggle('active'); // Make the button red immediately
+    
+        // Remove active class from thumbs-down button if it's present
+        thumbsUpBtn.classList.remove('active');
+    
+        // If no request is scheduled, debounce the request
+        if (!requestScheduled) {
+            requestScheduled = true; // Mark that a request is scheduled
+    
+            // Debounced function to execute the request after 1000ms
+            setTimeout(() => {
+                // Perform the action here (e.g., send the request)
+                console.log('dislike executed after 1000ms');
+    
+                // Reset the flag once the action has been executed
+                requestScheduled = false;
+    
+                // Example of sending a request (e.g., update like status):
+                // updateLikeStatus(characterId, true);
+            }, 1000);
+        }
+    }, false);
+}
 
 // Debounce function definition
 function debounce(func, delay) {
@@ -176,40 +213,6 @@ function debounce(func, delay) {
         }, delay);
     };
 }
-
-// Adding event listener for the thumbs-up button
-thumbsDownBtn.addEventListener('click', () => {
-    // Check if user is logged in
-    const user = JSON.parse(localStorage.getItem("user"));
-    
-    if (!user) {
-        alert("Please log in to like characters.");
-        return;
-    }
-
-    // Change the thumbs-up button color immediately
-    thumbsDownBtn.classList.toggle('active'); // Make the button red immediately
-
-    // Remove active class from thumbs-down button if it's present
-    thumbsUpBtn.classList.remove('active');
-
-    // If no request is scheduled, debounce the request
-    if (!requestScheduled) {
-        requestScheduled = true; // Mark that a request is scheduled
-
-        // Debounced function to execute the request after 1000ms
-        setTimeout(() => {
-            // Perform the action here (e.g., send the request)
-            console.log('dislike executed after 1000ms');
-
-            // Reset the flag once the action has been executed
-            requestScheduled = false;
-
-            // Example of sending a request (e.g., update like status):
-            // updateLikeStatus(characterId, true);
-        }, 1000);
-    }
-}, false);
 
 function createBot(name, image, description) {
     console.log("Trying to get name", name);
