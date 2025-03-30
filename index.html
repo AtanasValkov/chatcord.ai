@@ -11,8 +11,8 @@
     <header>
         <div class="logo" id="logo">ChatCord</div>
         <nav>
-            <a title="Click to go to character creator" href="PleaseEnableJavascript.html" onclick="createCharacter(); return false">Create-A-Character</a>
-            <a title="Click to go to profile page" id = "profileButton" href="#" onclick="profilePage(); return false">Guest</a>
+            <a title="Click to go to character creator" id="createCharacterButton" href="#">Create-A-Character</a>
+            <a title="Click to go to profile page" id="profileButton" href="#">Guest</a>
             <a href="#">Rules</a>
             <a href="https://chatcord-server.onrender.com/login" id="loginButton">Login</a>
             <a href="https://discord.gg/PEWCwNAv" target="_blank">
@@ -249,6 +249,17 @@
                             document.getElementById("loginButton").href = "https://chatcord-server.onrender.com/login";
                             document.getElementById("logo").removeAttribute("backgroundImage");   
                         }
+
+                        document.getElementById("createCharacterButton").addEventListener("click", function (event) {
+                            event.preventDefault(); // Prevent default anchor behavior
+                            createCharacter();
+                        });
+                        
+                        document.getElementById("profileButton").addEventListener("click", function (event) {
+                            event.preventDefault();
+                            profilePage();
+                        });
+
 
                         // Add event listeners on the elements (outside of loadCharacters)
                         document.getElementById("sortOptions").addEventListener("change", loadCharacters);
