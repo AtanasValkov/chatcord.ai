@@ -113,7 +113,12 @@ function showDetails(charID, name, desc, img, tags, ID, username, avatar) {
             return;
         }
         user.favCharacters = user.favCharacters || [];
-    
+        const isFavorited = user?.favCharacters?.includes(charID) ?? false;
+
+        if (isFavorited) {
+            favoriteBtn.classList.add("active"); // Mark as active if already favorited
+        }
+
         if (user.favCharacters.includes(charID)) {
             // Remove if already favorited
             user.favCharacters = user.favCharacters.filter(id => id !== charID);
