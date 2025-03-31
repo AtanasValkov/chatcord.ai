@@ -72,6 +72,12 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
 }
 
 function showDetails(name, desc, img, tags, ID, username, avatar) {
+    // Remove existing details panel if it exists
+    const existingPanel = document.getElementById("detailsPanel");
+    if (existingPanel) {
+        existingPanel.remove();
+    }
+
     // Create main panel div
     const detailsPanel = document.createElement("div");
     detailsPanel.classList.add("details-panel");
