@@ -43,9 +43,9 @@
             console.error("Error fetching characters:", error);
             document.getElementById('characterGrid').innerText = "Failed to load characters.";
           }
-    
+        }
         // Call the function on page load
-        window.addEventListener('DOMContentLoaded', loadCharacters('mine'));
+        window.addEventListener('DOMContentLoaded', () => loadCharacters('mine'));
       </script>
     </div>
   </div>
