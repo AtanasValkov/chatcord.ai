@@ -72,12 +72,63 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
 }
 
 function showDetails(name, desc, img, tags, ID, username, avatar) {
-    document.getElementById('characterName').innerText = name || 'Unknown Character';
-    document.getElementById('characterDesc').innerText = desc || 'No description available.';
-    document.getElementById('characterImage').src = img || 'default-image.jpg';
+    // Create main panel div
+    const detailsPanel = document.createElement("div");
+    detailsPanel.classList.add("details-panel");
+    detailsPanel.id = "detailsPanel";
 
-    const tagContainer = document.getElementById("characterTags");
-    tagContainer.innerHTML = '';  // Clear existing tags
+    // Create image element
+    const characterImage = document.createElement("img");
+    characterImage.id = "characterImage";
+    characterImage.src = img || "";
+    characterImage.alt = name;
+
+    // Create details panel like div
+    const detailsPanelLike = document.createElement("div");
+    detailsPanelLike.classList.add("details-panel-like");
+
+    // Create character name element
+    const characterName = document.createElement("h2");
+    characterName.id = "characterName";
+    characterName.innerText = name || "Default Name";
+
+    // Create favorite button
+    const favoriteBtn = document.createElement("span");
+    favoriteBtn.classList.add("favorite");
+    favoriteBtn.id = "favoriteBtn";
+    favoriteBtn.innerHTML = '<i class="fas fa-heart"></i>';
+
+    // Create thumbs up button
+    const thumbsUpBtn = document.createElement("span");
+    thumbsUpBtn.classList.add("thumbs-up");
+    thumbsUpBtn.id = "thumbsUpBtn";
+    thumbsUpBtn.innerHTML = '<i class="fas fa-thumbs-up"></i>';
+
+    // Create thumbs down button
+    const thumbsDownBtn = document.createElement("span");
+    thumbsDownBtn.classList.add("thumbs-down");
+    thumbsDownBtn.id = "thumbsDownBtn";
+    thumbsDownBtn.innerHTML = '<i class="fas fa-thumbs-down"></i>';
+
+    // Append elements
+    detailsPanelLike.appendChild(characterName);
+    detailsPanelLike.appendChild(favoriteBtn);
+    detailsPanelLike.appendChild(thumbsUpBtn);
+    detailsPanelLike.appendChild(thumbsDownBtn);
+
+    detailsPanel.appendChild(characterImage);
+    detailsPanel.appendChild(detailsPanelLike);
+
+    // Create description element
+    const characterDesc = document.createElement("p");
+    characterDesc.id = "characterDesc";
+    characterDesc.innerText = desc || "No description available.";
+    detailsPanel.appendChild(characterDesc);
+
+    // Create tag container
+    const tagContainer = document.createElement("div");
+    tagContainer.id = "characterTags";
+    detailsPanel.appendChild(tagContainer);
 
     // Ensure tags is a valid array before looping
     if (Array.isArray(tags)) {
@@ -91,16 +142,18 @@ function showDetails(name, desc, img, tags, ID, username, avatar) {
         console.warn("Tags is missing or not an array:", tags);
     }
 
-
-    const madeByDiv = document.getElementById("madeBy");
+    // Create uploader info container
+    const madeByDiv = document.createElement("div");
+    madeByDiv.id = "madeBy";
     madeByDiv.innerHTML = `
         <p style="margin: 0 10px;">Uploaded by <strong>${username}</strong></p>
         <img src="https://cdn.discordapp.com/avatars/${ID}/${avatar}.png"
              alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
     `;
-    
+    detailsPanel.appendChild(madeByDiv);
 
-    document.getElementById('detailsPanel').style.display = 'block';
+    // Append to body or another container
+    document.body.appendChild(detailsPanel);
 }
 
 // Functions for profile page
