@@ -123,7 +123,6 @@ function showDetails(charID, name, desc, img, tags, ID, username, avatar) {
         }
     
         localStorage.setItem("user", JSON.stringify(user));
-        }
 
         favoriteBtn.classList.toggle('active');
         if (!requestScheduled) {
