@@ -158,12 +158,10 @@
             data[characterId].tags.forEach(tag => addTag(tag));
           }
           
-          // Optionally, if an image exists, show a preview
-          if(data.imageUrl) {
-            const previewImage = document.getElementById("previewImage");
-            previewImage.src = data.imageUrl;
-            previewImage.style.display = "block";
-          }
+          const imageUrl = `https://chatcord-server.onrender.com/get-characters/${characterId}`;
+          const previewImage = document.getElementById("previewImage");
+          previewImage.src = imageUrl;
+          previewImage.style.display = "block";
         })
         .catch(err => console.error("Error fetching character data:", err));
     }
