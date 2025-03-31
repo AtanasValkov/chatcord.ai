@@ -240,22 +240,6 @@
         }
     });
     
-    // Reuse the tag input handling functions from your create page.
-    function addTag(tagText) {
-        if (!tagText) return;
-        const tagContainer = document.getElementById("tagContainer");
-    
-        const tag = document.createElement("span");
-        tag.classList.add("tag");
-        tag.textContent = tagText;
-        tag.addEventListener("click", function () {
-            this.remove();
-        });
-    
-        tagContainer.appendChild(tag);
-    }
-
-    
     var imageFile;
     var jsonData;
     
