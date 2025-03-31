@@ -17,9 +17,6 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
             <p>${character.char_name || 'Unknown'}</p>
             <div>${getRandomInt(1, 99)} ⬇ | ${getRandomInt(1, 99)} ❤️ | ${getRandomInt(1, 99)} ⭐ | ${getRandomInt(1, 99)} 💬</div>
             <div class="tags"></div>
-            <button class="favorite">❤️</button>
-            <button class="thumbs-up">👍</button>
-            <button class="thumbs-down">👎</button>
         `;
 
         if (showDetailsOnClick) {
