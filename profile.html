@@ -7,13 +7,17 @@
 </head>
 <body>
   <div class="profilePage">
-    <h1>My Characters</h1>
+    <h1>
+        <span class="tab" onclick="loadCharacters('mine')">My Characters</span>
+        <span class="separator">|</span>
+        <span class="tab" onclick="loadCharacters('favorites')">My Favorites</span>
+    </h1>
     <button onclick="window.location.href='index.html';" class="back-btn">Back</button>
     <div class="character-grid" id="characterGrid"> Loading characters...
       <script type="module">
         import { populateGrid } from './characterGrid.js';
     
-        async function loadCharacters() {
+        async function loadCharacters(type) {
           try {
             const response = await fetch('https://chatcord-server.onrender.com/get-characters');
             const data = await response.json();
@@ -25,11 +29,14 @@
               document.getElementById('characterGrid').innerText = "User not logged in or user ID missing.";
               return;
             }
-    
-            // Filter characters by userID
-            const myCharacters = Object.entries(data).filter(([id, character]) => character.userID === myUserId);
-  
-            populateGrid(myCharacters,[], [], false);
+            if(type == 'mine') {
+              // Filter characters by userID
+              const characterArray = Object.entries(data).filter(([id, character]) => character.userID === myUserId);
+            }  else if(type == 'favorites') {
+              // Filter characters by userID
+              const characterArray = Object.entries(data).filter(([id, character]) => character.userID != myUserId);
+            }
+            populateGrid(characterArray,[], [], false);
     
           } catch (error) {
             console.error("Error fetching characters:", error);
