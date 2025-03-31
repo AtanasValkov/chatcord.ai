@@ -1,5 +1,6 @@
 let showDetailsOnClick = false
-export function populateGrid(characters, includeTags = [], excludeTags = [], showDetailsOnClick) {
+export function populateGrid(characters, includeTags = [], excludeTags = [], showDetailsOnClickParam) {
+    showDetailsOnClick = showDetailsOnClickParam;
     const grid = document.getElementById("characterGrid");
     grid.innerHTML = ""; // Clear existing content
 
