@@ -101,11 +101,13 @@ nav a {
 .details-panel img {
     width: 100%;
     border-radius: 8px;
+    max-height: 53vh;
+    object-fit: cover; 
 }
 
 .details-panel p {
-    max-height: 25vh;
     overflow-y: auto;
+    max-height: 10vh;
 }
 
 .details-panel-like {
