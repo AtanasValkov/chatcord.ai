@@ -347,64 +347,6 @@
     
         return newBuffer.buffer;
     }
-
-    // Handle form submission
-    document.getElementById("characterForm").addEventListener("submit", async function (event) {
-        event.preventDefault();
-    
-        const user = JSON.parse(localStorage.getItem("user"));
-        const tags = new Set(
-            Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim())
-        );
-        // Get Gender and SFW/NSFW values
-        const gender = document.getElementById("genderSelect").value;
-        const rating = document.getElementById("sfwSelect").value;
-        
-        // Add them to the Set if they are not empty
-        if (gender) tags.add(gender);
-        if (rating) tags.add(rating);
-        
-        jsonData = {
-            "char_name": document.getElementById("characterName").value,
-            "char_persona": document.getElementById("charDescription").value,
-            "char_greeting": document.getElementById("charGreeting").value,
-            "world_scenario": document.getElementById("charScenario").value,
-            "example_dialogue": document.getElementById("charDialogue").value,
-            "description": document.getElementById("displayText").value,
-            "tags": Array.from(tags),
-            "userID": user.id,
-            "username": user.username,
-            "avatar": user.avatar
-        };
-
-    
-        const formData = new FormData();
-        formData.append("json", JSON.stringify(jsonData));
-        formData.append("file", imageFile);
-    
-        try {
-            const response = await fetch("https://chatcord-server.onrender.com/upload_json", {
-                method: "POST",
-                body: formData
-            });
-    
-            const data = await response.json();
-    
-            if (response.ok) {
-                alert("Character created successfully!");
-                this.reset();
-                document.getElementById("previewImage").src = "";
-                document.getElementById("charDescription").textContent = "";
-                const tagContainer = document.getElementById("tagContainer");
-                tagContainer.innerHTML = '';
-            } else {
-                alert("Error: " + (data.error || "Unknown error"));
-            }
-        } catch (error) {
-            alert("Upload failed. Please try again.");
-            console.error("Upload Error:", error);
-        }
-    });
     
     // Parse PNG metadata
     function parsePNGMetadata(arrayBuffer) {
