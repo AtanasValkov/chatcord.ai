@@ -27,6 +27,8 @@
         // Get the current user's ID from localStorage
         const user = JSON.parse(localStorage.getItem('user'));
         const myUserId = user ? user.id : null;
+        const favCharacters = user.favCharacters || [];
+
         if (!myUserId) {
           document.getElementById('characterGrid').innerText = "User not logged in or user ID missing.";
           return;
@@ -34,7 +36,8 @@
 
         let characterArray = (type === 'mine') 
           ? Object.entries(data).filter(([id, character]) => character.userID === myUserId) 
-          : Object.entries(data).filter(([id, character]) => character.userID !== myUserId);
+          : Object.entries(data).filter(([id, character]) => favCharacters.includes(id);
+     
 
         populateGrid(characterArray, [], [], false);
       } catch (error) {
