@@ -273,67 +273,6 @@
                             }
                         }
 
-                        document.addEventListener("DOMContentLoaded", () => {
-                            const favoriteBtn = document.getElementById('favoriteBtn');
-                            const thumbsUpBtn = document.getElementById('thumbsUpBtn');
-                            const thumbsDownBtn = document.getElementById('thumbsDownBtn');
-                            let requestScheduled = false;
-                        
-                            favoriteBtn.addEventListener('click', (event) => {
-                                event.stopPropagation();
-                                const user = JSON.parse(localStorage.getItem("user"));
-                                if (!user) {
-                                    alert("Please log in to like characters.");
-                                    return;
-                                }
-                                favoriteBtn.classList.toggle('active');
-                                if (!requestScheduled) {
-                                    requestScheduled = true;
-                                    setTimeout(() => {
-                                        console.log('fav executed after 1000ms');
-                                        requestScheduled = false;
-                                    }, 1000);
-                                }
-                            });
-                        
-                            thumbsUpBtn.addEventListener('click', (event) => {
-                                event.stopPropagation();
-                                const user = JSON.parse(localStorage.getItem("user"));
-                                if (!user) {
-                                    alert("Please log in to like characters.");
-                                    return;
-                                }
-                                thumbsUpBtn.classList.toggle('active');
-                                thumbsDownBtn.classList.remove('active');
-                                if (!requestScheduled) {
-                                    requestScheduled = true;
-                                    setTimeout(() => {
-                                        console.log('like executed after 1000ms');
-                                        requestScheduled = false;
-                                    }, 1000);
-                                }
-                            });
-                        
-                            thumbsDownBtn.addEventListener('click', (event) => {
-                                event.stopPropagation();
-                                const user = JSON.parse(localStorage.getItem("user"));
-                                if (!user) {
-                                    alert("Please log in to like characters.");
-                                    return;
-                                }
-                                thumbsDownBtn.classList.toggle('active');
-                                thumbsUpBtn.classList.remove('active');
-                                if (!requestScheduled) {
-                                    requestScheduled = true;
-                                    setTimeout(() => {
-                                        console.log('dislike executed after 1000ms');
-                                        requestScheduled = false;
-                                    }, 1000);
-                                }
-                            });
-                        });
-
-
                         async function initialize() {
                             await verifyUser();
                             await loadTags();
