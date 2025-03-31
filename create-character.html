@@ -227,9 +227,10 @@
         
             if (response.ok) {
                 alert(isEditMode ? "Character updated successfully!" : "Character created successfully!");
-                // Optionally, redirect or clear the form
+                window.location.href = "profile.html";
                 if(!isEditMode) {
                   this.reset();
+                  document.getElementById("charDescription").textContent = "";
                   document.getElementById("previewImage").src = "";
                   document.getElementById("tagContainer").innerHTML = '';
                 }
