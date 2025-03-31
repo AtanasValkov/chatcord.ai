@@ -30,33 +30,6 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
                 character.avatar
             );
         }
-
-        const favoriteBtn = charDiv.querySelector('.favorite');
-        const thumbsUpBtn = charDiv.querySelector('.thumbs-up');
-        const thumbsDownBtn = charDiv.querySelector('.thumbs-down');
-
-        favoriteBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            toggleButton(favoriteBtn);
-        });
-
-        thumbsUpBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            toggleButton(thumbsUpBtn);
-            thumbsDownBtn.classList.remove('active');
-        });
-
-        thumbsDownBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            toggleButton(thumbsDownBtn);
-            thumbsUpBtn.classList.remove('active');
-        });
-
-        function toggleButton(button) {
-            button.classList.toggle('active');
-            console.log(`${button.classList.contains('active') ? "Activated" : "Deactivated"} ${button.innerText}`);
-        }
-
         grid.appendChild(charDiv);
     });
 }
