@@ -61,10 +61,11 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
                 <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
                 <p>${character.char_name || 'Unknown'}</p>
                 <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
-                <button class="edit-btn" onclick="editCharacter('${id}')">Edit</button>
-                <button class="delete-btn" onclick="deleteCharacter('${id}')">Delete</button>
+                <button class="edit-btn">Edit</button>
+                <button class="delete-btn">Delete</button>
             `;
-        }
+            charDiv.querySelector(".delete-btn").addEventListener("click", () => deleteCharacter(id));
+            charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(id));
         
         grid.appendChild(charDiv);
     });
