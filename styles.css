@@ -258,6 +258,8 @@ h2 {
     margin-left: 300px;
     margin-top: 10px;
 }
+
+/*Profile.html*/
 .profilePage {
     display: flex;
     flex-direction: column;
@@ -266,6 +268,25 @@ h2 {
 .back-btn {
     padding: 10px 20px;
 }
+
+.tab {
+    cursor: pointer;
+    text-decoration: underline; /* Makes it look like a link */
+    color: blue; /* Traditional link color */
+    font-size: 24px;
+    margin: 0 15px; /* Adds spacing */
+}
+
+.tab:hover {
+    color: darkblue; /* Darker on hover */
+}
+
+.separator {
+    font-size: 24px;
+    color: gray;
+}
+/*End of profile.html*/
+
         /* Footer */
 footer {
     background: rgba(0, 0, 0, 0.8);
