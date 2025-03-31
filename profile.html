@@ -29,6 +29,7 @@
               document.getElementById('characterGrid').innerText = "User not logged in or user ID missing.";
               return;
             }
+            
             if(type == 'mine') {
               // Filter characters by userID
               const characterArray = Object.entries(data).filter(([id, character]) => character.userID === myUserId);
@@ -42,10 +43,9 @@
             console.error("Error fetching characters:", error);
             document.getElementById('characterGrid').innerText = "Failed to load characters.";
           }
-        }
     
         // Call the function on page load
-        window.addEventListener('DOMContentLoaded', loadCharacters);
+        window.addEventListener('DOMContentLoaded', loadCharacters('mine'));
       </script>
     </div>
   </div>
