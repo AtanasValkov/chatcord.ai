@@ -116,7 +116,7 @@ function showDetails(charID, name, desc, img, tags, ID, username, avatar) {
         const isFavorited = user?.favCharacters?.includes(charID) ?? false;
 
         if (isFavorited) {
-            favoriteBtn.classList.add("active"); // Mark as active if already favorited
+            favoriteBtn.classList.toggle("active"); // Mark as active if already favorited
         }
 
         if (user.favCharacters.includes(charID)) {
