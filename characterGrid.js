@@ -147,16 +147,32 @@ function showDetails(name, desc, img, tags, ID, username, avatar) {
     } else {
         console.warn("Tags is missing or not an array:", tags);
     }
+    // Create details panel madeBy container
+    const detailsPanelMadeBy = document.createElement("div");
+    detailsPanelMadeBy.classList.add("details-panel-madeBy");
+    detailsPanelMadeBy.id = "details-panel-madeBy";
+
+    // Create 'Create Bot' button
+    const createBotButton = document.createElement("button");
+    createBotButton.innerText = "Create Bot";
+    createBotButton.onclick = function() {
+        createBot(characterName.textContent, characterImage.src, characterDesc.textContent);
+    };
+    detailsPanelMadeBy.appendChild(createBotButton);
 
     // Create uploader info container
     const madeByDiv = document.createElement("div");
+    madeByDiv.classList.add("madeBy");
     madeByDiv.id = "madeBy";
     madeByDiv.innerHTML = `
         <p style="margin: 0 10px;">Uploaded by <strong>${username}</strong></p>
         <img src="https://cdn.discordapp.com/avatars/${ID}/${avatar}.png"
              alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
     `;
-    detailsPanel.appendChild(madeByDiv);
+    detailsPanelMadeBy.appendChild(madeByDiv);
+
+    detailsPanel.appendChild(detailsPanelMadeBy);
+
     const detailsPanelPlace = document.getElementById("detailsPanelPlace");
     // Append to body or another container
     detailsPanelPlace.appendChild(detailsPanel);
