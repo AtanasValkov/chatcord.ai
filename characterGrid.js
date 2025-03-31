@@ -157,9 +157,9 @@ function showDetails(name, desc, img, tags, ID, username, avatar) {
              alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
     `;
     detailsPanel.appendChild(madeByDiv);
-
+    const detailsPanelPlace = document.getElementById("detailsPanelPlace");
     // Append to body or another container
-    document.body.appendChild(detailsPanel);
+    detailsPanelPlace.appendChild(detailsPanel);
 }
 
 // Functions for profile page
