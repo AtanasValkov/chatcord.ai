@@ -114,12 +114,16 @@ function showDetails(charID, name, desc, img, tags, ID, username, avatar) {
         }
         user.favCharacters = user.favCharacters || [];
     
-        if (!user.favCharacters.includes(charID)) {
+        if (user.favCharacters.includes(charID)) {
+            // Remove if already favorited
+            user.favCharacters = user.favCharacters.filter(id => id !== charID);
+        } else {
+            // Add if not already favorited
             user.favCharacters.push(charID);
         }
-
-    localStorage.setItem("user", JSON.stringify(user));
-}
+    
+        localStorage.setItem("user", JSON.stringify(user));
+        }
 
         favoriteBtn.classList.toggle('active');
         if (!requestScheduled) {
