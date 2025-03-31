@@ -134,6 +134,7 @@ function showDetails(name, desc, img, tags, ID, username, avatar) {
     // Create tag container
     const tagContainer = document.createElement("div");
     tagContainer.id = "characterTags";
+    tagContainer.classList.add("tags");
     detailsPanel.appendChild(tagContainer);
 
     // Ensure tags is a valid array before looping
