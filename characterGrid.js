@@ -98,23 +98,75 @@ function showDetails(name, desc, img, tags, ID, username, avatar) {
     characterName.id = "characterName";
     characterName.innerText = name || "Default Name";
 
+    let requestScheduled = false;
     // Create favorite button
     const favoriteBtn = document.createElement("span");
     favoriteBtn.classList.add("favorite");
     favoriteBtn.id = "favoriteBtn";
     favoriteBtn.innerHTML = '<i class="fas fa-heart"></i>';
+    favoriteBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+            alert("Please log in to like characters.");
+            return;
+        }
+        favoriteBtn.classList.toggle('active');
+        if (!requestScheduled) {
+            requestScheduled = true;
+            setTimeout(() => {
+                console.log('fav executed after 1000ms');
+                requestScheduled = false;
+            }, 1000);
+        }
+    });
 
     // Create thumbs up button
     const thumbsUpBtn = document.createElement("span");
     thumbsUpBtn.classList.add("thumbs-up");
     thumbsUpBtn.id = "thumbsUpBtn";
     thumbsUpBtn.innerHTML = '<i class="fas fa-thumbs-up"></i>';
+    thumbsUpBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+            alert("Please log in to like characters.");
+            return;
+        }
+        thumbsUpBtn.classList.toggle('active');
+        thumbsDownBtn.classList.remove('active');
+        if (!requestScheduled) {
+            requestScheduled = true;
+            setTimeout(() => {
+                console.log('like executed after 1000ms');
+                requestScheduled = false;
+            }, 1000);
+        }
+    });
+                        
 
     // Create thumbs down button
     const thumbsDownBtn = document.createElement("span");
     thumbsDownBtn.classList.add("thumbs-down");
     thumbsDownBtn.id = "thumbsDownBtn";
     thumbsDownBtn.innerHTML = '<i class="fas fa-thumbs-down"></i>';
+    thumbsDownBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+            alert("Please log in to like characters.");
+            return;
+        }
+        thumbsDownBtn.classList.toggle('active');
+        thumbsUpBtn.classList.remove('active');
+        if (!requestScheduled) {
+            requestScheduled = true;
+            setTimeout(() => {
+                console.log('dislike executed after 1000ms');
+                requestScheduled = false;
+            }, 1000);
+        }
+    });
 
     // Append elements
     detailsPanelLike.appendChild(characterName);
