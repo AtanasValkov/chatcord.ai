@@ -5,20 +5,23 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
     grid.innerHTML = ""; // Clear existing content
 
     characters.forEach(([id, character]) => {
-        // Block character if any of its tags are in the exclusion list.
-        if (character.tags.some(tag => excludeTags.includes(tag))) {
-            return;
-        }
-        
-        // If any include filters are active, the character must have at least one of those tags.
-        if (includeTags.length > 0 && !character.tags.some(tag => includeTags.includes(tag))) {
-            return;
-        }
-        
+        if (character.tags.some(tag => excludeTags.includes(tag))) return;
+        if (includeTags.length > 0 && !character.tags.some(tag => includeTags.includes(tag))) return;
+
         const charDiv = document.createElement("div");
         charDiv.classList.add("character");
+
         const imageUrl = `https://chatcord-server.onrender.com/get-characters/${id}`;
-        
+        charDiv.innerHTML = `
+            <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+            <p>${character.char_name || 'Unknown'}</p>
+            <div>${getRandomInt(1, 99)} ⬇ | ${getRandomInt(1, 99)} ❤️ | ${getRandomInt(1, 99)} ⭐ | ${getRandomInt(1, 99)} 💬</div>
+            <div class="tags"></div>
+            <button class="favorite">❤️</button>
+            <button class="thumbs-up">👍</button>
+            <button class="thumbs-down">👎</button>
+        `;
+
         if (showDetailsOnClick) {
             charDiv.onclick = () => showDetails(
                 character.char_name || "Unknown Character",
@@ -31,149 +34,38 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
             );
         }
 
-        function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
+        const favoriteBtn = charDiv.querySelector('.favorite');
+        const thumbsUpBtn = charDiv.querySelector('.thumbs-up');
+        const thumbsDownBtn = charDiv.querySelector('.thumbs-down');
+
+        favoriteBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            toggleButton(favoriteBtn);
+        });
+
+        thumbsUpBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            toggleButton(thumbsUpBtn);
+            thumbsDownBtn.classList.remove('active');
+        });
+
+        thumbsDownBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            toggleButton(thumbsDownBtn);
+            thumbsUpBtn.classList.remove('active');
+        });
+
+        function toggleButton(button) {
+            button.classList.toggle('active');
+            console.log(`${button.classList.contains('active') ? "Activated" : "Deactivated"} ${button.innerText}`);
         }
 
-        // This is temp until we start tracking this data
-        let likes = getRandomInt(1, 99);
-        let downloads = getRandomInt(1, 99);
-        let stars = getRandomInt(1, 99);
-        let comments = getRandomInt(1, 99);
-
-        if (showDetailsOnClick) {
-            charDiv.innerHTML = `
-                <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
-                <p>${character.char_name || 'Unknown'}</p>
-                <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
-                <div class="tags" id="characterTags"></div>
-            `;
-            let characterTags = charDiv.querySelector("#characterTags");
-            const tags = Array.isArray(character.tags) ? character.tags : [];  
-            tags.forEach(tag => {
-                let tagElement = document.createElement("span");
-                tagElement.classList.add("tag");
-                tagElement.textContent = tag;
-                characterTags.appendChild(tagElement);
-            });
-            // Select the heart, thumbs-up, and thumbs-down icons
-            const favoriteBtn = document.getElementById('favoriteBtn');
-            const thumbsUpBtn = document.getElementById('thumbsUpBtn');
-            const thumbsDownBtn = document.getElementById('thumbsDownBtn');
-            // Flag to track if a request is already debounced
-            let requestScheduled = false;
-            // Adding event listener for the thumbs-up button
-            favoriteBtn.addEventListener('click', () => {
-                // Check if user is logged in
-                const user = JSON.parse(localStorage.getItem("user"));
-                
-                if (!user) {
-                    alert("Please log in to like characters.");
-                    return;
-                }
-            
-                // Change the fav button color immediately
-                favoriteBtn.classList.toggle('active');
-            
-                // If no request is scheduled, debounce the request
-                if (!requestScheduled) {
-                    requestScheduled = true; // Mark that a request is scheduled
-            
-                    // Debounced function to execute the request after 1000ms
-                    setTimeout(() => {
-                        // Perform the action here (e.g., send the request)
-                        console.log('fav executed after 1000ms');
-            
-                        // Reset the flag once the action has been executed
-                        requestScheduled = false;
-            
-                        // Example of sending a request (e.g., update like status):
-                        // updateLikeStatus(characterId, true);
-                    }, 1000);
-                }
-            }, false);
-            
-            // Adding event listener for the thumbs-up button
-            thumbsUpBtn.addEventListener('click', () => {
-                // Check if user is logged in
-                const user = JSON.parse(localStorage.getItem("user"));
-                
-                if (!user) {
-                    alert("Please log in to like characters.");
-                    return;
-                }
-            
-                // Change the thumbs-up button color immediately
-                thumbsUpBtn.classList.toggle('active'); // Make the button red immediately
-            
-                // Remove active class from thumbs-down button if it's present
-                thumbsDownBtn.classList.remove('active');
-            
-                // If no request is scheduled, debounce the request
-                if (!requestScheduled) {
-                    requestScheduled = true; // Mark that a request is scheduled
-            
-                    // Debounced function to execute the request after 1000ms
-                    setTimeout(() => {
-                        // Perform the action here (e.g., send the request)
-                        console.log('like executed after 1000ms');
-            
-                        // Reset the flag once the action has been executed
-                        requestScheduled = false;
-            
-                        // Example of sending a request (e.g., update like status):
-                        // updateLikeStatus(characterId, true);
-                    }, 1000);
-                }
-            }, false);
-        
-            // Adding event listener for the thumbs-up button
-            thumbsDownBtn.addEventListener('click', () => {
-                // Check if user is logged in
-                const user = JSON.parse(localStorage.getItem("user"));
-                
-                if (!user) {
-                    alert("Please log in to like characters.");
-                    return;
-                }
-            
-                // Change the thumbs-up button color immediately
-                thumbsDownBtn.classList.toggle('active'); // Make the button red immediately
-            
-                // Remove active class from thumbs-down button if it's present
-                thumbsUpBtn.classList.remove('active');
-            
-                // If no request is scheduled, debounce the request
-                if (!requestScheduled) {
-                    requestScheduled = true; // Mark that a request is scheduled
-            
-                    // Debounced function to execute the request after 1000ms
-                    setTimeout(() => {
-                        // Perform the action here (e.g., send the request)
-                        console.log('dislike executed after 1000ms');
-            
-                        // Reset the flag once the action has been executed
-                        requestScheduled = false;
-            
-                        // Example of sending a request (e.g., update like status):
-                        // updateLikeStatus(characterId, true);
-                    }, 1000);
-                }
-            }, false);
-        } else {
-            charDiv.id = `character-${id}`;
-            charDiv.innerHTML = `
-                <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
-                <p>${character.char_name || 'Unknown'}</p>
-                <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
-                <button class="edit-btn">Edit</button>
-                <button class="delete-btn">Delete</button>
-            `;
-            charDiv.querySelector(".delete-btn").addEventListener("click", () => deleteCharacter(id));
-            charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(id));
-        }
         grid.appendChild(charDiv);
     });
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function showDetails(name, desc, img, tags, ID, username, avatar) {
