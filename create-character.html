@@ -125,7 +125,7 @@
     <input type="text" id="tagInput" placeholder="Press Enter after each Tag">
     <div id="suggestions" class="suggestions"></div>
     <button type="submit" id="submitBtn">Create Character</button>
-    <a href="index.html" class="back-btn">Back</a>
+    <a href="index.html" id="backBtn" class="back-btn">Back</a>
   </form>
 </div>
 
@@ -152,7 +152,7 @@
           document.getElementById("displayText").value = data[characterId].description || '';
           document.getElementById("genderSelect").value = data[characterId].gender || '';
           document.getElementById("sfwSelect").value = data[characterId].rating || '';
-          
+          dovument.getElementById("backBtn").href = "profile.html"
           // Populate tags if available
           if(data[characterId].tags && Array.isArray(data[characterId].tags)) {
             data[characterId].tags.forEach(tag => addTag(tag));
