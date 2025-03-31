@@ -33,18 +33,31 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
-        
+
+        // This is temp until we start tracking this data
         let likes = getRandomInt(1, 99);
         let downloads = getRandomInt(1, 99);
         let stars = getRandomInt(1, 99);
         let comments = getRandomInt(1, 99);
-                                    
-        charDiv.innerHTML = `
-            <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
-            <p>${character.char_name || 'Unknown'}</p>
-            <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
-            <div class="tags" id="characterTags"></div>
-        `;
+
+        if (showDetailsOnClick) {
+            charDiv.innerHTML = `
+                <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+                <p>${character.char_name || 'Unknown'}</p>
+                <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
+                <div class="tags" id="characterTags"></div>
+            `;
+        }
+        else {
+            charDiv.id = `character-${id}`;
+            charDiv.innerHTML = `
+                <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+                <p>${character.char_name || 'Unknown'}</p>
+                <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
+                <button class="edit-btn" onclick="editCharacter('${id}')">Edit</button>
+                <button class="delete-btn" onclick="deleteCharacter('${id}')">Delete</button>
+            `;
+        }
 
         let characterTags = charDiv.querySelector("#characterTags");
         const tags = Array.isArray(character.tags) ? character.tags : [];  
@@ -90,6 +103,36 @@ function showDetails(name, desc, img, tags, ID, username, avatar) {
 
     document.getElementById('detailsPanel').style.display = 'block';
 }
+
+// Functions for profile page
+function editCharacter(characterId) {
+    window.location.href = `create-character.html?id=${encodeURIComponent(characterId)}`;
+}
+
+function deleteCharacter(characterId) {
+  if (confirm('Are you sure you want to delete this character?')) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    fetch("https://chatcord-server.onrender.com/delete_character", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: characterId, userID: user.id })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert('Character deleted successfully.');
+        document.getElementById(`character-${characterId}`).remove();
+      } else {
+        alert('Error deleting character.');
+      }
+    })
+    .catch(err => {
+      alert('Error deleting character.');
+      console.error(err);
+    });
+  }
+}
+
 
 // Function to hide details panel
 export function hideDetails() {
