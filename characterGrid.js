@@ -20,6 +20,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         
         if (showDetailsOnClick) {
             charDiv.onclick = () => showDetails(
+                id,
                 character.char_name || "Unknown Character",
                 character.description || character.world_scenario || "No scenario available.",
                 imageUrl,
@@ -71,7 +72,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
     });
 }
 
-function showDetails(name, desc, img, tags, ID, username, avatar) {
+function showDetails(charID, name, desc, img, tags, ID, username, avatar) {
     // Remove existing details panel if it exists
     const existingPanel = document.getElementById("detailsPanel");
     if (existingPanel) {
@@ -111,6 +112,15 @@ function showDetails(name, desc, img, tags, ID, username, avatar) {
             alert("Please log in to like characters.");
             return;
         }
+        user.favCharacters = user.favCharacters || [];
+    
+        if (!user.favCharacters.includes(charID)) {
+            user.favCharacters.push(charID);
+        }
+
+    localStorage.setItem("user", JSON.stringify(user));
+}
+
         favoriteBtn.classList.toggle('active');
         if (!requestScheduled) {
             requestScheduled = true;
