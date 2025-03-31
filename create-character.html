@@ -152,7 +152,7 @@
           document.getElementById("displayText").value = data[characterId].description || '';
           document.getElementById("genderSelect").value = data[characterId].gender || '';
           document.getElementById("sfwSelect").value = data[characterId].rating || '';
-          dovument.getElementById("backBtn").href = "profile.html"
+          document.getElementById("backBtn").href = "profile.html"
           // Populate tags if available
           if(data[characterId].tags && Array.isArray(data[characterId].tags)) {
             data[characterId].tags.forEach(tag => addTag(tag));
