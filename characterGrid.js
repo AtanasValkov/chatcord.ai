@@ -139,6 +139,7 @@ export function hideDetails() {
 }
 
 if (showDetailsOnClick) {
+    alert("true")
     // Select the heart, thumbs-up, and thumbs-down icons
     const favoriteBtn = document.getElementById('favoriteBtn');
     const thumbsUpBtn = document.getElementById('thumbsUpBtn');
