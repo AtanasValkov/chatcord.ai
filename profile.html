@@ -30,12 +30,17 @@
               return;
             }
             
+            console.error(type);
             if(type == 'mine') {
               // Filter characters by userID
               const characterArray = Object.entries(data).filter(([id, character]) => character.userID === myUserId);
+              
+              console.error(type);
             }  else if(type == 'favorites') {
               // Filter characters by userID
               const characterArray = Object.entries(data).filter(([id, character]) => character.userID != myUserId);
+              
+              console.error(type);
             }
             populateGrid(characterArray,[], [], false);
     
