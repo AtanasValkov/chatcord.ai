@@ -54,7 +54,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
                 tagElement.classList.add("tag");
                 tagElement.textContent = tag;
                 characterTags.appendChild(tagElement);
-            }
+            });
         } else {
             charDiv.id = `character-${id}`;
             charDiv.innerHTML = `
