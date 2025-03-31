@@ -47,8 +47,15 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
                 <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
                 <div class="tags" id="characterTags"></div>
             `;
-        }
-        else {
+            let characterTags = charDiv.querySelector("#characterTags");
+            const tags = Array.isArray(character.tags) ? character.tags : [];  
+            tags.forEach(tag => {
+                let tagElement = document.createElement("span");
+                tagElement.classList.add("tag");
+                tagElement.textContent = tag;
+                characterTags.appendChild(tagElement);
+            });
+        } else {
             charDiv.id = `character-${id}`;
             charDiv.innerHTML = `
                 <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
@@ -58,15 +65,6 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
                 <button class="delete-btn" onclick="deleteCharacter('${id}')">Delete</button>
             `;
         }
-
-        let characterTags = charDiv.querySelector("#characterTags");
-        const tags = Array.isArray(character.tags) ? character.tags : [];  
-        tags.forEach(tag => {
-            let tagElement = document.createElement("span");
-            tagElement.classList.add("tag");
-            tagElement.textContent = tag;
-            characterTags.appendChild(tagElement);
-        });
         
         grid.appendChild(charDiv);
     });
