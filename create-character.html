@@ -150,8 +150,8 @@
           document.getElementById("charScenario").value = data[characterId].world_scenario || '';
           document.getElementById("charDialogue").value = data[characterId].example_dialogue || '';
           document.getElementById("displayText").value = data[characterId].description || '';
-          document.getElementById("genderSelect").value = data.gender || '';
-          document.getElementById("sfwSelect").value = data.rating || '';
+          document.getElementById("genderSelect").value = data[characterId].gender || '';
+          document.getElementById("sfwSelect").value = data[characterId].rating || '';
           
           // Populate tags if available
           if(data[characterId].tags && Array.isArray(data[characterId].tags)) {
