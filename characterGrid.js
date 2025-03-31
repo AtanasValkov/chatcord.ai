@@ -1,3 +1,4 @@
+
 let showDetailsOnClick = false
 export function populateGrid(characters, includeTags = [], excludeTags = [], showDetailsOnClickParam) {
     showDetailsOnClick = showDetailsOnClickParam;
@@ -5,20 +6,20 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
     grid.innerHTML = ""; // Clear existing content
 
     characters.forEach(([id, character]) => {
-        if (character.tags.some(tag => excludeTags.includes(tag))) return;
-        if (includeTags.length > 0 && !character.tags.some(tag => includeTags.includes(tag))) return;
-
+        // Block character if any of its tags are in the exclusion list.
+        if (character.tags.some(tag => excludeTags.includes(tag))) {
+            return;
+        }
+        
+        // If any include filters are active, the character must have at least one of those tags.
+        if (includeTags.length > 0 && !character.tags.some(tag => includeTags.includes(tag))) {
+            return;
+        }
+        
         const charDiv = document.createElement("div");
         charDiv.classList.add("character");
-
         const imageUrl = `https://chatcord-server.onrender.com/get-characters/${id}`;
-        charDiv.innerHTML = `
-            <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
-            <p>${character.char_name || 'Unknown'}</p>
-            <div>${getRandomInt(1, 99)} ⬇ | ${getRandomInt(1, 99)} ❤️ | ${getRandomInt(1, 99)} ⭐ | ${getRandomInt(1, 99)} 💬</div>
-            <div class="tags"></div>
-        `;
-
+        
         if (showDetailsOnClick) {
             charDiv.onclick = () => showDetails(
                 character.char_name || "Unknown Character",
@@ -30,12 +31,46 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
                 character.avatar
             );
         }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // This is temp until we start tracking this data
+        let likes = getRandomInt(1, 99);
+        let downloads = getRandomInt(1, 99);
+        let stars = getRandomInt(1, 99);
+        let comments = getRandomInt(1, 99);
+
+        if (showDetailsOnClick) {
+            charDiv.innerHTML = `
+                <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+                <p>${character.char_name || 'Unknown'}</p>
+                <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
+                <div class="tags" id="characterTags"></div>
+            `;
+            let characterTags = charDiv.querySelector("#characterTags");
+            const tags = Array.isArray(character.tags) ? character.tags : [];  
+            tags.forEach(tag => {
+                let tagElement = document.createElement("span");
+                tagElement.classList.add("tag");
+                tagElement.textContent = tag;
+                characterTags.appendChild(tagElement);
+            });
+        } else {
+            charDiv.id = `character-${id}`;
+            charDiv.innerHTML = `
+                <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+                <p>${character.char_name || 'Unknown'}</p>
+                <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
+                <button class="edit-btn">Edit</button>
+                <button class="delete-btn">Delete</button>
+            `;
+            charDiv.querySelector(".delete-btn").addEventListener("click", () => deleteCharacter(id));
+            charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(id));
+        }
         grid.appendChild(charDiv);
     });
-}
-
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function showDetails(name, desc, img, tags, ID, username, avatar) {
@@ -149,4 +184,3 @@ function createBot(name, image, description) {
     .then(data => console.log("Success:", data))
     .catch(error => console.error("Error:", error));
 }
-
