@@ -66,7 +66,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
             `;
             charDiv.querySelector(".delete-btn").addEventListener("click", () => deleteCharacter(id));
             charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(id));
-        
+        });
         grid.appendChild(charDiv);
     });
 }
