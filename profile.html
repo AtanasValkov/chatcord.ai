@@ -8,13 +8,14 @@
 <body>
   <div class="profilePage">
     <h1>
-        <span class="tab" onclick="loadCharacters('mine')">My Characters</span>
+        <span class="tab" id="myCharactersTab">My Characters</span>
         <span class="separator">|</span>
-        <span class="tab" onclick="loadCharacters('favorites')">My Favorites</span>
+        <span class="tab" id="myFavoritesTab">My Favorites</span>
     </h1>
     <button onclick="window.location.href='index.html';" class="back-btn">Back</button>
-    <div class="character-grid" id="characterGrid"> Loading characters...</div>
+    <div class="character-grid" id="characterGrid">Loading characters...</div>
   </div>
+
   <script type="module">
     import { populateGrid } from './characterGrid.js';
 
@@ -30,23 +31,26 @@
           document.getElementById('characterGrid').innerText = "User not logged in or user ID missing.";
           return;
         }
-        let characterArray = [];
-        if(type == 'mine') {
-          // Filter characters by userID
-          characterArray = Object.entries(data).filter(([id, character]) => character.userID === myUserId);
-        }  else if(type == 'favorites') {
-          // Filter characters by userID
-          characterArray = Object.entries(data).filter(([id, character]) => character.userID != myUserId);
-        }
-        populateGrid(characterArray,[], [], false);
 
+        let characterArray = (type === 'mine') 
+          ? Object.entries(data).filter(([id, character]) => character.userID === myUserId) 
+          : Object.entries(data).filter(([id, character]) => character.userID !== myUserId);
+
+        populateGrid(characterArray, [], [], false);
       } catch (error) {
         console.error("Error fetching characters:", error);
         document.getElementById('characterGrid').innerText = "Failed to load characters.";
       }
     }
-    // Call the function on page load
-    window.addEventListener('DOMContentLoaded', () => loadCharacters('mine'));
+
+    // Wait for the DOM to load
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine'));
+      document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites'));
+
+      // Load 'My Characters' by default
+      await loadCharacters('mine');
+    });
   </script>
 </body>
 </html>
