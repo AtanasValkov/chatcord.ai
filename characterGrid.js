@@ -274,7 +274,7 @@ function deleteCharacter(characterId) {
         alert('Character deleted successfully.');
         document.getElementById(`character-${characterId}`).remove();
       } else {
-        alert('Error deleting character.');
+        alert("Error: " + (data.error || "Unknown error"));
       }
     })
     .catch(err => {
