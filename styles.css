@@ -296,7 +296,6 @@ button:hover, .register-btn:hover {
         left: 0;
         height: calc(100vh - 4rem);
         z-index: 2000;
-        transform: translateX(-100%);
     }
     
     /* Active state: slide in sidebar */
