@@ -266,7 +266,7 @@
                         // Close sidebar when clicking on the overlay
                         document.getElementById('overlay').addEventListener('click', function() {
                             document.querySelector('.sidebar').classList.remove('active');
-                            document.querySelector('.details-panel').classList.remove('active');
+                            document.getElementById('detailsPanel').innerHTML = "";
                             this.classList.remove('active');
                         });
                        
