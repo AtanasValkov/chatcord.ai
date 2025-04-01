@@ -79,6 +79,11 @@ function showDetails(charID, name, desc, img, tags, ID, username, avatar) {
         existingPanel.remove();
     }
 
+    // Activate overlay to click off from display
+    const overlay = document.getElementById('overlay');
+    overlay.classList.toggle('active');
+
+
     // Create main panel div
     const detailsPanel = document.createElement("div");
     detailsPanel.classList.add("details-panel");
