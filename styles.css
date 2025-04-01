@@ -283,7 +283,7 @@ button:hover, .register-btn:hover {
 @media (max-width: 768px) {
     /* Show the hamburger menu on mobile */
     .menu-toggle {
-        display: block;
+        display: inline;
         cursor: pointer;
         font-size: 1.5rem;
         color: white;
@@ -310,6 +310,25 @@ button:hover, .register-btn:hover {
     .container {
         margin-left: 0;
         margin-top: 5rem;
+    }
+
+    .character-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 30px;
+        max-width: 1250px;
+        margin: 20px auto;
+    }
+
+    .character {
+        background: #e94560;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        width: 150px;
+        max-width: 100%;
+        transition: transform 0.3s;
     }
     
     /* Overlay: covers main content when sidebar is active */
