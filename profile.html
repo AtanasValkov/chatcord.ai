@@ -68,6 +68,12 @@
       }
     }
 
+    // Close sidebar when clicking on the overlay
+    document.getElementById('overlay').addEventListener('click', function() {
+        document.getElementById('detailsPanel')?.remove();
+        this.classList.remove('active');
+    });
+
     if (!userId) {
       // Wait for the DOM to load
       document.addEventListener('DOMContentLoaded', async () => {
