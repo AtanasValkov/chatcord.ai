@@ -10,9 +10,6 @@
 <body>
     <header>
         <div class="logo" id="logo">ChatCord</div>
-        <div class="menu-toggle" id="menuToggle">
-            <i class="fas fa-bars"></i>
-        </div>
         <nav>
             <a title="Click to go to character creator" id="createCharacterButton" href="#">Create-A-Character</a>
             <a title="Click to go to profile page" id="profileButton" href="#">Guest</a>
@@ -38,6 +35,9 @@
 
         <main>
                 <div class="sort-controls">
+                    <div class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </div>
                   <label for="sortOptions">Sort by:</label>
                   <select id="sortOptions">
                     <option value="downloads">Downloads</option>
@@ -255,9 +255,18 @@
                         document.getElementById("sortOptions").addEventListener("change", loadCharacters);
                         document.getElementById("sortOrder").addEventListener("change", loadCharacters);
 
-                        // JavaScript: Toggle Sidebar Visibility on Mobile
+                        // Toggle sidebar when the hamburger menu is clicked
                         document.getElementById('menuToggle').addEventListener('click', function() {
-                            document.querySelector('.sidebar').classList.toggle('active');
+                            const sidebar = document.querySelector('.sidebar');
+                            const overlay = document.getElementById('overlay');
+                            sidebar.classList.toggle('active');
+                            overlay.classList.toggle('active');
+                        });
+                        
+                        // Close sidebar when clicking on the overlay
+                        document.getElementById('overlay').addEventListener('click', function() {
+                            document.querySelector('.sidebar').classList.remove('active');
+                            this.classList.remove('active');
                         });
                        
                         function createCharacter() {
@@ -289,6 +298,8 @@
                     </script>
                 </div>
         </main>
+        <!-- Overlay element for mobile sidebar -->
+        <div class="overlay" id="overlay"></div>
     </div>
 
 </body>
