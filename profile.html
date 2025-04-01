@@ -22,11 +22,11 @@
     const params = new URLSearchParams(window.location.search);
     const userId = params.get('ID');
     const username = params.get('username');
-
+    let characterArray = [];
     if (userId && username) {
       // Replace the header content with the user's profile name
       const header = document.getElementById('profileHeader');
-      header.innerHTML = `<span class="tab">${username}'s Profile</span>`;
+      header.innerHTML = `<span>${username}'s Profile</span>`;
     }
     
     async function loadCharacters(type) {
@@ -44,10 +44,12 @@
           return;
         }
 
-        let characterArray = (type === 'mine') 
-          ? Object.entries(data).filter(([id, character]) => character.userID === myUserId) 
-          : Object.entries(data).filter(([id, character]) => favCharacters.includes(id));
-     
+        if (!userId && !username) {
+          characterArray = (type === 'mine') 
+            ? Object.entries(data).filter(([id, character]) => character.userID === myUserId) 
+            : Object.entries(data).filter(([id, character]) => favCharacters.includes(id));
+        } else {
+          characterArray = Object.entries(data).filter(([id, character]) => character.userID === userId);
 
         populateGrid(characterArray, [], [], false);
       } catch (error) {
@@ -56,14 +58,16 @@
       }
     }
 
-    // Wait for the DOM to load
-    document.addEventListener('DOMContentLoaded', async () => {
-      document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine'));
-      document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites'));
-
-      // Load 'My Characters' by default
-      await loadCharacters('mine');
-    });
+    if (!userId && !username) {
+      // Wait for the DOM to load
+      document.addEventListener('DOMContentLoaded', async () => {
+        document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine'));
+        document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites'));
+  
+        // Load 'My Characters' by default
+        await loadCharacters('mine');
+      });
+    }
   </script>
 </body>
 </html>
