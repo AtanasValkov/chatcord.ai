@@ -27,6 +27,11 @@ header {
     height: 2rem; /* Relative height for adaptability */
 }
 
+/* Hamburger Menu Toggle (hidden on desktop) */
+.menu-toggle {
+    display: none; /* hidden by default */
+}
+
 .logo {
     font-size: 24px;
     font-weight: bold;
@@ -274,9 +279,9 @@ button:hover, .register-btn:hover {
     background: #ff4500;
 }
 
-/* Mobile Styles: Sidebar Overlays the Content & is Collapsible */
+/* Mobile Styles */
 @media (max-width: 768px) {
-    /* Show a hamburger toggle button (you can insert this in HTML) */
+    /* Show the hamburger menu on mobile */
     .menu-toggle {
         display: block;
         cursor: pointer;
@@ -284,26 +289,45 @@ button:hover, .register-btn:hover {
         color: white;
     }
     
-    /* Sidebar becomes hidden by default and overlays the grid when active */
+    /* Sidebar adjustments: overlay style */
     .sidebar {
-        width: 80%;           /* Occupies a major portion of screen width */
-        max-width: 300px;      /* Cap maximum width */
+        width: 45%;
+        max-width: 300px;
         position: fixed;
-        top: 4rem;            /* Below header */
+        top: 4rem;
         left: 0;
         height: calc(100vh - 4rem);
-        z-index: 2000;        /* Ensure it overlays the grid */
-        transform: translateX(-100%);  /* Hide off-canvas initially */
-        transition: transform 0.3s ease-in-out;
+        z-index: 2000;
+        transform: translateX(-100%);
     }
     
-    /* When the sidebar has the .active class, slide it in */
+    /* Active state: slide in sidebar */
     .sidebar.active {
         transform: translateX(0);
     }
     
+    /* Main content takes full width when sidebar is hidden */
     .container {
-        margin-left: 0;       /* Use full width for main content */
+        margin-left: 0;
         margin-top: 5rem;
+    }
+    
+    /* Overlay: covers main content when sidebar is active */
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 4rem;
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 4rem);
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1500;
+        transition: opacity 0.3s ease-in-out;
+        opacity: 0;
+    }
+    
+    .overlay.active {
+        display: block;
+        opacity: 1;
     }
 }
