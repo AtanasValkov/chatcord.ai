@@ -44,7 +44,7 @@
           return;
         }
 
-        if (!userId && !username) {
+        if (!userId) {
           characterArray = (type === 'mine') 
             ? Object.entries(data).filter(([id, character]) => character.userID === myUserId) 
             : Object.entries(data).filter(([id, character]) => favCharacters.includes(id));
@@ -58,7 +58,7 @@
       }
     }
 
-    if (!userId && !username) {
+    if (!userId) {
       // Wait for the DOM to load
       document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine'));
@@ -67,6 +67,8 @@
         // Load 'My Characters' by default
         await loadCharacters('mine');
       });
+    } else {
+      await loadCharacters('favorites');
     }
   </script>
 </body>
