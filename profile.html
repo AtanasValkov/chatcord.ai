@@ -15,11 +15,12 @@
     </h1>
     <button onclick="window.location.href='index.html';" class="back-btn">Back</button>
     <div id="detailsPanelPlace"></div>
-    <div class="container">
+    <div class="container-profile">
       <div class="character-grid" id="characterGrid">Loading characters...</div>
     </div>
   </div>
-
+  <!-- Overlay element for mobile sidebar -->
+  <div class="overlay" id="overlay"></div>
   <script type="module">
     import { populateGrid } from './characterGrid.js';
     // Parse the URL parameters
