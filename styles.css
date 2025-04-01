@@ -296,6 +296,7 @@ button:hover, .register-btn:hover {
         left: 0;
         height: calc(100vh - 4rem);
         z-index: 2000;
+        transform: translateX(-100%);
     }
     
     /* Active state: slide in sidebar */
@@ -317,7 +318,6 @@ button:hover, .register-btn:hover {
         max-height: 85vh;
         overflow-y: auto;
         z-index: 1501;
-        transform: translateX(-100%);
     }
 
     /* Active state: slide in sidebar */
