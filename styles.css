@@ -82,11 +82,6 @@ nav a:hover {
     padding: 1.5rem;
 }
 
-.sort-controls {
-     margin-left: 300px;
-     margin-top: 10px;
- }
-
 .character-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
