@@ -18,10 +18,13 @@ header {
     justify-content: space-between;
     align-items: center;
     background: #16213e;
-    padding: 15px 20px;
-    position: sticky;
+    padding: 1rem 1.5rem;
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 1000;
+    height: 4rem; /* Relative height for adaptability */
 }
 
 .logo {
@@ -47,11 +50,14 @@ nav a:hover {
 
 /* Sidebar */
 .sidebar {
-    width: 150px;
+    width: 12vw; /* Responsive width based on viewport width */
+    min-width: 150px; /* Ensures it doesn’t get too small */
     background: #0f3460;
-    padding: 15px;
+    padding: 1rem;
     position: fixed;
-    height: 100%;
+    left: 0;
+    top: 4rem; /* Matches header height */
+    height: calc(100vh - 4rem); /* Sidebar takes full height below header */
     overflow-y: auto;
 }
 
@@ -64,12 +70,26 @@ nav a:hover {
     margin: 10px 0;
 }
 
-/* Main Content Layout */
+/* Main Content */
 .container {
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: 160px; /* Offset for fixed sidebar */
-    padding: 20px;
+    margin-left: 14vw; /* Adjusts dynamically based on sidebar */
+    margin-top: 5rem; /* Prevents overlap with header */
+    padding: 1.5rem;
+}
+
+/* Mobile View: Adjust Sidebar for Small Screens */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%; /* Full width on small screens */
+        height: auto;
+        position: relative;
+        top: 0;
+    }
+    
+    .container {
+        margin-left: 0; /* Prevents unnecessary spacing */
+        margin-top: 5rem;
+    }
 }
 
 .character-grid {
@@ -256,14 +276,6 @@ button:hover, .register-btn:hover {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .container {
-        margin-left: 0;
-    }
-    
-    .sidebar {
-        display: none;
-    }
-    
     .character-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         padding: 10px;
