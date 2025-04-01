@@ -274,16 +274,36 @@ button:hover, .register-btn:hover {
     background: #ff4500;
 }
 
-/* Responsive Design */
+/* Mobile Styles: Sidebar Overlays the Content & is Collapsible */
 @media (max-width: 768px) {
-    .character-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        padding: 10px;
+    /* Show a hamburger toggle button (you can insert this in HTML) */
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: white;
     }
     
-    .details-panel {
-        width: 100%;
-        right: 0;
-        max-height: 90vh;
+    /* Sidebar becomes hidden by default and overlays the grid when active */
+    .sidebar {
+        width: 80%;           /* Occupies a major portion of screen width */
+        max-width: 300px;      /* Cap maximum width */
+        position: fixed;
+        top: 4rem;            /* Below header */
+        left: 0;
+        height: calc(100vh - 4rem);
+        z-index: 2000;        /* Ensure it overlays the grid */
+        transform: translateX(-100%);  /* Hide off-canvas initially */
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    /* When the sidebar has the .active class, slide it in */
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .container {
+        margin-left: 0;       /* Use full width for main content */
+        margin-top: 5rem;
     }
 }
