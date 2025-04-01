@@ -240,7 +240,7 @@ function showDetails(charID, name, desc, img, tags, ID, username, avatar) {
     madeByDiv.classList.add("madeBy");
     madeByDiv.id = "madeBy";
     madeByDiv.innerHTML = `
-      <a href="profile.html?ID=${ID}&username=${encodeURIComponent(username)}" style="text-decoration: none; color: inherit;">
+      <a href="profile.html?ID=${ID}&username=${encodeURIComponent(username)}" style="text-decoration: none;display: flex;color: inherit;align-items: anchor-center;">
         <p style="margin: 0 10px;">Uploaded by <strong>${username}</strong></p>
         <img src="https://cdn.discordapp.com/avatars/${ID}/${avatar}.png"
              alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
