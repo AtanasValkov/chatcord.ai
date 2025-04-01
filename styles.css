@@ -254,7 +254,7 @@ footer {
  
  .tab:hover {
      color: darkblue; /* Darker on hover */
-
+ }
 /* Buttons */
 button, .register-btn {
     background: #ff6600;
