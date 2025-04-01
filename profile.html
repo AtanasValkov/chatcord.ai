@@ -51,7 +51,11 @@
         } else {
           characterArray = Object.entries(data).filter(([id, character]) => character.userID === userId);
         }
-        populateGrid(characterArray, [], [], false);
+        if(type === 'mine') {
+          populateGrid(characterArray, [], [], false);
+        } else {
+          populateGrid(characterArray, [], [], true);
+        }
       } catch (error) {
         console.error("Error fetching characters:", error);
         document.getElementById('characterGrid').innerText = "Failed to load characters.";
