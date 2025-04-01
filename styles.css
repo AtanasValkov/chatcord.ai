@@ -82,6 +82,10 @@ nav a:hover {
     padding: 1.5rem;
 }
 
+.container-profile {
+    padding: 1.5rem;
+}
+
 .character-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
