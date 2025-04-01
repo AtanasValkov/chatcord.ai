@@ -244,6 +244,17 @@ footer {
     align-items: center;
 }
 
+.tab {
+     cursor: pointer;
+     text-decoration: underline; /* Makes it look like a link */
+     color: blue; /* Traditional link color */
+     font-size: 24px;
+     margin: 0 15px; /* Adds spacing */
+ }
+ 
+ .tab:hover {
+     color: darkblue; /* Darker on hover */
+
 /* Buttons */
 button, .register-btn {
     background: #ff6600;
