@@ -18,7 +18,17 @@
 
   <script type="module">
     import { populateGrid } from './characterGrid.js';
+    // Parse the URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get('ID');
+    const username = params.get('username');
 
+    if (userId && username) {
+      // Replace the header content with the user's profile name
+      const header = document.getElementById('profileHeader');
+      header.innerHTML = `<span class="tab">${username}'s Profile</span>`;
+    }
+    
     async function loadCharacters(type) {
       try {
         const response = await fetch('https://chatcord-server.onrender.com/get-characters');
