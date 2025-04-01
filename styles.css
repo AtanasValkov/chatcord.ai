@@ -291,6 +291,10 @@ button:hover, .register-btn:hover {
 
 /* Mobile Styles */
 @media (max-width: 768px) {
+    .logo {
+    font-size: 12px;
+    font-weight: bold;
+    }
     /* Show the hamburger menu on mobile */
     .menu-toggle {
         display: inline;
