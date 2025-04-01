@@ -50,7 +50,7 @@
             : Object.entries(data).filter(([id, character]) => favCharacters.includes(id));
         } else {
           characterArray = Object.entries(data).filter(([id, character]) => character.userID === userId);
-
+        }
         populateGrid(characterArray, [], [], false);
       } catch (error) {
         console.error("Error fetching characters:", error);
