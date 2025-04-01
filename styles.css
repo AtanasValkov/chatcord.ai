@@ -78,21 +78,26 @@ nav a:hover {
 /* Main Content */
 .container {
     margin-left: 14vw; /* Adjusts dynamically based on sidebar */
-    margin-top: 5rem; /* Prevents overlap with header */
+    margin-top: 4rem; /* Prevents overlap with header */
     padding: 1.5rem;
 }
+
+.sort-controls {
+     margin-left: 300px;
+     margin-top: 10px;
+ }
 
 .character-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
     gap: 30px;
     max-width: 1250px;
-    margin: 20px auto;
+    margin: 1vw 0vw;
 }
 
 .character {
     background: #e94560;
-    padding: 15px;
+    padding: 10px;
     border-radius: 8px;
     text-align: center;
     cursor: pointer;
