@@ -10,6 +10,9 @@
 <body>
     <header>
         <div class="logo" id="logo">ChatCord</div>
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </div>
         <nav>
             <a title="Click to go to character creator" id="createCharacterButton" href="#">Create-A-Character</a>
             <a title="Click to go to profile page" id="profileButton" href="#">Guest</a>
@@ -252,6 +255,10 @@
                         document.getElementById("sortOptions").addEventListener("change", loadCharacters);
                         document.getElementById("sortOrder").addEventListener("change", loadCharacters);
 
+                        // JavaScript: Toggle Sidebar Visibility on Mobile
+                        document.getElementById('menuToggle').addEventListener('click', function() {
+                            document.querySelector('.sidebar').classList.toggle('active');
+                        });
                        
                         function createCharacter() {
                             const user = JSON.parse(localStorage.getItem("user"));
