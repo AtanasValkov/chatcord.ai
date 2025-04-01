@@ -1,3 +1,4 @@
+/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,6 +7,12 @@ body {
     color: white;
 }
 
+h1, h2, p {
+    color: white;
+    margin: 0;
+}
+
+/* Header */
 header {
     display: flex;
     justify-content: space-between;
@@ -13,7 +20,8 @@ header {
     background: #16213e;
     padding: 15px 20px;
     position: sticky;
-    top: 0px;
+    top: 0;
+    z-index: 1000;
 }
 
 .logo {
@@ -25,6 +33,11 @@ nav a {
     color: white;
     text-decoration: none;
     margin: 0 10px;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #ffcc00;
 }
 
 .discord-link {
@@ -32,15 +45,14 @@ nav a {
     font-weight: bold;
 }
 
-.container {
-    display: flex;
-}
-
+/* Sidebar */
 .sidebar {
     width: 150px;
     background: #0f3460;
     padding: 15px;
     position: fixed;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .sidebar ul {
@@ -52,57 +64,63 @@ nav a {
     margin: 10px 0;
 }
 
-.search-bar {
-    width: 80%;
-    padding: 10px;
-    margin-bottom: 20px;
+/* Main Content Layout */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 160px; /* Offset for fixed sidebar */
+    padding: 20px;
 }
 
 .character-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-    gap: 38px;
+    gap: 30px;
     max-width: 1250px;
-    padding: 0px 200px;
     margin: 20px auto;
 }
 
 .character {
     background: #e94560;
-    padding: 10px;
+    padding: 15px;
     border-radius: 8px;
     text-align: center;
     cursor: pointer;
-    width: 200px; /* Ensures uniform card size */
-    max-width: 100%; /* Prevents stretching beyond a reasonable size */
+    width: 200px;
+    max-width: 100%;
+    transition: transform 0.3s;
 }
 
+.character:hover {
+    transform: scale(1.05);
+}
 
 .character img {
-    width: 100%;        /* Ensures it fills the container width */
-    height: 200px;      /* Set a fixed height for consistency */
-    object-fit: cover;  /* Crops the image while maintaining aspect ratio */
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
     border-radius: 8px;
 }
 
+/* Details Panel */
 .details-panel {
-    display: block;
-    position: fixed; /* or absolute */
+    display: none;
+    position: fixed;
     width: 400px;
-    right: 0px;
+    right: 10px;
     background: #0f3460;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     max-height: 85vh;
+    overflow-y: auto;
 }
-
 
 .details-panel img {
     width: 100%;
     border-radius: 8px;
     max-height: 53vh;
-    object-fit: cover; 
+    object-fit: cover;
 }
 
 .details-panel p {
@@ -110,125 +128,55 @@ nav a {
     max-height: 10vh;
 }
 
-.details-panel-like {
-    display: flex;
-    align-items: center;
-}
-
-/* Style for the heart icon (favorite) */
-.favorite {
+/* Interaction Buttons */
+.favorite, .thumbs-up, .thumbs-down {
     font-size: 24px;
     color: #ccc;
     cursor: pointer;
     margin-left: 15px;
-    transition: color 0.3s ease;
+    transition: transform 0.3s ease, color 0.3s;
 }
 
-/* When heart is clicked and filled */
-.favorite.active {
-    color: red;
-    transform: scale(1.2);  
-}
-
-/* Style for thumbs up and thumbs down icons */
-.thumbs-up, .thumbs-down {
-    font-size: 24px;
-    color: #ccc;
-    cursor: pointer;
-    margin-left: 15px;
-    transition: color 0.3s ease;
-}
-
-/* Thumbs-up active color and background change */
-.thumbs-up.active {
-    color: #4caf50;  /* Green background when active */
-    transform: scale(1.2);  /* Slightly enlarge when active */
-}
-
-/* Thumbs-down active color and background change */
-.thumbs-down.active {
-    color: #f44336;  /* Red background when active */
-    transform: scale(1.2);  /* Slightly enlarge when active */
-}
-
-/* Hover effect */
-.thumbs-up:hover, .thumbs-down:hover, .favorite:hover {
+.favorite:hover, .thumbs-up:hover, .thumbs-down:hover {
     opacity: 0.7;
 }
 
-
-.details-panel-madeBy {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Adjust spacing */
-}
-.madeBy {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.favorite.active {
+    color: red;
+    transform: scale(1.2);
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 15px;
-    max-width: 1200px;
-    margin: 20px auto;
-}
-.grid a {
-    display: block;
-    text-decoration: none;
-    border: 2px solid white;
-    padding: 10px;
-    border-radius: 10px;
-}
-.grid img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    transition: transform 0.2s;
-}
-.grid img:hover {
-    transform: scale(1.1);
-}
-.register-btn {
-    display: inline-block;
-    background: #ff6600;
-    color: white;
-    padding: 10px 20px;
-    margin: 20px;
-    font-size: 18px;
-    border-radius: 5px;
-    text-decoration: none;
-}
-p {
-    color: white;
-    width: 100%;
-}
-h1 {
-    color: white;
-}
-h2 {
-    color: white;
+.thumbs-up.active {
+    color: #4caf50;
+    transform: scale(1.2);
 }
 
+.thumbs-down.active {
+    color: #f44336;
+    transform: scale(1.2);
+}
+
+/* Tags */
 .tags {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* Centers the tags */
+    justify-content: center;
     gap: 5px;
 }
+
 .tag {
     background: #ff6600;
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background 0.3s;
 }
+
 .tag:hover {
     background: #ff4500;
 }
 
-/* Hide default appearance and style the checkbox */
+/* Exclude Checkbox */
 .exclude-checkbox {
     appearance: none;
     -webkit-appearance: none;
@@ -240,72 +188,90 @@ h2 {
     position: relative;
     margin-left: 8px;
     vertical-align: middle;
-    border-radius: 3px; /* Optional: makes the checkbox corners rounded */
+    border-radius: 3px;
 }
 
-/* When the exclude checkbox is checked, show a red background with an "X" */
 .exclude-checkbox:checked {
     background-color: red;
 }
 
 .exclude-checkbox:checked::after {
-    content: "✖";  /* The "X" mark */
+    content: "✖";
     color: #fff;
     font-size: 17px;
     position: absolute;
     top: -4px;
     left: 0px;
 }
-.sort-controls {
-    margin-left: 300px;
-    margin-top: 10px;
+
+/* Footer */
+footer {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/*Profile.html*/
+/* Buttons */
+button, .register-btn {
+    background: #ff6600;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover, .register-btn:hover {
+    background: #ff4500;
+}
+
+/* Profile Page */
 .profilePage {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
 }
+
 .back-btn {
     padding: 10px 20px;
-}
-
-.tab {
-    cursor: pointer;
-    text-decoration: underline; /* Makes it look like a link */
-    color: blue; /* Traditional link color */
-    font-size: 24px;
-    margin: 0 15px; /* Adds spacing */
-}
-
-.tab:hover {
-    color: darkblue; /* Darker on hover */
-}
-
-.separator {
-    font-size: 24px;
-    color: gray;
-}
-/*End of profile.html*/
-
-        /* Footer */
-footer {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 0px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center; /* Centers inline text */
-    display: flex;
-    justify-content: center; /* Centers flex items horizontally */
-    align-items: center; /* Centers flex items vertically */
-}
-button {
     background: #ff6600;
     color: white;
+    border: none;
     cursor: pointer;
+    transition: background 0.3s;
 }
-button:hover {
+
+.back-btn:hover {
     background: #ff4500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        margin-left: 0;
+    }
+    
+    .sidebar {
+        display: none;
+    }
+    
+    .character-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        padding: 10px;
+    }
+    
+    .details-panel {
+        width: 100%;
+        right: 0;
+        max-height: 90vh;
+    }
 }
