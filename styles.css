@@ -82,21 +82,6 @@ nav a:hover {
     padding: 1.5rem;
 }
 
-/* Mobile View: Adjust Sidebar for Small Screens */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%; /* Full width on small screens */
-        height: auto;
-        position: relative;
-        top: 0;
-    }
-    
-    .container {
-        margin-left: 0; /* Prevents unnecessary spacing */
-        margin-top: 5rem;
-    }
-}
-
 .character-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
@@ -131,7 +116,8 @@ nav a:hover {
 .details-panel {
     display: block;
     position: fixed;
-    width: 400px;
+    width: 20%;
+    top: 4rem;
     right: 0px;
     background: #0f3460;
     padding: 20px;
@@ -139,6 +125,7 @@ nav a:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     max-height: 85vh;
     overflow-y: auto;
+    z-index: 1000;
 }
 
 .details-panel img {
@@ -180,6 +167,17 @@ nav a:hover {
     color: #f44336;
     transform: scale(1.2);
 }
+
+ .details-panel-madeBy {
+     display: flex;
+     align-items: center;
+     gap: 10px; /* Adjust spacing */
+ }
+ .madeBy {
+     display: flex;
+     align-items: center;
+     gap: 10px;
+ }
 
 /* Tags */
 .tags {
@@ -304,6 +302,22 @@ button:hover, .register-btn:hover {
     /* Active state: slide in sidebar */
     .sidebar.active {
         transform: translateX(0);
+    }
+
+    /* Details Panel */
+    .details-panel {
+        display: block;
+        position: fixed;
+        width: 60%;
+        top: 4rem;
+        right: 0px;
+        background: #0f3460;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        max-height: 85vh;
+        overflow-y: auto;
+        z-index: 1000;
     }
     
     /* Main content takes full width when sidebar is hidden */
