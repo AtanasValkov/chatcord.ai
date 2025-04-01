@@ -125,7 +125,7 @@ nav a:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     max-height: 85vh;
     overflow-y: auto;
-    z-index: 1000;
+    z-index: 1501;
 }
 
 .details-panel img {
@@ -317,7 +317,12 @@ button:hover, .register-btn:hover {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         max-height: 85vh;
         overflow-y: auto;
-        z-index: 1000;
+        z-index: 1501;
+    }
+
+    /* Active state: slide in sidebar */
+    .details-panel.active {
+        transform: translateX(0);
     }
     
     /* Main content takes full width when sidebar is hidden */
