@@ -24,7 +24,7 @@ header {
     left: 0;
     width: 100%;
     z-index: 1000;
-    height: 4rem; /* Relative height for adaptability */
+    height: 2rem; /* Relative height for adaptability */
 }
 
 .logo {
