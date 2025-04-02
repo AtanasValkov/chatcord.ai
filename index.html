@@ -13,7 +13,6 @@
         <nav>
             <a title="Click to go to character creator" id="createCharacterButton" href="#">Create-A-Character</a>
             <a title="Click to go to profile page" id="profileButton" href="#">Guest</a>
-            <a href="#">Rules</a>
             <a href="https://chatcord-server.onrender.com/login" id="loginButton">Login</a>
             <a href="https://discord.gg/PEWCwNAv" target="_blank">
                 <img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" 
@@ -69,7 +68,13 @@
                                 document.getElementById("profileButton").textContent = user.username;
                                 document.getElementById("loginButton").href = "#";
                                 document.getElementById("loginButton").onclick = logout;
-                                document.getElementById("logo").style.backgroundImage = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
+                                const avatarIcon = document.createElement("img");
+                                avatarIcon.src = `https://cdn.discordapp.com/avatars/${ID}/${avatar}.png`;
+                                avatarIcon.alt = "Avatar";
+                                avatarIcon.style.width = "50px";
+                                avatarIcon.style.height = "50px";
+                                avatarIcon.style.borderRadius = "50%";
+                                document.getElementById("profileButton").appendChild(avatarIcon);
                             }
                             else if (code) {
                                 // Send 'code' to Flask backend
