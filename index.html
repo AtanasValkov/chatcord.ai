@@ -101,65 +101,62 @@
                         }
 
                         async function loadTags() {
-                            try {
-                                const response = await fetch('https://chatcord-server.onrender.com/get-tags');
-                                const tags = await response.json();
-                                if (!response.ok) {
-                                    alert("Server is loading, come back in a minute or two!")
-                                }
-                                const tagList = document.querySelector(".sidebar ul");
-                                tagList.innerHTML = ""; // Clear previous tags
+                        try {
+                          const response = await fetch('https://chatcord-server.onrender.com/get-tags');
+                          const tags = await response.json();
+                          if (!response.ok) {
+                            alert("Server is loading, come back in a minute or two!");
+                          }
+                          const tagList = document.querySelector(".sidebar ul");
+                          tagList.innerHTML = ""; // Clear previous tags
                         
-                                    tags.forEach(([tag, frequency]) => {  // Destructure name and count
-                                        const listItem = document.createElement("li");
-                                         
-                                    // Create the include checkbox (left side)
-                                    const includeCheckbox = document.createElement("input");
-                                    includeCheckbox.type = "checkbox";
-                                    includeCheckbox.className = "include-checkbox";
-                                    includeCheckbox.dataset.tag = tag;
-                                    // Set default state as desired (example: some tags start checked)
-                                    if (["Male", "Female", "SFW"].includes(tag)) {
-                                        includeCheckbox.checked = true;
-                                    }
-                                    includeCheckbox.addEventListener("change", () => {
-                                        // If include is checked, uncheck exclude for the same tag
-                                        if (includeCheckbox.checked) {
-                                            excludeCheckbox.checked = false;
-                                        }
-                                        loadCharacters();
-                                    });
-
-                                    // Create a label for the tag text
-                                    const tagLabel = document.createElement("span");
-                                    tagLabel.textContent = `${tag} (${frequency})`;  // Display count next to tag name
-                                    tagLabel.style.margin = "0 8px";  // spacing between checkboxes and text
-                                                
-                                    // Create the exclude checkbox (right side)
-                                    const excludeCheckbox = document.createElement("input");
-                                    excludeCheckbox.type = "checkbox";
-                                    excludeCheckbox.className = "exclude-checkbox";
-                                    excludeCheckbox.dataset.tag = tag;
-                                    if (["NSFW"].includes(tag)) {
-                                        excludeCheckbox.checked = true;
-                                    }
-                                    excludeCheckbox.addEventListener("change", () => {
-                                        // If exclude is checked, uncheck include for the same tag
-                                        if (excludeCheckbox.checked) {
-                                            includeCheckbox.checked = false;
-                                        }
-                                        loadCharacters();
-                                    });
-                                    // Append the elements in order: include checkbox, tag label, then exclude checkbox with its label
-                                    listItem.appendChild(includeCheckbox);
-                                    listItem.appendChild(tagLabel);
-                                    listItem.appendChild(excludeCheckbox);
-                        
-                                    tagList.appendChild(listItem);
-                                });
-                            } catch (error) {
-                                console.error("Error loading tags:", error);
+                          tags.forEach(([tag, frequency]) => {
+                            const listItem = document.createElement("li");
+                            
+                            // Create include checkbox
+                            const includeCheckbox = document.createElement("input");
+                            includeCheckbox.type = "checkbox";
+                            includeCheckbox.className = "include-checkbox";
+                            includeCheckbox.dataset.tag = tag;
+                            if (["Male", "Female", "SFW"].includes(tag)) {
+                              includeCheckbox.checked = true;
                             }
+                            includeCheckbox.addEventListener("change", () => {
+                              if (includeCheckbox.checked) {
+                                excludeCheckbox.checked = false;
+                              }
+                              loadCharacters();
+                            });
+                        
+                            // Create the tag label
+                            const tagLabel = document.createElement("span");
+                            tagLabel.className = "tag-label";
+                            tagLabel.textContent = `${tag} (${frequency})`;
+                        
+                            // Create exclude checkbox
+                            const excludeCheckbox = document.createElement("input");
+                            excludeCheckbox.type = "checkbox";
+                            excludeCheckbox.className = "exclude-checkbox";
+                            excludeCheckbox.dataset.tag = tag;
+                            if (["NSFW"].includes(tag)) {
+                              excludeCheckbox.checked = true;
+                            }
+                            excludeCheckbox.addEventListener("change", () => {
+                              if (excludeCheckbox.checked) {
+                                includeCheckbox.checked = false;
+                              }
+                              loadCharacters();
+                            });
+                        
+                            // Append elements in order
+                            listItem.appendChild(includeCheckbox);
+                            listItem.appendChild(tagLabel);
+                            listItem.appendChild(excludeCheckbox);
+                        
+                            tagList.appendChild(listItem);
+                          });
+                        } catch (error) {
+                          console.error("Error loading tags:", error);
                         }
 
                         async function loadCharacters() {
@@ -269,6 +266,17 @@
                             document.getElementById('detailsPanel')?.remove();
                             this.classList.remove('active');
                         });
+
+                        // Tag filtering
+                        document.getElementById("searchBar").addEventListener("input", function() {
+                          const filter = this.value.toLowerCase();
+                          document.querySelectorAll(".sidebar li").forEach(li => {
+                            // Assuming the tag name is in an element with class "tag-label"
+                            const tagText = li.querySelector(".tag-label").textContent.toLowerCase();
+                            li.style.display = tagText.includes(filter) ? "flex" : "none";
+                          });
+                        });
+
                        
                         function createCharacter() {
                             const user = JSON.parse(localStorage.getItem("user"));
