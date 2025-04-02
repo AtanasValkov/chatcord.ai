@@ -37,6 +37,10 @@ header {
     font-weight: bold;
 }
 
+nav {
+    margin: 1vw 2vw;
+}
+
 nav a {
     color: white;
     text-decoration: none;
