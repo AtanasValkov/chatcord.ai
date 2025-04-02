@@ -9,6 +9,7 @@
 </head>
 <body>
     <header>
+        <button class="header-toggle" id="headerToggle">☰</button>
         <div class="logo" id="logo">ChatCord</div>
         <nav>
             <a title="Click to go to character creator" id="createCharacterButton" href="#">Create-A-Character</a>
@@ -270,6 +271,11 @@
                             const overlay = document.getElementById('overlay');
                             sidebar.classList.toggle('active');
                             overlay.classList.toggle('active');
+                        });
+
+                        // Mobile Header Toggle
+                        document.getElementById("headerToggle").addEventListener("click", function() {
+                            document.querySelector("nav").classList.toggle("active");
                         });
                         
                         // Close sidebar when clicking on the overlay
