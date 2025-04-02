@@ -59,12 +59,29 @@ header {
 
 /* Profile Button Styling */
 #profileButton {
-    display: inline-block;
-    max-width: 100px; /* Adjust as needed */
+    display: flex;
+    align-items: center;
+    max-width: 120px; /* Adjust as needed */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    vertical-align: middle;
+}
+
+/* Username inside Profile Button */
+#profileButton span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 80px; /* Adjust as needed */
+}
+
+/* Avatar Styling */
+#profileButton img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-left: 8px;
+    flex-shrink: 0; /* Prevents the avatar from shrinking */
 }
 
 nav a {
