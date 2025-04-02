@@ -71,6 +71,15 @@ nav a:hover {
     padding: 0;
 }
 
+/* Style the label to take available space and add ellipsis for long names */
+.tag-label {
+  flex: 1; /* Takes up remaining space between the checkboxes */
+  margin: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .sidebar li {
     margin: 10px 0;
 }
