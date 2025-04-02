@@ -69,7 +69,7 @@
                                 document.getElementById("loginButton").href = "#";
                                 document.getElementById("loginButton").onclick = logout;
                                 const avatarIcon = document.createElement("img");
-                                avatarIcon.src = `https://cdn.discordapp.com/avatars/${ID}/${avatar}.png`;
+                                avatarIcon.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
                                 avatarIcon.alt = "Avatar";
                                 avatarIcon.style.width = "50px";
                                 avatarIcon.style.height = "50px";
@@ -96,7 +96,13 @@
                                             document.getElementById("profileButton").textContent = user.username;
                                             document.getElementById("loginButton").href = "#";
                                             document.getElementById("loginButton").onclick = logout;
-                                            document.getElementById("logo").backgroundImage = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;   
+                                            const avatarIcon = document.createElement("img");
+                                            avatarIcon.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+                                            avatarIcon.alt = "Avatar";
+                                            avatarIcon.style.width = "50px";
+                                            avatarIcon.style.height = "50px";
+                                            avatarIcon.style.borderRadius = "50%";
+                                            document.getElementById("profileButton").appendChild(avatarIcon);
                                         }
                                     }
                                 })
@@ -238,9 +244,9 @@
                             window.location.href = "index.html";  // Redirect to login page
                             document.getElementById("loginButton").textContent = "Login";
                             document.getElementById("profileButton").textContent = "Guest";
+                            document.getElementById("profileButton").classList.remove("img");
                             document.getElementById("loginButton").addAttribute("href");
                             document.getElementById("loginButton").href = "https://chatcord-server.onrender.com/login";
-                            document.getElementById("logo").removeAttribute("backgroundImage");   
                         }
 
                         document.getElementById("createCharacterButton").addEventListener("click", function (event) {
@@ -268,7 +274,7 @@
                         
                         // Close sidebar when clicking on the overlay
                         document.getElementById('overlay').addEventListener('click', function() {
-                            document.querySelector('.sidebar').classList.remove('active');
+                            document.querySelector('.sidebar').classList.('active');
                             document.getElementById('detailsPanel')?.remove();
                             this.classList.remove('active');
                         });
