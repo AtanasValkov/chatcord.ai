@@ -361,7 +361,7 @@ button:hover, .register-btn:hover {
     .character-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 30px;
+        gap: 4vw;
         max-width: 1250px;
         margin: 20px auto;
     }
@@ -395,4 +395,14 @@ button:hover, .register-btn:hover {
         display: block;
         opacity: 1;
     }
+
+@media (max-width: 400px) {
+    .character-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+        gap: 10vw;
+        max-width: 1250px;
+        margin: 20px auto;
+    }
+}
 }
