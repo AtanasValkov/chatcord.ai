@@ -49,7 +49,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
                 <div class="tags" id="characterTags"></div>
             `;
             let characterTags = charDiv.querySelector("#characterTags");
-            const tags = Array.isArray(character.tags) ? character.tags : [];  
+            const tags = Array.isArray(character.tags) ? character.tags.slice(0, 6) : []; // Limit to 6 tags
             tags.forEach(tag => {
                 let tagElement = document.createElement("span");
                 tagElement.classList.add("tag");
