@@ -55,8 +55,7 @@ nav a:hover {
 
 /* Sidebar */
 .sidebar {
-    width: 12vw; /* Responsive width based on viewport width */
-    min-width: 150px; /* Ensures it doesn’t get too small */
+    width: 10vw; /* Responsive width based on viewport width */
     background: #0f3460;
     padding: 1rem;
     position: fixed;
@@ -89,7 +88,7 @@ nav a:hover {
 
 /* Main Content */
 .container {
-    margin-left: 14vw; /* Adjusts dynamically based on sidebar */
+    margin-left: 11vw; /* Adjusts dynamically based on sidebar */
     margin-top: 4rem; /* Prevents overlap with header */
     padding: 1.5rem;
 }
@@ -100,8 +99,8 @@ nav a:hover {
 
 .character-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
     max-width: 1250px;
     margin: 1vw 0vw;
 }
