@@ -62,20 +62,27 @@
                             // Extract 'code' from the URL
                             const urlParams = new URLSearchParams(window.location.search);
                             const code = urlParams.get("code");
-                            const user = JSON.parse(localStorage.getItem("user"));
-                            
+                            const user = JSON.parse(localStorage.getItem("user"));            
                             if (user) {
                                 document.getElementById("loginButton").textContent = "Logout";
-                                document.getElementById("profileButton").textContent = user.username;
                                 document.getElementById("loginButton").href = "#";
                                 document.getElementById("loginButton").onclick = logout;
+                            
+                                const profileButton = document.getElementById("profileButton");
+                                profileButton.innerHTML = ""; // Clear previous content
+                            
+                                // Create a span for the username
+                                const usernameSpan = document.createElement("span");
+                                usernameSpan.textContent = user.username;
+                            
+                                // Create an avatar image
                                 const avatarIcon = document.createElement("img");
                                 avatarIcon.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
                                 avatarIcon.alt = "Avatar";
-                                avatarIcon.style.width = "30px";
-                                avatarIcon.style.height = "30px";
-                                avatarIcon.style.borderRadius = "50%";
-                                document.getElementById("profileButton").appendChild(avatarIcon);
+                            
+                                // Append both elements to the profile button
+                                profileButton.appendChild(usernameSpan);
+                                profileButton.appendChild(avatarIcon);
                             }
                             else if (code) {
                                 // Send 'code' to Flask backend
@@ -94,16 +101,24 @@
                                         const user = JSON.parse(localStorage.getItem("user"));
                                         if (user) {
                                             document.getElementById("loginButton").textContent = "Logout";
-                                            document.getElementById("profileButton").textContent = user.username;
                                             document.getElementById("loginButton").href = "#";
                                             document.getElementById("loginButton").onclick = logout;
+                                        
+                                            const profileButton = document.getElementById("profileButton");
+                                            profileButton.innerHTML = ""; // Clear previous content
+                                        
+                                            // Create a span for the username
+                                            const usernameSpan = document.createElement("span");
+                                            usernameSpan.textContent = user.username;
+                                        
+                                            // Create an avatar image
                                             const avatarIcon = document.createElement("img");
                                             avatarIcon.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
                                             avatarIcon.alt = "Avatar";
-                                            avatarIcon.style.width = "50px";
-                                            avatarIcon.style.height = "50px";
-                                            avatarIcon.style.borderRadius = "50%";
-                                            document.getElementById("profileButton").appendChild(avatarIcon);
+                                        
+                                            // Append both elements to the profile button
+                                            profileButton.appendChild(usernameSpan);
+                                            profileButton.appendChild(avatarIcon);
                                         }
                                     }
                                 })
