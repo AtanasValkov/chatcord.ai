@@ -42,8 +42,8 @@ header {
 }
 
 .logo {
-    width: 10vw; /* Adjust size as needed */
-    height: 10vw;
+    width: 3vw; /* Adjust size as needed */
+    height: 3vw;
 }
 
 .title {
@@ -142,7 +142,6 @@ nav a:hover {
 /* Main Content */
 .container {
     margin-left: 11vw; /* Adjusts dynamically based on sidebar */
-    margin-top: 4rem; /* Prevents overlap with header */
     padding: 1.5rem;
 }
 
@@ -393,6 +392,8 @@ button:hover, .register-btn:hover {
     .logo {
     font-size: 20px;
     font-weight: bold;
+    width: 3vw; /* Adjust size as needed */
+    height: 3vw;
     }
     /* Show the hamburger menu on mobile */
     .menu-toggle {
