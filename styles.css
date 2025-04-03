@@ -23,7 +23,7 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 1502;
     height: 2rem; /* Relative height for adaptability */
 }
 
@@ -376,7 +376,7 @@ button:hover, .register-btn:hover {
         top: 0;
         left: 0;
         width: 100%;
-        z-index: 1000;
+        z-index: 1502;
         height: 2rem; /* Relative height for adaptability */
     }
     .logo {
