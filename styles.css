@@ -470,10 +470,10 @@ button:hover, .register-btn:hover {
     .overlay {
         display: none;
         position: fixed;
-        top: 4rem;
+        top: 0rem;
         left: 0;
         width: 100%;
-        height: calc(100vh - 4rem);
+        height: 110vh;
         background: rgba(0, 0, 0, 0.5);
         z-index: 1500;
         transition: opacity 0.3s ease-in-out;
