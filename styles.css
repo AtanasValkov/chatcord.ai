@@ -392,8 +392,8 @@ button:hover, .register-btn:hover {
     .logo {
     font-size: 20px;
     font-weight: bold;
-    width: 3vw; /* Adjust size as needed */
-    height: 3vw;
+    width: 9vw; /* Adjust size as needed */
+    height: 9vw;
     }
     /* Show the hamburger menu on mobile */
     .menu-toggle {
