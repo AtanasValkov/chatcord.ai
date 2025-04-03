@@ -198,12 +198,9 @@
 
                                 // Get the search query and convert it to lowercase for case-insensitive matching
                                 const searchQuery = document.getElementById("searchBarCharacters").value.toLowerCase();
-                                if (searchQuery) {
-                                    // Filter characters based on the search query
-                                    const filteredCharacters = Object.entries(characters).filter(([id, char]) => 
-                                        char.char_name.toLowerCase().includes(searchQuery)
-                                    );
-                                }
+                                const filteredCharacters = Object.entries(characters).filter(([id, char]) => 
+                                    searchQuery === "" || char.char_name.toLowerCase().includes(searchQuery)
+                                );
 
                                 // Get the selected sort option and order
                                 const sortOption = document.getElementById("sortOptions").value;
