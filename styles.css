@@ -44,6 +44,7 @@ nav {
     display: flex;
     flex-direction: row;
     position: absolute;
+    align-items: center;
     right: 0;
     background: #16213e;
     padding: 1rem;
