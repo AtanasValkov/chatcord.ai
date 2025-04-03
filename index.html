@@ -295,6 +295,7 @@
                         document.getElementById('overlay').addEventListener('click', function() {
                             document.querySelector('.sidebar').classList.remove('active');
                             document.getElementById('detailsPanel')?.remove();
+                            document.querySelector("nav").style.display = "none";
                             this.classList.remove('active');
                         });
 
