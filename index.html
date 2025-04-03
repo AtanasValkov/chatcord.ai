@@ -272,7 +272,6 @@
                             profilePage();
                         });
 
-
                         // Add event listeners on the elements (outside of loadCharacters)
                         document.getElementById("sortOptions").addEventListener("change", loadCharacters);
                         document.getElementById("sortOrder").addEventListener("change", loadCharacters);
@@ -288,6 +287,8 @@
                         // Mobile Header Toggle
                         document.getElementById("headerToggle").addEventListener("click", function() {
                             document.querySelector("nav").classList.toggle("active");
+                            const overlay = document.getElementById('overlay');
+                            overlay.classList.toggle('active');
                         });
                         
                         // Close sidebar when clicking on the overlay
