@@ -89,6 +89,18 @@ function showDetails(charID, name, desc, img, tags, ID, username, avatar) {
     detailsPanel.classList.add("details-panel");
     detailsPanel.id = "detailsPanel";
 
+    // Create close button
+    const closeButton = document.createElement("span");
+    closeButton.classList.add("close-button");
+    closeButton.innerHTML = "&times;";
+    closeButton.addEventListener("click", () => {
+        detailsPanel.remove();
+        overlay.classList.remove("active");
+    });
+
+    // Append close button to details panel
+    detailsPanel.appendChild(closeButton);
+
     // Create image element
     const characterImage = document.createElement("img");
     characterImage.id = "characterImage";
