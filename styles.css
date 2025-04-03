@@ -40,21 +40,15 @@ header {
     font-weight: bold;
 }
 
-.nav {
-    display: none;
-    flex-direction: column;
+nav {
+    display: flex;
+    flex-direction: row;
     position: absolute;
-    top: 3rem;
     right: 0;
     background: #16213e;
-    width: 200px;
     padding: 1rem;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     margin: 1vw 2vw;
-}
-
-.nav.active {
-    display: flex;
 }
 
 /* Profile Button Styling */
@@ -368,6 +362,30 @@ button:hover, .register-btn:hover {
         color: white;
         font-size: 24px;
         cursor: pointer;
+    }
+
+    nav {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    align-items: center;
+    top: 4rem;
+    right: 0;
+    background: #16213e;
+    padding: 1rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 0vw 13vw;
+    }
+    
+    nav.active {
+        display: flex;
+    }
+
+    nav a {
+    color: white;
+    text-decoration: none;
+    margin: 2vw 0vw;
+    transition: color 0.3s;
     }
         
     /* Sidebar adjustments: overlay style */
