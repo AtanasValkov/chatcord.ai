@@ -49,7 +49,7 @@
                     <option value="desc">Descending</option>
                     <option value="asc">Ascending</option>
                   </select>
-                <input type="text" id="searchBarCharacters" placeholder="Search..." oninput="loadCharacters()" />
+                  <input type="text" id="searchBarCharacters" placeholder="Search..." />
                 </div>
             
                 <div class="character-grid" id="characterGrid">
@@ -315,6 +315,10 @@
                             li.style.display = tagText.includes(filter) ? "flex" : "none";
                           });
                         });
+
+                        // Character grid search bar
+                        document.getElementById("searchBarCharacters").addEventListener("input", loadCharacters);
+
 
                        
                         function createCharacter() {
