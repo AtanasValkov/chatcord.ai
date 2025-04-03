@@ -113,6 +113,7 @@ nav a:hover {
     padding: 1rem;
     position: fixed;
     left: 0;
+    min-width: 10rem;
     top: 4rem; /* Matches header height */
     height: calc(100vh - 4rem); /* Sidebar takes full height below header */
     overflow-y: auto;
