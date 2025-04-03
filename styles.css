@@ -38,7 +38,14 @@ header {
 .logo {
     font-size: 24px;
     font-weight: bold;
+    background-image: url('/favicon.ico'); /* Use the favicon or a larger logo */
+    background-size: contain; /* Makes sure the full image fits */
+    background-repeat: no-repeat; /* Prevents tiling */
+    background-position: center; /* Centers the image */
+    padding: 10px 20px; /* Add space so the text is readable */
+    display: inline-block; /* Makes sure background is applied properly */
 }
+
 
 nav {
     display: flex;
