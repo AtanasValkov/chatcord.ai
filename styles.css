@@ -173,6 +173,22 @@ nav a:hover {
   padding: 10px;
   cursor: pointer;
 }
+
+.hidden {
+  display: none;
+}
+
+#tagPrefsSection {
+  margin-top: 10px;
+}
+
+.tag-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
 /* Dark mode */
 .icon-button {
   background: none;
