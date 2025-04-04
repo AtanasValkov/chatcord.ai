@@ -136,7 +136,7 @@
                                     if (data.user) {
                                         // Store user data in localStorage
                                         localStorage.setItem("user", JSON.stringify(data.user));
-                                        window.history.replaceState({}, document.title, "/chatcord.win/" + "index.html");
+                                        window.history.replaceState({}, document.title, "index.html");
                                         const user = JSON.parse(localStorage.getItem("user"));
                                         if (user) {
                                             document.getElementById("loginButton").textContent = "Logout";
