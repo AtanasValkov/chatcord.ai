@@ -145,7 +145,7 @@ nav a:hover {
 .modal {
   display: none; /* Hidden by default */
   position: fixed;
-  z-index: 100;
+  z-index: 2000;
   left: 0;
   top: 0;
   width: 100%;
@@ -155,7 +155,7 @@ nav a:hover {
 }
 .modal-content {
   background-color: #16213e;
-  margin: 10% auto;
+  margin: 3% auto;
   padding: 20px;
   width: 80%;
   max-width: 500px;
