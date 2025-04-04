@@ -173,6 +173,14 @@ nav a:hover {
   padding: 10px;
   cursor: pointer;
 }
+/* Dark mode */
+.icon-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: inherit;
+}
 
 /* Main Content */
 .container {
