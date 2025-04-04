@@ -388,7 +388,6 @@
                               // Save Username functionality
                               const saveUsernameBtn = document.getElementById('saveUsername');
                               const usernameInput = document.getElementById('usernameInput');
-                              usernameInput.placeholder = localStorage.getItem('user').username;
                               saveUsernameBtn.addEventListener('click', () => {
                                 if (usernameInput.value.trim() !== '') {
                                   localStorage.setItem('user', JSON.stringify({ username: usernameInput.value.trim() }));
