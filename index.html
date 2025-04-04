@@ -441,7 +441,8 @@
                               const deleteAccountBtn = document.getElementById('deleteAccount');
                               deleteAccountBtn.addEventListener('click', () => {
                                 if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-                                  // Clear user data from localStorage and perform any additional cleanup
+                                  // Clear user data from localStorage and log out user
+                                  localStorage.clear();
                                   logout();
                                 }
                               });
