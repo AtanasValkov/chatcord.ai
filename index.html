@@ -29,34 +29,8 @@
     </header>
         <div id="detailsPanelPlace">
         </div>
-    <div class="container">
-        <aside class="sidebar">
-            <input type="text" id="searchBar" placeholder="Search..." class="search-bar">
-            <h2>Tags</h2>
-            <ul id="tagFilters"></ul>
-        </aside>
-
-        <main>
-                <div class="sort-controls">
-                    <div class="menu-toggle" id="menuToggle">
-                        <i class="fas fa-bars"></i>
-                    </div>
-                  <select id="sortOptions">
-                    <option value="downloads">Downloads</option>
-                    <option value="likes">Likes</option>
-                    <option value="comments">Comments</option>
-                    <option value="stars">Stars</option>
-                    <option value="date">Date Created</option>
-                  </select>
-                  <select id="sortOrder">
-                    <option value="desc">Descending</option>
-                    <option value="asc">Ascending</option>
-                  </select>
-                  <input type="text" id="searchBarCharacters" placeholder="Search..." />
-                </div>
-            
-          <!-- Modal Settings Window -->
-          <div id="settingsModal" class="modal">
+        <!-- Modal Settings Window -->
+        <div id="settingsModal" class="modal">
             <div class="modal-content">
               <span id="closeModal" class="close">&times;</span>
               <h2>Settings</h2>
@@ -90,9 +64,34 @@
                   Dark Mode
                 </label>
               </section>
-              
             </div>
-          </div>
+        </div>
+    <div class="container">
+        <aside class="sidebar">
+            <input type="text" id="searchBar" placeholder="Search..." class="search-bar">
+            <h2>Tags</h2>
+            <ul id="tagFilters"></ul>
+        </aside>
+
+        <main>
+                <div class="sort-controls">
+                    <div class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                  <select id="sortOptions">
+                    <option value="downloads">Downloads</option>
+                    <option value="likes">Likes</option>
+                    <option value="comments">Comments</option>
+                    <option value="stars">Stars</option>
+                    <option value="date">Date Created</option>
+                  </select>
+                  <select id="sortOrder">
+                    <option value="desc">Descending</option>
+                    <option value="asc">Ascending</option>
+                  </select>
+                  <input type="text" id="searchBarCharacters" placeholder="Search..." />
+                </div>
+            
                 <div class="character-grid" id="characterGrid">Loading characters...Check back in 1 to 2 minutes.</div>
                     <script type="module">
                         import { populateGrid } from './characterGrid.js';
