@@ -388,9 +388,13 @@
                               // Save Username functionality
                               const saveUsernameBtn = document.getElementById('saveUsername');
                               const usernameInput = document.getElementById('usernameInput');
+                            
                               saveUsernameBtn.addEventListener('click', () => {
-                                if (usernameInput.value.trim() !== '') {
-                                  localStorage.setItem('user', JSON.stringify({ username: usernameInput.value.trim() }));
+                                const newUsername = usernameInput.value.trim();
+                                if (newUsername !== '') {
+                                  const existingUser = JSON.parse(localStorage.getItem('user')) || {};
+                                  existingUser.username = newUsername;
+                                  localStorage.setItem('user', JSON.stringify(existingUser));
                                   alert('Username updated!');
                                 }
                               });
