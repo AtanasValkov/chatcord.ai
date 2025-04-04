@@ -454,7 +454,8 @@
                                     const tags = await response.json();
                                     const tagList = document.querySelector("#tagPrefsSection .tag-list");
                                     tagList.innerHTML = ""; // Clear existing
-                                
+                                    const savedTagPrefs = JSON.parse(localStorage.getItem('tagPrefs') || '{}');
+
                                     tags.forEach(([tag, frequency]) => {
                                       const listItem = document.createElement("li");
                                 
@@ -469,7 +470,7 @@
                                       excludeCheckbox.type = "checkbox";
                                       excludeCheckbox.className = "exclude-checkbox";
                                       excludeCheckbox.dataset.tag = tag;
-                                
+
                                       // Logic: prevent both from being checked
                                       includeCheckbox.addEventListener("change", () => {
                                         if (includeCheckbox.checked) {
@@ -482,6 +483,32 @@
                                           includeCheckbox.checked = false;
                                         }
                                       });
+                                        
+                                        includeCheckbox.checked = savedTagPrefs[tag]?.include || false;
+                                        excludeCheckbox.checked = savedTagPrefs[tag]?.exclude || false;
+
+                                        function saveTagPrefs() {
+                                          const allPrefs = {};
+                                          document.querySelectorAll(".tag-list li").forEach(li => {
+                                            const tag = li.querySelector(".include-checkbox").dataset.tag;
+                                            allPrefs[tag] = {
+                                              include: li.querySelector(".include-checkbox").checked,
+                                              exclude: li.querySelector(".exclude-checkbox").checked
+                                            };
+                                          });
+                                          localStorage.setItem('tagPrefs', JSON.stringify(allPrefs));
+                                        }
+                                        
+                                        includeCheckbox.addEventListener("change", () => {
+                                          if (includeCheckbox.checked) excludeCheckbox.checked = false;
+                                          saveTagPrefs();
+                                        });
+                                        
+                                        excludeCheckbox.addEventListener("change", () => {
+                                          if (excludeCheckbox.checked) includeCheckbox.checked = false;
+                                          saveTagPrefs();
+                                        });
+
                                 
                                       // Tag label
                                       const tagLabel = document.createElement("span");
