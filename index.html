@@ -394,7 +394,7 @@
                         document.getElementById("searchBarCharacters").addEventListener("input", loadCharacters);
 
                         // Settings
-                        document.addEventListener('DOMContentLoaded', () => {
+                        async function loadSettings() {
                             // Modal elements
                             const modal = document.getElementById('settingsModal');
                             const openSettingsBtn = document.getElementById('settingsButton');
@@ -572,7 +572,7 @@
                                     const selectedGuildId = event.target.value;
                                     localStorage.setItem("favoriteGuildId", selectedGuildId);
                                 });
-                            });
+                            };
 
                        
                         function createCharacter() {
@@ -597,6 +597,7 @@
 
                         async function initialize() {
                             await verifyUser();
+                            await loadSettings();
                             await loadTags();
                             const themeToggleBtn = document.getElementById('themeToggle');
                             const themeIcon = document.getElementById('themeIcon');
