@@ -154,7 +154,7 @@
                                         localStorage.setItem("user", JSON.stringify(data.user));
                                         if (data.guilds) {
                                             localStorage.setItem("guilds", JSON.stringify(data.guilds));
-                                            await loadSettings();
+                                            loadSettings();
                                         }
                                         window.history.replaceState({}, document.title, "index.html");
                                         const user = JSON.parse(localStorage.getItem("user"));
