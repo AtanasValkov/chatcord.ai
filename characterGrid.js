@@ -392,7 +392,7 @@ function createBot(name, image, description) {
         "content": description,     // Optional: Plain text message
         "embeds": [
             {
-                "title": "Create",  // Optional: Embed title
+                "title": "create",  // Optional: Embed title
                 "description": image, // Optional: Embed description
                 "color": 16711680    // Optional: Embed color (decimal value)
             }
