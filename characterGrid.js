@@ -386,17 +386,17 @@ function createBot(name, image, description) {
     });
     
     var data = {
-        "name": "Chatcord Webhook",
-        "username": name, // Extract text content
-        "avatar_url": image, // Extract image source
-        "content": description, // Extract text content
+        "name": name, // Required: Name of the webhook
+        "avatar_url": image,        // Optional: Avatar URL for the webhook
+        "channel_id": channelId,    // Optional: ID of the channel to send messages to
+        "content": description,     // Optional: Plain text message
         "embeds": [
-        {
-          "title": "create",
-          "description": image,
-          "color": 16711680,
-        }
-        ],
+            {
+                "title": "Create",  // Optional: Embed title
+                "description": image, // Optional: Embed description
+                "color": 16711680    // Optional: Embed color (decimal value)
+            }
+        ]
     };
 
     // Create webhook when the button is clicked
