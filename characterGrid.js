@@ -358,7 +358,7 @@ function createBot(name, image, description) {
 
     
     // When user selects a server, fetch channels for that server
-    document.getElementById("guild-select").addEventListener("change", function() {
+    document.getElementById("guild-select").addEventListener("change", async function() {
         const guildId = this.value;
         if (guildId) {
             const botInGuild = await isBotInGuild(guildId);
