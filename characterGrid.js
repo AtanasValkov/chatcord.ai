@@ -361,17 +361,25 @@ function createBot(name, image, description) {
     document.getElementById("guild-select").addEventListener("change", function() {
         const guildId = this.value;
         if (guildId) {
-            fetchChannels(guildId).then(channels => {
-                const channelSelect = document.getElementById("channel-select");
-                channelSelect.innerHTML = '<option value="">Select a Channel</option>';  // Reset options
-                channels.forEach(channel => {
-                    const option = document.createElement("option");
-                    option.value = channel.id;
-                    option.textContent = channel.name;
-                    channelSelect.appendChild(option);
-                });
-                channelSelect.disabled = false;
-            });
+            const botInGuild = await isBotInGuild(guildId);
+            // Attempt to create the webhook
+            if (botInGuild) {
+                try {
+                    fetchChannels(guildId).then(channels => {
+                        const channelSelect = document.getElementById("channel-select");
+                        channelSelect.innerHTML = '<option value="">Select a Channel</option>';  // Reset options
+                        channels.forEach(channel => {
+                            const option = document.createElement("option");
+                            option.value = channel.id;
+                            option.textContent = channel.name;
+                            channelSelect.appendChild(option);
+                        });
+                        channelSelect.disabled = false;
+                    });
+                }
+            } else {
+                promptToAddBot(guildId);  // Bot not in the guild, prompt user to add
+            }
         }
     });
     
@@ -398,8 +406,6 @@ function createBot(name, image, description) {
             // Attempt to create the webhook
             if (botInGuild) {
                 try {
-                    const channels = await fetchChannels(guildId);
-                    console.log("Fetched Channels:", channels);
                     // Proceed with creating the webhook
                     createWebhook(guildId, channelId, data);
                 } catch (error) {
