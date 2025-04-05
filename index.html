@@ -57,7 +57,7 @@
                     
                     <!-- Collapsible Tag Preferences Section -->
                     <div id="tagPrefsSection" class="hidden">
-                      <input type="text" id="searchBar" placeholder="Search..." class="search-bar">
+                      <input type="text" id="searchBarSettings" placeholder="Search..." class="search-bar">
                       <ul class="tag-list">
                          <!-- Tags will be populated here -->
                        </ul>
@@ -186,6 +186,10 @@
                                 })
 
                                 .catch(error => console.error("Error:", error));
+                            }
+                            // User not logged in
+                            else {
+                                document.getElementById("settingsButton").remove();
                             }
                         }
                         
@@ -411,7 +415,7 @@
                                 tagPrefsSection.classList.toggle('hidden');
                             });
 
-                            document.getElementById("searchBar").addEventListener("input", function () {
+                            document.getElementById("searchBarSettings").addEventListener("input", function () {
                                 const filter = this.value.toLowerCase();
                                 document.querySelectorAll("#tagPrefsSection .tag-list li").forEach(li => {
                                     const tagText = li.querySelector(".tag-label").textContent.toLowerCase();
