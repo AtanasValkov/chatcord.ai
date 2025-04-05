@@ -421,8 +421,14 @@
                                                         
                             // Open modal when clicking settings button
                               openSettingsBtn.addEventListener('click', () => {
-                                modal.style.display = 'block';
-                                loadTagSettings(); // Load tag preferences if needed
+                                const user = JSON.parse(localStorage.getItem("user"));
+                                if (user) {
+                                    modal.style.display = 'block';
+                                    loadTagSettings(); // Load tag preferences if needed
+                                }
+                                else {
+                                    alert("Only logged in users can see their profile.")
+                                }
                               });
                             
                               // Close modal when clicking the close button
