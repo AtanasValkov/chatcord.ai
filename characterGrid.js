@@ -318,7 +318,7 @@ function debounce(func, delay) {
     };
 }
 
-async function createBot(name, image, description) {
+function createBot(name, image, description) {
     document.querySelector(".close").addEventListener("click", closeModal);
     
     const guilds = JSON.parse(localStorage.getItem("guilds"));
@@ -389,7 +389,7 @@ async function createBot(name, image, description) {
     };
 
     // Create webhook when the button is clicked
-    document.getElementById("create-webhook-btn").addEventListener("click", function() {
+    document.getElementById("create-webhook-btn").addEventListener("click", async function() {
         const guildId = document.getElementById("guild-select").value;
         const channelId = document.getElementById("channel-select").value;
     
