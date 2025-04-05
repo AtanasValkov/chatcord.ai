@@ -376,6 +376,8 @@ function createBot(name, image, description) {
                         });
                         channelSelect.disabled = false;
                     });
+                } catch (error) {
+                    alert("Failed to fetch channels: " + error);
                 }
             } else {
                 promptToAddBot(guildId);  // Bot not in the guild, prompt user to add
