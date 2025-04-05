@@ -75,9 +75,10 @@
 
                   <!-- Guilds -->
                 <section>
-                    <h3>Your servers</h3>
-                    <select id="guildSelect">
-                        <!-- Servers will be populated here -->
+                    <h3>Select Favorite Guild</h3>
+                    <select id="favoriteGuild">
+                        <option value="">None</option>
+                        <!-- Populate with guilds -->
                     </select>
                 </section>
             </div>
@@ -539,13 +540,20 @@
                                 }
 
                                 const guilds = JSON.parse(localStorage.getItem("guilds"));
-                                const guildSelect = document.getElementById("guildSelect");
+                                const favoriteGuildSelect = document.getElementById("favoriteGuild");
                                 
+                                // Populate the favorite guild dropdown with the user's guilds
                                 guilds.forEach(guild => {
                                     const option = document.createElement("option");
                                     option.value = guild.id;
                                     option.textContent = guild.name;
-                                    guildSelect.appendChild(option);
+                                    favoriteGuildSelect.appendChild(option);
+                                });
+                                
+                                // Save the selected favorite guild when the user selects it
+                                favoriteGuildSelect.addEventListener('change', (event) => {
+                                    const selectedGuildId = event.target.value;
+                                    localStorage.setItem("favoriteGuildId", selectedGuildId);
                                 });
                             });
 
