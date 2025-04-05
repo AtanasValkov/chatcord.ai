@@ -444,15 +444,10 @@ async function createWebhook(guildId, channelId, data) {
 }
 
 async function isBotInGuild(guildId) {
+    return true;
     const response = await fetch(`https://chatcord-server.onrender.com/guilds/${guildId}/is-bot-member`);
     if (!response.ok) {
         throw new Error("Failed to verify bot presence");
-    }
-    // Check if rate limit is hit (429 status)
-    if (response.status === 429) {
-        // Extract the retry time from the 'Retry-After' header
-        const retry_after = parseInt(response.headers.get("Retry-After"), 10) || 1; // Default to 1 second if the header is missing
-        console.log(`Rate limited. Retrying after ${retry_after} seconds...`);
     }
     const { isBotInGuild } = await response.json();
     return isBotInGuild;
