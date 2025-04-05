@@ -350,7 +350,7 @@ function createBot(name, image, description) {
     }
     // If there is a favorite guild, set it as selected
     if (favoriteGuildId) {
-        favoriteGuildSelect.value = favoriteGuildId;
+        guildSelect.value = favoriteGuildId;
     }
     
     // Show modal
