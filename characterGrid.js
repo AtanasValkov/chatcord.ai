@@ -448,10 +448,12 @@ async function isBotInGuild(guildId) {
     if (!response.ok) {
         throw new Error("Failed to verify bot presence");
     }
-     if response.status_code == 429:
-            # Extract the retry time from the 'Retry-After' header
-            retry_after = int(response.headers.get("Retry-After", 1))  # Default to 1 second if header is missing
-            print(f"Rate limited. Retrying after {retry_after} seconds...")
+    // Check if rate limit is hit (429 status)
+    if (response.status === 429) {
+        // Extract the retry time from the 'Retry-After' header
+        const retry_after = parseInt(response.headers.get("Retry-After"), 10) || 1; // Default to 1 second if the header is missing
+        console.log(`Rate limited. Retrying after ${retry_after} seconds...`);
+    }
     const { isBotInGuild } = await response.json();
     return isBotInGuild;
 }
