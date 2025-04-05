@@ -435,7 +435,7 @@ async function createWebhook(guildId, channelId, data) {
     });
 
     const responseData = await response.json();
-
+    console.log("Response Data:", responseData);  
     if (response.ok) {
         alert(responseData.message);
     } else {
