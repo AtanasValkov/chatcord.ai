@@ -435,28 +435,13 @@ async function createWebhook(guildId, channelId, data) {
 }
 
 async function isBotInGuild(guildId) {
-    // Step 1: Fetch the bot token from your Flask backend
-    const tokenResponse = await fetch('https://chatcord-server.onrender.com/get-discord-token');
-    if (!tokenResponse.ok) {
-        throw new Error("Failed to fetch bot token");
+    const response = await fetch(`https://chatcord-server.onrender.com/guilds/${guildId}/is-bot-member`);
+    if (!response.ok) {
+        throw new Error("Failed to verify bot presence");
     }
-    const { discord_token: botAccessToken } = await tokenResponse.json();
 
-    // Step 2: Use the token to check if the bot is in the guild
-    const response = await fetch(`https://discord.com/api/guilds/${guildId}/members/1352038053757190206`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bot ${botAccessToken}`
-        }
-    });
-
-    if (response.status === 200) {
-        return true;  // Bot is in the guild
-    } else if (response.status === 404) {
-        return false;  // Bot is not in the guild
-    } else {
-        throw new Error("Failed to check if bot is in guild");
-    }
+    const { isBotInGuild } = await response.json();
+    return isBotInGuild;
 }
 
 // Prompt the user to add the bot to the server
@@ -468,25 +453,13 @@ function promptToAddBot(guildId) {
 
 // Fetch channels for a specific server (guild) using access_token
 async function fetchChannels(guildId) {
-    // Step 1: Fetch the bot token from your Flask backend
-    const tokenResponse = await fetch('https://chatcord-server.onrender.com/get-discord-token');
-    if (!tokenResponse.ok) {
-        throw new Error("Failed to fetch bot token");
-    }
-    const { discord_token: botAccessToken } = await tokenResponse.json();
+    const response = await fetch(`https://chatcord-server.onrender.com/guilds/${guildId}/channels`);
     
-    const response = await fetch(`https://discord.com/api/guilds/${guildId}/channels`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bot ${botAccessToken}`
-        }
-    });
-
     if (!response.ok) {
         throw new Error("Failed to fetch channels: " + response.statusText);
     }
 
-    return await response.json();  // List of channels
+    return await response.json();
 }
 
 // Close Modal
