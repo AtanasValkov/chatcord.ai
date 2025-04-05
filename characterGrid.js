@@ -394,15 +394,20 @@ function createBot(name, image, description) {
         const channelId = document.getElementById("channel-select").value;
     
         if (guildId && channelId) {
+            const botInGuild = await isBotInGuild(guildId);
             // Attempt to create the webhook
-            createWebhook(guildId, channelId, data).catch(error => {
-                // Handle error - bot may not be in the server
-                if (error === "Bot not in server") {
-                    promptToAddBot(guildId);
-                } else {
+            if (botInGuild) {
+                try {
+                    const channels = await fetchChannels(guildId);
+                    console.log("Fetched Channels:", channels);
+                    // Proceed with creating the webhook
+                    createWebhook(guildId, channelId, data);
+                } catch (error) {
                     alert("Failed to create webhook: " + error);
                 }
-            });
+            } else {
+                promptToAddBot(guildId);  // Bot not in the guild, prompt user to add
+            }
         }
     });
 }
@@ -429,29 +434,46 @@ async function createWebhook(guildId, channelId, data) {
     alert("Webhook created successfully!");
 }
 
+async function isBotInGuild(guildId) {
+    const botAccessToken = "MTM1MjAzODA1Mzc1NzE5MDIwNg.GuKjMY.GOrjR-Bs6_RWg6--1yqBBJFz7bS1FwBdmzFqn8";  // Replace with your bot's token
+    const response = await fetch(`https://discord.com/api/guilds/${guildId}/members/1352038053757190206`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bot ${botAccessToken}`
+        }
+    });
+
+    if (response.status === 200) {
+        return true;  // Bot is in the guild
+    } else if (response.status === 404) {
+        return false;  // Bot is not in the guild
+    } else {
+        throw new Error("Failed to check if bot is in guild");
+    }
+}
+
 // Prompt the user to add the bot to the server
 function promptToAddBot(guildId) {
-    const addBotUrl = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&scope=bot&permissions=0x20000000&guild_id=${guildId}`;
-    alert("It seems the bot isn't in this server. Please add the bot to the server first.");
+    const addBotUrl = `https://discord.com/oauth2/authorize?client_id=1352038053757190206&scope=bot&permissions=0x20000000&guild_id=${guildId}`;
+    alert("The bot is not in this guild. Please add the bot to the guild.");
     window.open(addBotUrl, '_blank');
 }
 
 // Fetch channels for a specific server (guild) using access_token
 async function fetchChannels(guildId) {
-    const accessToken = localStorage.getItem("access_token");
+    const botAccessToken = "MTM1MjAzODA1Mzc1NzE5MDIwNg.GuKjMY.GOrjR-Bs6_RWg6--1yqBBJFz7bS1FwBdmzFqn8";  // Replace with your bot's token
     const response = await fetch(`https://discord.com/api/guilds/${guildId}/channels`, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
+            'Authorization': `Bot ${botAccessToken}`
         }
     });
 
     if (!response.ok) {
-        throw new Error('Failed to fetch channels');
+        throw new Error("Failed to fetch channels: " + response.statusText);
     }
 
-    return await response.json();
+    return await response.json();  // List of channels
 }
 
 // Close Modal
