@@ -435,7 +435,14 @@ async function createWebhook(guildId, channelId, data) {
 }
 
 async function isBotInGuild(guildId) {
-    const botAccessToken = "MTM1MjAzODA1Mzc1NzE5MDIwNg.GuKjMY.GOrjR-Bs6_RWg6--1yqBBJFz7bS1FwBdmzFqn8";  // Replace with your bot's token
+    // Step 1: Fetch the bot token from your Flask backend
+    const tokenResponse = await fetch('https://chatcord-server.onrender.com/get-discord-token');
+    if (!tokenResponse.ok) {
+        throw new Error("Failed to fetch bot token");
+    }
+    const { discord_token: botAccessToken } = await tokenResponse.json();
+
+    // Step 2: Use the token to check if the bot is in the guild
     const response = await fetch(`https://discord.com/api/guilds/${guildId}/members/1352038053757190206`, {
         method: 'GET',
         headers: {
@@ -461,7 +468,13 @@ function promptToAddBot(guildId) {
 
 // Fetch channels for a specific server (guild) using access_token
 async function fetchChannels(guildId) {
-    const botAccessToken = "MTM1MjAzODA1Mzc1NzE5MDIwNg.GuKjMY.GOrjR-Bs6_RWg6--1yqBBJFz7bS1FwBdmzFqn8";  // Replace with your bot's token
+    // Step 1: Fetch the bot token from your Flask backend
+    const tokenResponse = await fetch('https://chatcord-server.onrender.com/get-discord-token');
+    if (!tokenResponse.ok) {
+        throw new Error("Failed to fetch bot token");
+    }
+    const { discord_token: botAccessToken } = await tokenResponse.json();
+    
     const response = await fetch(`https://discord.com/api/guilds/${guildId}/channels`, {
         method: 'GET',
         headers: {
