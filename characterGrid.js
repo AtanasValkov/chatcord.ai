@@ -318,7 +318,7 @@ function debounce(func, delay) {
     };
 }
 
-function createBot(name, image, description) {
+async function createBot(name, image, description) {
     document.querySelector(".close").addEventListener("click", closeModal);
     
     const guilds = JSON.parse(localStorage.getItem("guilds"));
