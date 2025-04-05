@@ -184,6 +184,8 @@
                                             localStorage.setItem("guilds", JSON.stringify(data.guilds));
                                             loadSettings();
                                         }
+                                        // Store access token in localStorage
+                                        localStorage.setItem("access_token", data.access_token);
                                         window.history.replaceState({}, document.title, "index.html");
                                         const user = JSON.parse(localStorage.getItem("user"));
                                         if (user) {
