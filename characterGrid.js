@@ -405,6 +405,7 @@ function createBot(name, image, description) {
             });
         }
     });
+}
 
 // Create the webhook in the selected channel
 async function createWebhook(guildId, channelId, data) {
