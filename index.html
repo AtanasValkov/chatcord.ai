@@ -138,6 +138,9 @@
                                 // Append both elements to the profile button
                                 profileButton.appendChild(usernameSpan);
                                 profileButton.appendChild(avatarIcon);
+
+                                // Load Settings
+                                loadSettings();
                             }
                             else if (code) {
                                 // Send 'code' to Flask backend
