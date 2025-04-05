@@ -246,7 +246,7 @@ function showDetails(charID, name, desc, img, tags, ID, username, avatar) {
 
     // Create 'Create Bot' button
     const createBotButton = document.createElement("button");
-    createBotButton.innerText = "Create Bot";
+    createBotButton.innerText = "Load Character";
     createBotButton.onclick = function() {
         createBot(characterName.textContent, characterImage.src, characterDesc.textContent);
     };
@@ -319,7 +319,61 @@ function debounce(func, delay) {
 }
 
 function createBot(name, image, description) {
-    console.log("Trying to get name", name);
+    document.querySelector(".close").addEventListener("click", closeModal);
+    
+    const guilds = JSON.parse(localStorage.getItem("guilds"));
+    const guildSelect = document.getElementById("guild-select");
+    // Get the stored favorite guild from localStorage (if any)
+    const favoriteGuildId = localStorage.getItem("favoriteGuildId");
+    
+    // Sort guilds to put the favorite guild at the top (if exists)
+    if (favoriteGuildId) {
+        guilds.sort((a, b) => {
+            // Check if a is the favorite guild
+            if (a.id === favoriteGuildId) return -1;
+            // Check if b is the favorite guild
+            if (b.id === favoriteGuildId) return 1;
+            return 0; // No change in order for other guilds
+        });
+    }
+    
+    // Populate the favorite guild dropdown with the user's guilds
+    if (guilds) {
+        guilds.forEach(guild => {
+            const option = document.createElement("option");
+            option.value = guild.id;
+            option.textContent = guild.name;
+            guildSelect.appendChild(option);
+        });
+        // Enable the guild select dropdown
+        guildSelect.disabled = false;
+    }
+    // If there is a favorite guild, set it as selected
+    if (favoriteGuildId) {
+        favoriteGuildSelect.value = favoriteGuildId;
+    }
+    
+    // Show modal
+    document.getElementById("modal").style.display = "block";
+
+    
+    // When user selects a server, fetch channels for that server
+    document.getElementById("guild-select").addEventListener("change", function() {
+        const guildId = this.value;
+        if (guildId) {
+            fetchChannels(guildId).then(channels => {
+                const channelSelect = document.getElementById("channel-select");
+                channelSelect.innerHTML = '<option value="">Select a Channel</option>';  // Reset options
+                channels.forEach(channel => {
+                    const option = document.createElement("option");
+                    option.value = channel.id;
+                    option.textContent = channel.name;
+                    channelSelect.appendChild(option);
+                });
+                channelSelect.disabled = false;
+            });
+        }
+    });
     
     var data = {
         "username": name, // Extract text content
@@ -334,20 +388,72 @@ function createBot(name, image, description) {
         ],
     };
 
-    fetch("https://discord.com/api/webhooks/1352061720067309589/UONc3FvNtzfmeIygz_PFfIxpvQfkgxqTWSEdY1QB_2jada9MyIkZTQ9XRp46AzVOcZCu", {
-        method: "POST",
+    // Create webhook when the button is clicked
+    document.getElementById("create-webhook-btn").addEventListener("click", function() {
+        const guildId = document.getElementById("guild-select").value;
+        const channelId = document.getElementById("channel-select").value;
+    
+        if (guildId && channelId) {
+            // Attempt to create the webhook
+            createWebhook(guildId, channelId, data).catch(error => {
+                // Handle error - bot may not be in the server
+                if (error === "Bot not in server") {
+                    promptToAddBot(guildId);
+                } else {
+                    alert("Failed to create webhook: " + error);
+                }
+            });
+        }
+    });
+
+// Create the webhook in the selected channel
+async function createWebhook(guildId, channelId, data) {
+    const accessToken = localStorage.getItem("access_token");
+    const response = await fetch(`https://discord.com/api/channels/${channelId}/webhooks`, {
+        method: 'POST',
         headers: {
-            "Content-Type": "application/json"
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (response.status === 204) {
-            console.log("Success: Message sent (204 No Content)");
-            return {}; // Return empty object to keep .json() format
+    });
+
+    if (!response.ok) {
+        if (response.status === 403) {  // Forbidden, meaning the bot isn't in the server
+            throw "Bot not in server";
         }
-        return response.json(); // Parse only if there's content
-    })
-    .then(data => console.log("Success:", data))
-    .catch(error => console.error("Error:", error));
+        throw "Unknown error: " + response.statusText;
+    }
+
+    alert("Webhook created successfully!");
+}
+
+// Prompt the user to add the bot to the server
+function promptToAddBot(guildId) {
+    const addBotUrl = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&scope=bot&permissions=0x20000000&guild_id=${guildId}`;
+    alert("It seems the bot isn't in this server. Please add the bot to the server first.");
+    window.open(addBotUrl, '_blank');
+}
+
+// Fetch channels for a specific server (guild) using access_token
+async function fetchChannels(guildId) {
+    const accessToken = localStorage.getItem("access_token");
+    const response = await fetch(`https://discord.com/api/guilds/${guildId}/channels`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch channels');
+    }
+
+    return await response.json();
+}
+
+// Close Modal
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
 }
