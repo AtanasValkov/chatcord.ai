@@ -458,8 +458,7 @@
                                   logout();
                                 }
                               });
-                              
-                                // Example: Function to load tag preferences similar to loadTags()
+
                                 async function loadTagSettings() {
                                   try {
                                     const response = await fetch('https://chatcord-server.onrender.com/get-tags');
@@ -540,6 +539,7 @@
                                 }
 
                                 const guilds = JSON.parse(localStorage.getItem("guilds"));
+                                console.error(guilds)
                                 const favoriteGuildSelect = document.getElementById("favoriteGuild");
                                 // Get the stored favorite guild from localStorage (if any)
                                 const favoriteGuildId = localStorage.getItem("favoriteGuildId");
