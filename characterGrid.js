@@ -422,24 +422,24 @@ function createBot(name, image, description) {
 
 // Create the webhook in the selected channel
 async function createWebhook(guildId, channelId, data) {
-    const accessToken = localStorage.getItem("access_token");
-    const response = await fetch(`https://discord.com/api/channels/${channelId}/webhooks`, {
+    const response = await fetch('https://chatcord-server.onrender.com/create-webhook', {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({
+            channel_id: channelId,
+            webhook_data: data
+        })
     });
 
-    if (!response.ok) {
-        if (response.status === 403) {  // Forbidden, meaning the bot isn't in the server
-            throw "Bot not in server";
-        }
-        throw "Unknown error: " + response.statusText;
-    }
+    const responseData = await response.json();
 
-    alert("Webhook created successfully!");
+    if (response.ok) {
+        alert(responseData.message);
+    } else {
+        alert("Error: " + responseData.error);
+    }
 }
 
 async function isBotInGuild(guildId) {
