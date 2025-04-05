@@ -154,6 +154,7 @@
                                         localStorage.setItem("user", JSON.stringify(data.user));
                                         if (data.guilds) {
                                             localStorage.setItem("guilds", JSON.stringify(data.guilds));
+                                            await loadSettings();
                                         }
                                         window.history.replaceState({}, document.title, "index.html");
                                         const user = JSON.parse(localStorage.getItem("user"));
@@ -599,7 +600,6 @@
 
                         async function initialize() {
                             await verifyUser();
-                            await loadSettings();
                             await loadTags();
                             const themeToggleBtn = document.getElementById('themeToggle');
                             const themeIcon = document.getElementById('themeIcon');
