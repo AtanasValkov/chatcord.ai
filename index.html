@@ -556,12 +556,14 @@
                                 }
                                 
                                 // Populate the favorite guild dropdown with the user's guilds
-                                guilds.forEach(guild => {
-                                    const option = document.createElement("option");
-                                    option.value = guild.id;
-                                    option.textContent = guild.name;
-                                    favoriteGuildSelect.appendChild(option);
-                                });
+                                if (guilds) {
+                                    guilds.forEach(guild => {
+                                        const option = document.createElement("option");
+                                        option.value = guild.id;
+                                        option.textContent = guild.name;
+                                        favoriteGuildSelect.appendChild(option);
+                                    });
+                                }
                                 // If there is a favorite guild, set it as selected
                                 if (favoriteGuildId) {
                                     favoriteGuildSelect.value = favoriteGuildId;
