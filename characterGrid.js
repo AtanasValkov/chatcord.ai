@@ -388,7 +388,7 @@ function createBot(name, image, description) {
     var data = {
         "name": name, // Required: Name of the webhook
         "avatar_url": image,        // Optional: Avatar URL for the webhook
-        "channel_id": channelId,    // Optional: ID of the channel to send messages to
+        "channel_id": document.getElementById("channel-select").value,    // Optional: ID of the channel to send messages to
         "content": description,     // Optional: Plain text message
         "embeds": [
             {
