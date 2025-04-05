@@ -386,6 +386,7 @@ function createBot(name, image, description) {
     });
     
     var data = {
+        "name": "Chatcord Webhook",
         "username": name, // Extract text content
         "avatar_url": image, // Extract image source
         "content": description, // Extract text content
