@@ -58,9 +58,7 @@
                     <!-- Collapsible Tag Preferences Section -->
                     <div id="tagPrefsSection" class="hidden">
                       <input type="text" id="searchBar" placeholder="Search..." class="search-bar">
-                      <ul class="tag-list">
-                        <!-- Tags will be populated here -->
-                      </ul>
+
                     </div>
                 </div>
               </section>
@@ -71,6 +69,14 @@
                     <button id="themeToggle" class="icon-button">
                     <i id="themeIcon" class="fas fa-moon"></i>
                     </button>
+                </section>
+
+                  <!-- Guilds -->
+                <section>
+                    <h3>Your servers</h3>
+                      <select class="guildSelect">
+                        <!-- Servers will be populated here -->
+                      </select>
                 </section>
             </div>
         </div>
@@ -143,6 +149,9 @@
                                     if (data.user) {
                                         // Store user data in localStorage
                                         localStorage.setItem("user", JSON.stringify(data.user));
+                                        if (data.guilds) {
+                                            localStorage.setItem("guilds", JSON.stringify(data.guilds));
+                                        }
                                         window.history.replaceState({}, document.title, "index.html");
                                         const user = JSON.parse(localStorage.getItem("user"));
                                         if (user) {
@@ -526,6 +535,16 @@
                                     console.error("Error loading tag settings:", error);
                                   }
                                 }
+
+                                const guilds = JSON.parse(localStorage.getItem("guilds"));
+                                const guildSelect = document.getElementById("guildSelect");
+                                
+                                guilds.forEach(guild => {
+                                    const option = document.createElement("option");
+                                    option.value = guild.id;
+                                    option.textContent = guild.name;
+                                    guildSelect.appendChild(option);
+                                });
                             });
 
                        
