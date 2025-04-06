@@ -365,9 +365,15 @@ function createBot(id) {
             // Attempt to create the webhook
             if (botInGuild) {
                 try {
-                    fetchChannels(guildId).then(channels => {
+                    // Fetch the channels
+                    const response = await fetch(`/guilds/${guildId}/channels`);
+                    const data = await response.json();
+                    
+                    if (Array.isArray(data.channels)) {
+                        const channels = data.channels;
                         const channelSelect = document.getElementById("channel-select");
                         channelSelect.innerHTML = '<option value="">Select a Channel</option>';  // Reset options
+    
                         channels.forEach(channel => {
                             const option = document.createElement("option");
                             option.value = channel.id;
@@ -375,7 +381,9 @@ function createBot(id) {
                             channelSelect.appendChild(option);
                         });
                         channelSelect.disabled = false;
-                    });
+                    } else {
+                        throw new Error('Channels data is not in the expected array format');
+                    }
                 } catch (error) {
                     alert("Failed to fetch channels: " + error);
                 }
@@ -384,6 +392,7 @@ function createBot(id) {
             }
         }
     });
+
 
     // Create webhook when the button is clicked
     document.getElementById("create-webhook-btn").addEventListener("click", async function() {
