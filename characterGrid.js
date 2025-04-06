@@ -386,7 +386,8 @@ function createBot(id) {
     });
     
     var data = {
-        "id": id
+        "id": id,
+        "channel_id": document.getElementById("channel-select").value
     };
 
     // Create webhook when the button is clicked
