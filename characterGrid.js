@@ -366,8 +366,7 @@ function createBot(id) {
             if (botInGuild) {
                 try {
                     // Fetch the channels
-                    const response = await fetch(`/guilds/${guildId}/channels`);
-                    const data = await response.json();
+                    const data = await fetchChannels(guildId);
                     
                     if (Array.isArray(data.channels)) {
                         const channels = data.channels;
