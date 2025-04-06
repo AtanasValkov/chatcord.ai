@@ -384,11 +384,6 @@ function createBot(id) {
             }
         }
     });
-    
-    var data = {
-        "id": id,
-        "channel_id": document.getElementById("channel-select").value
-    };
 
     // Create webhook when the button is clicked
     document.getElementById("create-webhook-btn").addEventListener("click", async function() {
@@ -401,7 +396,7 @@ function createBot(id) {
             if (botInGuild) {
                 try {
                     // Proceed with creating the webhook
-                    createWebhook(guildId, channelId, data);
+                    createWebhook(guildId, channelId, id);
                 } catch (error) {
                     alert("Failed to create webhook: " + error);
                 }
@@ -413,7 +408,7 @@ function createBot(id) {
 }
 
 // Create the webhook in the selected channel
-async function createWebhook(guildId, channelId, data) {
+async function createWebhook(guildId, channelId, characterId) {
     const response = await fetch('https://chatcord-server.onrender.com/create-webhook', {
         method: 'POST',
         headers: {
@@ -421,7 +416,7 @@ async function createWebhook(guildId, channelId, data) {
         },
         body: JSON.stringify({
             channel_id: channelId,
-            webhook_data: data
+            character_id: characterId
         })
     });
 
