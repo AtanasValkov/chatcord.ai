@@ -319,7 +319,10 @@ function debounce(func, delay) {
 }
 
 function createBot(id) {
-    document.querySelector(".close").addEventListener("click", closeModal);
+    document.querySelectorAll(".close").forEach(btn => {
+        btn.addEventListener("click", closeModal);
+    });
+
     
     const guilds = JSON.parse(localStorage.getItem("guilds"));
     const guildSelect = document.getElementById("guild-select");
@@ -351,6 +354,7 @@ function createBot(id) {
     // If there is a favorite guild, set it as selected
     if (favoriteGuildId) {
         guildSelect.value = favoriteGuildId;
+        guildSelect.dispatchEvent(new Event("change"));
     }
     
     // Show modal
