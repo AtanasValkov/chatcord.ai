@@ -351,15 +351,6 @@ function createBot(id) {
         // Enable the guild select dropdown
         guildSelect.disabled = false;
     }
-    // If there is a favorite guild, set it as selected
-    if (favoriteGuildId) {
-        guildSelect.value = favoriteGuildId;
-        guildSelect.dispatchEvent(new Event("change"));
-    }
-    
-    // Show modal
-    document.getElementById("modal").style.display = "block";
-
     
     // When user selects a server, fetch channels for that server
     document.getElementById("guild-select").addEventListener("change", async function() {
@@ -417,6 +408,15 @@ function createBot(id) {
             }
         }
     });
+
+    // If there is a favorite guild, set it as selected
+    if (favoriteGuildId) {
+        guildSelect.value = favoriteGuildId;
+        guildSelect.dispatchEvent(new Event("change"));
+    }
+    
+    // Show modal
+    document.getElementById("modal").style.display = "block";
 }
 
 // Create the webhook in the selected channel
