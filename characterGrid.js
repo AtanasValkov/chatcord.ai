@@ -355,7 +355,18 @@ function createBot(id) {
     // When user selects a server, fetch channels for that server
     document.getElementById("guild-select").addEventListener("change", async function() {
         const guildId = this.value;
+        const channelSelect = document.getElementById("channel-select");        
+        const loadButton = document.getElementById("create-webhook-btn");
+        
+        channelSelect.disabled = true;
+        channelSelect.innerHTML = '<option value="">Select a Channel</option>';
+
+        loadButton.disabled = true;
+        
+        if (!guildId) return; // If still default option, stop here
+        
         if (guildId) {
+            // This can later be turned into a database call to see all guilds bot is in, for now we keep it Discord API
             const botInGuild = await isBotInGuild(guildId);
             // Attempt to create the webhook
             if (botInGuild) {
@@ -364,10 +375,7 @@ function createBot(id) {
                     const data = await fetchChannels(guildId);
                     
                     if (Array.isArray(data.channels)) {
-                        const channels = data.channels;
-                        const channelSelect = document.getElementById("channel-select");
-                        channelSelect.innerHTML = '<option value="">Select a Channel</option>';  // Reset options
-    
+                        const channels = data.channels;    
                         channels.forEach(channel => {
                             const option = document.createElement("option");
                             option.value = channel.id;
@@ -387,6 +395,14 @@ function createBot(id) {
         }
     });
 
+    // When user selects a channel, enable load character button
+    document.getElementById("channel-select").addEventListener("change", async function() {
+        const loadButton = document.getElementById("create-webhook-btn");
+        const channelId = this.value;
+    
+        loadButton.disabled = !channelId;
+    });
+
 
     // Create webhook when the button is clicked
     document.getElementById("create-webhook-btn").addEventListener("click", async function() {
@@ -394,18 +410,12 @@ function createBot(id) {
         const channelId = document.getElementById("channel-select").value;
     
         if (guildId && channelId) {
-            const botInGuild = await isBotInGuild(guildId);
-            // Attempt to create the webhook
-            if (botInGuild) {
                 try {
                     // Proceed with creating the webhook
                     createWebhook(guildId, channelId, id);
                 } catch (error) {
                     alert("Failed to create webhook: " + error);
                 }
-            } else {
-                promptToAddBot(guildId);  // Bot not in the guild, prompt user to add
-            }
         }
     });
 
@@ -442,7 +452,6 @@ async function createWebhook(guildId, channelId, characterId) {
 }
 
 async function isBotInGuild(guildId) {
-    return true;
     const response = await fetch(`https://chatcord-server.onrender.com/guilds/${guildId}/is-bot-member`);
     if (!response.ok) {
         throw new Error("Failed to verify bot presence");
@@ -453,7 +462,7 @@ async function isBotInGuild(guildId) {
 
 // Prompt the user to add the bot to the server
 function promptToAddBot(guildId) {
-    const addBotUrl = `https://discord.com/oauth2/authorize?client_id=1352038053757190206&scope=bot&permissions=0x20000000&guild_id=${guildId}`;
+    const addBotUrl = `https://discord.com/oauth2/authorize?client_id=1352038053757190206&scope=bot&permissions=536873984&guild_id=${guildId}`;
     alert("The bot is not in this guild. Please add the bot to the guild.");
     window.open(addBotUrl, '_blank');
 }
