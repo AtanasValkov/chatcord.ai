@@ -465,6 +465,12 @@ function promptToAddBot(guildId) {
     const addBotUrl = `https://discord.com/oauth2/authorize?client_id=1352038053757190206&scope=bot&permissions=536873984&guild_id=${guildId}`;
     alert("The bot is not in this guild. Please add the bot to the guild.");
     window.open(addBotUrl, '_blank');
+    const channelSelect = document.getElementById("channel-select");        
+    const guildSelect = document.getElementById("guild-select");    
+    
+    channelSelect.disabled = true;
+    channelSelect.innerHTML = '<option value="">Select a Channel</option>';
+    guildSelect.innerHTML = '<option value="">Select a Server</option>';
 }
 
 // Fetch channels for a specific server (guild) using access_token
