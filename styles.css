@@ -431,6 +431,13 @@ button:hover, .register-btn:hover {
     background: #ff4500;
 }
 
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #ccc;
+    color: #666;
+}
+
 /* Profile Page */
 .profilePage {
     text-align: center;
