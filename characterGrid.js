@@ -446,6 +446,7 @@ async function createWebhook(guildId, channelId, characterId) {
     console.log("Response Data:", responseData);  
     if (response.ok) {
         alert(responseData.message);
+        closeModal();
     } else {
         alert("Error: " + responseData.error);
     }
