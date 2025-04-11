@@ -81,6 +81,12 @@
                         <!-- Populate with guilds -->
                     </select>
                 </section>
+
+              <!-- Openrouter key -->
+                <section>
+                    <h3>Theme</h3>
+                    <button id="openrouterKey" href="https://openrouter.ai/auth?callback_url=https://chatcord.win/index.html/?provider=openrouter"></button>
+                </section>
             </div>
         </div>
     
@@ -143,7 +149,30 @@
                             const urlParams = new URLSearchParams(window.location.search);
                             const code = urlParams.get("code");
                             const user = JSON.parse(localStorage.getItem("user"));            
+                            const provider = urlParams.get("provider");
                             if (user) {
+                                   let endpoint = "";
+                                
+                                   if (provider === "openrouter") {
+                                        endpoint = "https://chatcord-server.onrender.com/openrouter-callback?code=" + code;
+                                    }
+                                
+                                    if (endpoint) {
+                                        fetch(endpoint, {
+                                            method: "GET",
+                                            mode: "cors",
+                                            credentials: "include"
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log("User data from", provider, data);
+                                        })
+                                        .catch(error => {
+                                            console.error("Auth error:", error);
+                                        });
+                                    }
+                                }
+
                                 document.getElementById("loginButton").textContent = "Logout";
                                 document.getElementById("loginButton").href = "#";
                                 document.getElementById("loginButton").onclick = logout;
@@ -166,8 +195,15 @@
 
                                 // Load Settings
                                 loadSettings();
+                                if (provider === "openrouter") {  
+                                    window.history.replaceState({}, document.title, "index.html");
+                                }
+                                
                             }
                             else if (code) {
+                               if (provider === "openrouter") {
+                                   return
+                               }
                                 // Send 'code' to Flask backend
                                 fetch("https://chatcord-server.onrender.com/callback?code=" + code, {
                                     method: "GET",
