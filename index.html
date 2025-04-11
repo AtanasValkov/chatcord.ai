@@ -151,26 +151,25 @@
                             const user = JSON.parse(localStorage.getItem("user"));            
                             const provider = urlParams.get("provider");
                             if (user) {
-                                   let endpoint = "";
-                                
-                                   if (provider === "openrouter") {
-                                        endpoint = "https://chatcord-server.onrender.com/openrouter-callback?code=" + code;
-                                    }
-                                
-                                    if (endpoint) {
-                                        fetch(endpoint, {
-                                            method: "GET",
-                                            mode: "cors",
-                                            credentials: "include"
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log("User data from", provider, data);
-                                        })
-                                        .catch(error => {
-                                            console.error("Auth error:", error);
-                                        });
-                                    }
+                               let endpoint = "";
+                            
+                               if (provider === "openrouter") {
+                                    endpoint = "https://chatcord-server.onrender.com/openrouter-callback?code=" + code;
+                                }
+                            
+                                if (endpoint) {
+                                    fetch(endpoint, {
+                                        method: "GET",
+                                        mode: "cors",
+                                        credentials: "include"
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log("User data from", provider, data);
+                                    })
+                                    .catch(error => {
+                                        console.error("Auth error:", error);
+                                    });
                                 }
 
                                 document.getElementById("loginButton").textContent = "Logout";
