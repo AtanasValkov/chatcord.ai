@@ -149,11 +149,11 @@
                             const urlParams = new URLSearchParams(window.location.search);
                             const code = urlParams.get("code");
                             const user = JSON.parse(localStorage.getItem("user"));            
-                            const provider = urlParams.get("provider");
+                            //const provider = urlParams.get("provider");
                             if (user) {
                                let endpoint = "";
                             
-                               if (provider === "openrouter") {
+                               if (code) {
                                     endpoint = "https://chatcord-server.onrender.com/openrouter-callback?code=" + code;
                                 }
                             
@@ -194,15 +194,12 @@
 
                                 // Load Settings
                                 loadSettings();
-                                if (provider === "openrouter") {  
+                                if (code) {  
                                     window.history.replaceState({}, document.title, "index.html");
                                 }
                                 
                             }
                             else if (code) {
-                               if (provider === "openrouter") {
-                                   return
-                               }
                                 // Send 'code' to Flask backend
                                 fetch("https://chatcord-server.onrender.com/callback?code=" + code, {
                                     method: "GET",
@@ -538,7 +535,7 @@
                               // Openrouter API key
                               const apiBtn = document.getElementById('openrouterKey');
                               apiBtn.addEventListener('click', () => {
-                                  window.location.href = "https://openrouter.ai/auth?callback_url=https://chatcord.win/index.html/?provider=openrouter"; 
+                                  window.location.href = "https://openrouter.ai/auth?callback_url=https://chatcord.win/index.html"; 
                               });
 
 
