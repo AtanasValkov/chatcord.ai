@@ -323,6 +323,8 @@ function createBot(id) {
         btn.addEventListener("click", closeModal);
     });
 
+    // Update the global character id:
+    currentCharId = id;
     
     const guilds = JSON.parse(localStorage.getItem("guilds"));
     const guildSelect = document.getElementById("guild-select");
@@ -357,6 +359,7 @@ function createBot(id) {
         const guildId = this.value;
         const channelSelect = document.getElementById("channel-select");        
         const loadButton = document.getElementById("create-webhook-btn");
+        loadButton.removeEventListener("click", handleCreateWebhookClick);
         
         channelSelect.disabled = true;
         channelSelect.innerHTML = '<option value="">Select a Channel</option>';
@@ -398,25 +401,11 @@ function createBot(id) {
     // When user selects a channel, enable load character button
     document.getElementById("channel-select").addEventListener("change", async function() {
         const loadButton = document.getElementById("create-webhook-btn");
+        // Attach the event listener
+        loadButton.addEventListener("click", handleCreateWebhookClick);
         const channelId = this.value;
     
         loadButton.disabled = !channelId;
-    });
-
-
-    // Create webhook when the button is clicked
-    document.getElementById("create-webhook-btn").addEventListener("click", async function() {
-        const guildId = document.getElementById("guild-select").value;
-        const channelId = document.getElementById("channel-select").value;
-    
-        if (guildId && channelId) {
-                try {
-                    // Proceed with creating the webhook
-                    createWebhook(guildId, channelId, id);
-                } catch (error) {
-                    alert("Failed to create webhook: " + error);
-                }
-        }
     });
 
     // If there is a favorite guild, set it as selected
@@ -427,6 +416,23 @@ function createBot(id) {
     
     // Show modal
     document.getElementById("modal").style.display = "block";
+}
+
+// Global variable to store the current character id:
+let currentCharId = null;
+
+async function handleCreateWebhookClick() {
+    const guildId = document.getElementById("guild-select").value;
+    const channelId = document.getElementById("channel-select").value;
+
+    if (guildId && channelId) {
+        try {
+            // Proceed with creating the webhook
+            createWebhook(guildId, channelId, currentCharId);
+        } catch (error) {
+            alert("Failed to create webhook: " + error);
+        }
+    }
 }
 
 // Create the webhook in the selected channel
