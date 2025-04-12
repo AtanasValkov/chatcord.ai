@@ -86,6 +86,7 @@
                 <section>
                     <h3>Free AI access</h3>
                     <button id="openrouterKey"> API Key </button>
+                    <div id="openrouterKeyMessage"></div>
                 </section>
             </div>
         </div>
@@ -165,10 +166,15 @@
                                     })
                                     .then(response => response.json())
                                     .then(data => {
-                                        alert(data)
+                                        // Get the message from the response data
+                                        const message = data.message || "API key updated successfully";
+                                        // Display the message in the message div
+                                        document.getElementById("openrouterKeyMessage").textContent = message;
                                     })
                                     .catch(error => {
                                         console.error("Auth error:", error);
+                                        // Display an error message in the message div
+                                        document.getElementById("openrouterKeyMessage").textContent = "An error occurred while updating the API key.";
                                     });
                                 }
 
