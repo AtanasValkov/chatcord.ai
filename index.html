@@ -348,7 +348,6 @@
                                 const filteredCharacters = Object.entries(characters).filter(([id, char]) => 
                                     searchQuery === "" || char.char_name.toLowerCase().includes(searchQuery)
                                 );
-                                console.log("filteredChars:", filteredCharacters);
                                 // Get the selected sort option and order
                                 const sortOption = document.getElementById("sortOptions").value;
                                 const sortOrder = document.getElementById("sortOrder").value; // "asc" or "desc"
