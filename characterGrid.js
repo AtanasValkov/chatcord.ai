@@ -12,32 +12,24 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         if (includeTags.length > 0 && !character.tags.some(tag => includeTags.includes(tag))) {
             return;
         }
-        
+
+        renderCharacterCard(character, showDetailsOnClick);
+        });
+}
+
+async function renderCharacterCard(character, showDetailsOnClick) {
+        const grid = document.getElementById("characterGrid");
         const charDiv = document.createElement("div");
         charDiv.classList.add("character");
-        let imageUrl = `https://chatcord-server.onrender.com/get-characters/${character.id}`;
-        
+    
+        let imageUrl = `https://chatcord-server.onrender.com/get-characters/${character.id}`;    
         // Fetch the avatar URL and set it as image src
-        fetch(imageUrl)
-        .then(response => response.json())
-        .then(data => {
+        try {
+            const response = await fetch(imageUrl);
+            const data = await response.json();
             imageUrl = data.signed_avatar_url;
-        })
-        .catch(error => {
+        } catch (error) {
             console.error('Error fetching avatar URL:', error);
-        });
-
-        if (showDetailsOnClick) {
-            charDiv.onclick = () => showDetails(
-                character.id,
-                character.char_name || "Unknown Character",
-                character.description || character.world_scenario || "No scenario available.",
-                imageUrl,
-                character.tags || [],
-                character.userID,
-                character.username,
-                character.avatar
-            );
         }
 
         function getRandomInt(min, max) {
@@ -51,6 +43,17 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         let comments = getRandomInt(1, 99);
 
         if (showDetailsOnClick) {
+            charDiv.onclick = () => showDetails(
+                character.id,
+                character.char_name || "Unknown Character",
+                character.description || character.world_scenario || "No scenario available.",
+                imageUrl,
+                character.tags || [],
+                character.userID,
+                character.username,
+                character.avatar
+            );
+            
             charDiv.innerHTML = `
                 <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
                 <p>${character.char_name || 'Unknown'}</p>
@@ -78,7 +81,6 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
             charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(character.id));
         }
         grid.appendChild(charDiv);
-    });
 }
 
 function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
