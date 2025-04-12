@@ -15,16 +15,20 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         
         const charDiv = document.createElement("div");
         charDiv.classList.add("character");
-        let imageUrl = `https://chatcord-server.onrender.com/get-characters/${character.id}`;
+        const imageUrl = `https://chatcord-server.onrender.com/get-characters/${character.id}`;
         
-        console.log(imageUrl)
-        console.log("char_id", character.id)
+        // Fetch the avatar URL and set it as image src
+        fetch(imageUrl)
+          .then(response => response.json())
+          .then(data => {
+            const avatarUrl = data.signed_avatar_url;
+
         if (showDetailsOnClick) {
             charDiv.onclick = () => showDetails(
                 character.id,
                 character.char_name || "Unknown Character",
                 character.description || character.world_scenario || "No scenario available.",
-                imageUrl,
+                avatarUrl,
                 character.tags || [],
                 character.userID,
                 character.username,
@@ -44,7 +48,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
 
         if (showDetailsOnClick) {
             charDiv.innerHTML = `
-                <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+                <img class="character-img" src="${avatarUrl}" alt="${character.char_name || 'Unknown'}">
                 <p>${character.char_name || 'Unknown'}</p>
                 <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
                 <div class="tags" id="characterTags"></div>
@@ -60,7 +64,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         } else {
             charDiv.id = `character-${character.id}`;
             charDiv.innerHTML = `
-                <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+                <img class="character-img" src="${avatarUrl}" alt="${character.char_name || 'Unknown'}">
                 <p>${character.char_name || 'Unknown'}</p>
                 <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
                 <button class="edit-btn">Edit</button>
