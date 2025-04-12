@@ -17,7 +17,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         charDiv.classList.add("character");
         let imageUrl = `https://chatcord-server.onrender.com/get-characters/${character.id}`;
         imageUrl = imageUrl.signed_avatar_url;
-        
+        console.log("char_id", character.id)
         if (showDetailsOnClick) {
             charDiv.onclick = () => showDetails(
                 character.id,
@@ -72,7 +72,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
     });
 }
 
-function showDetails(charID, name, desc, img, tags, ID, username, avatar) {
+function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     // Remove existing details panel if it exists
     const existingPanel = document.getElementById("detailsPanel");
     if (existingPanel) {
@@ -257,9 +257,9 @@ function showDetails(charID, name, desc, img, tags, ID, username, avatar) {
     madeByDiv.classList.add("madeBy");
     madeByDiv.id = "madeBy";
     madeByDiv.innerHTML = `
-      <a href="profile.html?ID=${ID}&username=${encodeURIComponent(username)}" style="text-decoration: none;display: flex;color: inherit;align-items: anchor-center;">
+      <a href="profile.html?ID=${userID}&username=${encodeURIComponent(username)}" style="text-decoration: none;display: flex;color: inherit;align-items: anchor-center;">
         <p style="margin: 0 10px;">Uploaded by <strong>${username}</strong></p>
-        <img src="https://cdn.discordapp.com/avatars/${ID}/${avatar}.png"
+        <img src="https://cdn.discordapp.com/avatars/${userID}/${avatar}.png"
              alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
       </a>
     `;
