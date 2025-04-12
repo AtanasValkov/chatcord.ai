@@ -348,7 +348,7 @@
                                 const filteredCharacters = Object.entries(characters).filter(([id, char]) => 
                                     searchQuery === "" || char.char_name.toLowerCase().includes(searchQuery)
                                 );
-
+                                console.log("filteredChars:", filteredCharacters);
                                 // Get the selected sort option and order
                                 const sortOption = document.getElementById("sortOptions").value;
                                 const sortOrder = document.getElementById("sortOrder").value; // "asc" or "desc"
@@ -385,7 +385,7 @@
                                     }
                                     return multiplier * diff;
                                 });
-                        
+                                console.log("sortedEntries:", sortedEntries);
                                 // Pass the sorted object to populateGrid
                                 populateGrid(sortedEntries, getIncludeTags(), getExcludeTags(), true);
                             } catch (error) {
