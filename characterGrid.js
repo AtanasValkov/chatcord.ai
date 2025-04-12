@@ -19,9 +19,13 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         
         // Fetch the avatar URL and set it as image src
         fetch(imageUrl)
-          .then(response => response.json())
-          .then(data => {
+        .then(response => response.json())
+        .then(data => {
             const avatarUrl = data.signed_avatar_url;
+        )}
+        .catch(error => {
+            console.error('Error fetching avatar URL:', error);
+        });
 
         if (showDetailsOnClick) {
             charDiv.onclick = () => showDetails(
