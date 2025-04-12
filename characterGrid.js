@@ -15,7 +15,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         
         const charDiv = document.createElement("div");
         charDiv.classList.add("character");
-        const imageUrl = `https://chatcord-server.onrender.com/get-characters/${character.id}`;
+        let imageUrl = `https://chatcord-server.onrender.com/get-characters/${character.id}`;
         imageUrl = imageUrl.signed_avatar_url;
         
         if (showDetailsOnClick) {
