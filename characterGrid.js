@@ -8,7 +8,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         if (character.tags.some(tag => excludeTags.includes(tag))) {
             return;
         }
-        
+        console.log("id:", id);
         // If any include filters are active, the character must have at least one of those tags.
         if (includeTags.length > 0 && !character.tags.some(tag => includeTags.includes(tag))) {
             return;
