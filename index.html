@@ -155,8 +155,8 @@
                                let endpoint = "";
                             
                                if (code) {
-                                    endpoint = "https://chatcord-server.onrender.com/openrouter-callback?code=" + code;
-                                }
+                                   endpoint = `https://chatcord-server.onrender.com/openrouter-callback?code=${code}&user_id=${user.id}`;
+                               }
                             
                                 if (endpoint) {
                                     fetch(endpoint, {
