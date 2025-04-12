@@ -8,7 +8,6 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         if (character.tags.some(tag => excludeTags.includes(tag))) {
             return;
         }
-        console.log("id:", id);
         // If any include filters are active, the character must have at least one of those tags.
         if (includeTags.length > 0 && !character.tags.some(tag => includeTags.includes(tag))) {
             return;
@@ -16,11 +15,11 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         
         const charDiv = document.createElement("div");
         charDiv.classList.add("character");
-        const imageUrl = `https://chatcord-server.onrender.com/get-characters/${id}`;
+        const imageUrl = `https://chatcord-server.onrender.com/get-characters/${character.id}`;
         
         if (showDetailsOnClick) {
             charDiv.onclick = () => showDetails(
-                id,
+                character.id,
                 character.char_name || "Unknown Character",
                 character.description || character.world_scenario || "No scenario available.",
                 imageUrl,
@@ -57,7 +56,7 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
                 characterTags.appendChild(tagElement);
             });
         } else {
-            charDiv.id = `character-${id}`;
+            charDiv.id = `character-${character.id}`;
             charDiv.innerHTML = `
                 <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
                 <p>${character.char_name || 'Unknown'}</p>
@@ -65,8 +64,8 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
                 <button class="edit-btn">Edit</button>
                 <button class="delete-btn">Delete</button>
             `;
-            charDiv.querySelector(".delete-btn").addEventListener("click", () => deleteCharacter(id));
-            charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(id));
+            charDiv.querySelector(".delete-btn").addEventListener("click", () => deleteCharacter(character.id));
+            charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(character.id));
         }
         grid.appendChild(charDiv);
     });
