@@ -37,7 +37,7 @@
     const header = document.getElementById('profileHeader');
     
     // Viewing own profile, add For Review tab if admin/moderator
-    if (accessLevel === 'admin' || accessLevel === 'moderator') {
+    if (!userId && (accessLevel === 'admin' || accessLevel === 'moderator')) {
       // Create separator element
       const separator = document.createElement('span');
       separator.className = 'separator';
@@ -50,7 +50,9 @@
       
       // Add click handler directly
       forReviewTab.addEventListener('click', () => loadCharacters('review'));
-      
+      // Set up event listeners for my profile tabs
+      document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine'));
+      document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites'));
       // Append to header
       header.appendChild(separator);
       header.appendChild(forReviewTab);
