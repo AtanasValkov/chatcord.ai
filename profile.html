@@ -53,6 +53,8 @@
       // Set up event listeners for my profile tabs
       document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine'));
       document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites'));
+        // Load 'My Characters' by default for my profile
+      await loadCharacters('mine');
       // Append to header
       header.appendChild(separator);
       header.appendChild(forReviewTab);
