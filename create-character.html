@@ -163,7 +163,8 @@
               const previewImage = document.getElementById("previewImage");
               previewImage.src = character.char_url;
               previewImage.style.display = "block";
-            })
+            }
+        })
         .catch(err => console.error("Error fetching character data:", err));
     }
     
