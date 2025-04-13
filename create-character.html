@@ -213,9 +213,12 @@
                 "gender": gender,
                 "rating": rating,
                 "tags": Array.from(tags),
-                "userID": user.id,
-                "username": user.username,
-                "avatar": user.avatar
+                // Conditionally spread user-related properties only if not in edit mode
+                ...(!isEditMode && {
+                    "userID": user.id,
+                    "username": user.username,
+                    "avatar": user.avatar
+                })
             };
             
             // If editing, include the character ID
