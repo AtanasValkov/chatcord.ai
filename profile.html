@@ -29,6 +29,19 @@
     const userId = params.get('ID');
     const username = params.get('username');
     let characterArray = [];
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`);
+    const userData = await userResponse.json();
+    const accessLevel = userData.user?.access_level?.toLowerCase();
+
+    const header = document.getElementById('profileHeader');
+    
+    // Viewing own profile, add For Review tab if admin/moderator
+    if (accessLevel === 'admin' || accessLevel === 'moderator') {
+      const forReviewTab = `<span class="separator">|</span><span class="tab" id="forReviewTab">For Review</span>`;
+      header.innerHTML += forReviewTab;
+    }
+    
     if (userId && username) {
       // Replace the header content with the user's profile name
       const header = document.getElementById('profileHeader');
@@ -49,19 +62,25 @@
           document.getElementById('characterGrid').innerText = "User not logged in or user ID missing.";
           return;
         }
-
-        if (!userId) {
-          characterArray = (type === 'mine') 
-            ? Object.entries(data).filter(([id, character]) => character.userID === myUserId) 
-            : Object.entries(data).filter(([id, character]) => favCharacters.includes(id));
+        if ( type !== 'review') {
+          if (!userId) {
+            characterArray = (type === 'mine') 
+              ? Object.entries(data).filter(([id, character]) => character.userID === myUserId) 
+              : Object.entries(data).filter(([id, character]) => favCharacters.includes(id));
+          } else {
+            characterArray = Object.entries(data).filter(([id, character]) => character.userID === userId);
+          }
         } else {
-          characterArray = Object.entries(data).filter(([id, character]) => character.userID === userId);
+          characterArray = Object.entries(data)
         }
-        if(type === 'mine') {
+        if (type === 'mine') {
           populateGrid(characterArray, [], [], false);
-        } else {
+        } else if (type === 'favorites') {
           populateGrid(characterArray, [], [], true);
+        } else if (type === 'review') {
+          populateGrid(characterArray, ['Review'], [], false);
         }
+        
       } catch (error) {
         console.error("Error fetching characters:", error);
         document.getElementById('characterGrid').innerText = "Failed to load characters.";
@@ -79,6 +98,7 @@
       document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine'));
         document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites'));
+        document.getElementById('forReviewTab').addEventListener('click', () => loadCharacters('review'));
   
         // Load 'My Characters' by default
         await loadCharacters('mine');
