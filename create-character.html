@@ -193,9 +193,10 @@
             const accessLevel = userData.user?.access_level?.toLowerCase();
 
             if (accessLevel === "admin" || accessLevel === "moderator") {
-              // For admins/moderators: enforce "Featured", remove "Review"
-              tags.add("Featured");    // Add "Featured" if missing
-              tags.delete("Review");   // Remove "Review" if present
+                // For admins/moderators: enforce "Featured", remove "Review"
+                if(!isEditMode) {
+                    tags.add("Featured");    // Add "Featured" if missing
+                }
             } else {
               // For everyone else: enforce "Review", remove "Featured"
               tags.add("Review");      // Add "Review" if missing
