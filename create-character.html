@@ -179,7 +179,7 @@
             const user = JSON.parse(localStorage.getItem("user"));
             const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`);
             const userData = await userResponse.json();
-
+            
             const tags = new Set(
                 Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim())
             );
@@ -194,6 +194,7 @@
             
             // Check access level and add "Review" tag if needed
             const accessLevel = userData.access_level?.toLowerCase();
+            console.log(accessLevel)
             if (accessLevel === "admin" || accessLevel === "moderator") {
               // For admins/moderators: enforce "Featured", remove "Review"
               tags.add("Featured");    // Add "Featured" if missing
