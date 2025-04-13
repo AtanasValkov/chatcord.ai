@@ -194,7 +194,7 @@
             
             // Check access level and add "Review" tag if needed
             const accessLevel = userData.access_level?.toLowerCase();
-            if (accessLevel !== "admin" && accessLevel !== "moderator") {
+            if (accessLevel !== "admin" || accessLevel !== "moderator") {
                 tags.add("Review");
             }
             
@@ -237,7 +237,7 @@
             const data = await response.json();
         
             if (response.ok) {
-                if (accessLevel !== "admin" && accessLevel !== "moderator") {
+                if (accessLevel !== "admin" || accessLevel !== "moderator") {
                     alert(isEditMode ? "Character updated and sent for review!" : "Character created and sent for review!");
                 } else {
                     alert(isEditMode ? "Character updated successfully!" : "Character created successfully!");
