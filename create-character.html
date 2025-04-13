@@ -175,11 +175,11 @@
     // Form submission handling
     document.getElementById("characterForm").addEventListener("submit", async function (event) {
         event.preventDefault();
-        
-        const user = JSON.parse(localStorage.getItem("user"));
-        fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`)
-        .then(res => res.json())
-        .then(data => {
+        try {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`);
+            const userData = await userResponse.json();
+
             const tags = new Set(
                 Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim())
             );
@@ -193,7 +193,7 @@
 
             
             // Check access level and add "Review" tag if needed
-            const accessLevel = data.access_level?.toLowerCase();
+            const accessLevel = userData.access_level?.toLowerCase();
             if (accessLevel !== "admin" && accessLevel !== "moderator") {
                 tags.add("Review");
             }
@@ -229,38 +229,35 @@
                               ? "https://chatcord-server.onrender.com/update_character" 
                               : "https://chatcord-server.onrender.com/upload_json";
             
-            try {
-                const response = await fetch(endpoint, {
-                    method: "POST",
-                    body: formData
-                });
-            
-                const data = await response.json();
-            
-                if (response.ok) {
-                    if (accessLevel !== "admin" && accessLevel !== "moderator") {
-                        alert(isEditMode ? "Character updated and sent for review!" : "Character created and sent for review!");
-                    } else {
-                        alert(isEditMode ? "Character updated successfully!" : "Character created successfully!");
-                    }
-                    if(isEditMode) { 
-                        window.location.href = "profile.html"; 
-                    }
-                    else {
-                      this.reset();
-                      document.getElementById("charDescription").textContent = "";
-                      document.getElementById("previewImage").src = "";
-                      document.getElementById("tagContainer").innerHTML = '';
-                    }
+            const response = await fetch(endpoint, {
+                method: "POST",
+                body: formData
+            });
+        
+            const data = await response.json();
+        
+            if (response.ok) {
+                if (accessLevel !== "admin" && accessLevel !== "moderator") {
+                    alert(isEditMode ? "Character updated and sent for review!" : "Character created and sent for review!");
                 } else {
-                    alert("Error: " + (data.error || "Unknown error"));
+                    alert(isEditMode ? "Character updated successfully!" : "Character created successfully!");
                 }
-            } catch (error) {
-                alert("Upload failed. Please try again.");
-                console.error("Upload Error:", error);
+                if(isEditMode) { 
+                    window.location.href = "profile.html"; 
+                }
+                else {
+                    this.reset();
+                    document.getElementById("charDescription").textContent = "";
+                    document.getElementById("previewImage").src = "";
+                    document.getElementById("tagContainer").innerHTML = '';
+                }
+            } else {
+                alert("Error: " + (data.error || "Unknown error"));
             }
-        })
-        .catch(err => console.error("Error fetching user data:", err));
+        } catch (error) {
+            alert("Upload failed. Please try again.");
+            console.error("Upload Error:", error);
+        }
     });
     
     var imageFile;
