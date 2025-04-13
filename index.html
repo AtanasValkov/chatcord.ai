@@ -554,6 +554,9 @@
                                     const savedTagPrefs = JSON.parse(localStorage.getItem('tagPrefs') || '{}');
 
                                     tags.forEach(([tag, frequency]) => {
+                                      if ( tag === "Review" ) {
+                                          return;
+                                      }
                                       const listItem = document.createElement("li");
                                 
                                       // Include (Favorite) checkbox
