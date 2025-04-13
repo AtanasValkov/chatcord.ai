@@ -179,7 +179,7 @@
             const user = JSON.parse(localStorage.getItem("user"));
             const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`);
             const userData = await userResponse.json();
-            
+            console.log("User data:", userData); // Debug API response
             const tags = new Set(
                 Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim())
             );
