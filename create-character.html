@@ -177,74 +177,90 @@
         event.preventDefault();
         
         const user = JSON.parse(localStorage.getItem("user"));
-        const tags = new Set(
-            Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim())
-        );
-        
-        // Get Gender and SFW/NSFW values
-        const gender = document.getElementById("genderSelect").value;
-        const rating = document.getElementById("sfwSelect").value;
-        
-        if (gender) tags.add(gender);
-        if (rating) tags.add(rating);
-        
-        const jsonData = {
-            "char_name": document.getElementById("characterName").value,
-            "char_persona": document.getElementById("charDescription").value,
-            "char_greeting": document.getElementById("charGreeting").value,
-            "world_scenario": document.getElementById("charScenario").value,
-            "example_dialogue": document.getElementById("charDialogue").value,
-            "description": document.getElementById("displayText").value,
-            "gender": gender,
-            "rating": rating,
-            "tags": Array.from(tags),
-            "userID": user.id,
-            "username": user.username,
-            "avatar": user.avatar
-        };
-        
-        // If editing, include the character ID
-        if(isEditMode) {
-          jsonData.id = characterId;
-        }
-        
-        const formData = new FormData();
-        formData.append("json", JSON.stringify(jsonData));
-        if (imageFile) {
-          formData.append("file", imageFile);
-        }
-        
-        // Use different endpoints for create vs edit
-        const endpoint = isEditMode 
-                          ? "https://chatcord-server.onrender.com/update_character" 
-                          : "https://chatcord-server.onrender.com/upload_json";
-        
-        try {
-            const response = await fetch(endpoint, {
-                method: "POST",
-                body: formData
-            });
-        
-            const data = await response.json();
-        
-            if (response.ok) {
-                alert(isEditMode ? "Character updated successfully!" : "Character created successfully!");
-                if(isEditMode) { 
-                    window.location.href = "profile.html"; 
-                }
-                else {
-                  this.reset();
-                  document.getElementById("charDescription").textContent = "";
-                  document.getElementById("previewImage").src = "";
-                  document.getElementById("tagContainer").innerHTML = '';
-                }
-            } else {
-                alert("Error: " + (data.error || "Unknown error"));
+        fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+            const tags = new Set(
+                Array.from(document.querySelectorAll("#tagContainer .tag")).map(tag => tag.textContent.trim())
+            );
+            
+            // Get Gender and SFW/NSFW values
+            const gender = document.getElementById("genderSelect").value;
+            const rating = document.getElementById("sfwSelect").value;
+            
+            if (gender) tags.add(gender);
+            if (rating) tags.add(rating);
+
+            
+            // Check access level and add "Review" tag if needed
+            const accessLevel = data.access_level?.toLowerCase();
+            if (accessLevel !== "admin" && accessLevel !== "moderator") {
+                tags.add("Review");
             }
-        } catch (error) {
-            alert("Upload failed. Please try again.");
-            console.error("Upload Error:", error);
-        }
+            
+            const jsonData = {
+                "char_name": document.getElementById("characterName").value,
+                "char_persona": document.getElementById("charDescription").value,
+                "char_greeting": document.getElementById("charGreeting").value,
+                "world_scenario": document.getElementById("charScenario").value,
+                "example_dialogue": document.getElementById("charDialogue").value,
+                "description": document.getElementById("displayText").value,
+                "gender": gender,
+                "rating": rating,
+                "tags": Array.from(tags),
+                "userID": user.id,
+                "username": user.username,
+                "avatar": user.avatar
+            };
+            
+            // If editing, include the character ID
+            if(isEditMode) {
+              jsonData.id = characterId;
+            }
+            
+            const formData = new FormData();
+            formData.append("json", JSON.stringify(jsonData));
+            if (imageFile) {
+              formData.append("file", imageFile);
+            }
+            
+            // Use different endpoints for create vs edit
+            const endpoint = isEditMode 
+                              ? "https://chatcord-server.onrender.com/update_character" 
+                              : "https://chatcord-server.onrender.com/upload_json";
+            
+            try {
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    body: formData
+                });
+            
+                const data = await response.json();
+            
+                if (response.ok) {
+                    if (accessLevel !== "admin" && accessLevel !== "moderator") {
+                        alert(isEditMode ? "Character updated and sent for review!" : "Character created and sent for review!");
+                    } else {
+                        alert(isEditMode ? "Character updated successfully!" : "Character created successfully!");
+                    }
+                    if(isEditMode) { 
+                        window.location.href = "profile.html"; 
+                    }
+                    else {
+                      this.reset();
+                      document.getElementById("charDescription").textContent = "";
+                      document.getElementById("previewImage").src = "";
+                      document.getElementById("tagContainer").innerHTML = '';
+                    }
+                } else {
+                    alert("Error: " + (data.error || "Unknown error"));
+                }
+            } catch (error) {
+                alert("Upload failed. Please try again.");
+                console.error("Upload Error:", error);
+            }
+        })
+        .catch(err => console.error("Error fetching user data:", err));
     });
     
     var imageFile;
