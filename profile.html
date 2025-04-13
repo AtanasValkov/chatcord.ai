@@ -87,7 +87,7 @@
               : Object.entries(data).filter(([id, character]) => favCharacters.includes(character.id));
           } else {
             characterArray = Object.entries(data).filter(([id, character]) => character.userID === userId);
-            excludedTags = JSON.parse(localStorage.getItem('tagPrefs') || '{}');
+            //excludedTags = JSON.parse(localStorage.getItem('tagPrefs') || '{}');
           }
         } else {
           characterArray = Object.entries(data)
