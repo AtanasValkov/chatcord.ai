@@ -42,7 +42,6 @@
       const separator = document.createElement('span');
       separator.className = 'separator';
       separator.textContent = '|';
-      console.log(type);
       // Create the tab element
       const forReviewTab = document.createElement('span');
       forReviewTab.className = 'tab';
@@ -68,6 +67,7 @@
         const response = await fetch('https://chatcord-server.onrender.com/get-characters');
         const data = await response.json();
 
+        console.log(type);
         // Get the current user's ID from localStorage
         const user = JSON.parse(localStorage.getItem('user'));
         const myUserId = user ? user.id : null;
