@@ -143,7 +143,7 @@
       fetch(`https://chatcord-server.onrender.com/get-characters`)
         .then(res => res.json())
         .then(data => {
-            const character = data.find(c => c._id === characterId); // or c.id, depending on your schema
+            const character = data.find(c => c.id === characterId); // or c.id, depending on your schema
             if (character) {
               // Prepopulate fields with fetched data
               document.getElementById("characterName").value = character.char_name || '';
@@ -163,6 +163,8 @@
               const previewImage = document.getElementById("previewImage");
               previewImage.src = character.char_url;
               previewImage.style.display = "block";
+            }  else {
+              console.error("Character not found for id:", characterId);
             }
         })
         .catch(err => console.error("Error fetching character data:", err));
