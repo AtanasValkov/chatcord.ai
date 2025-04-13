@@ -350,12 +350,15 @@ function createBot(id) {
     // Populate the favorite guild dropdown with the user's guilds
     if (guilds) {
         guilds.forEach(guild => {
-            const option = document.createElement("option");
-            option.value = guild.id;
-            option.textContent = guild.name;
-            guildSelect.appendChild(option);
+            // Check if the option already exists
+            const existingOption = guildSelect.querySelector(`option[value="${guild.id}"]`);
+            if (!existingOption) {
+                const option = document.createElement("option");
+                option.value = guild.id;
+                option.textContent = guild.name;
+                guildSelect.appendChild(option);
+            }
         });
-        // Enable the guild select dropdown
         guildSelect.disabled = false;
     }
     
