@@ -40,6 +40,7 @@
     if (accessLevel === 'admin' || accessLevel === 'moderator') {
       const forReviewTab = `<span class="separator">|</span><span class="tab" id="forReviewTab">For Review</span>`;
       header.innerHTML += forReviewTab;
+      forReviewTab.addEventListener('click', () => loadCharacters('review'));
     }
     
     if (userId && username) {
@@ -98,7 +99,6 @@
       document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine'));
         document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites'));
-        document.getElementById('forReviewTab').addEventListener('click', () => loadCharacters('review'));
   
         // Load 'My Characters' by default
         await loadCharacters('mine');
