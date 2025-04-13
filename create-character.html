@@ -135,7 +135,9 @@
     const urlParams = new URLSearchParams(window.location.search);
     const characterId = urlParams.get('id'); // e.g., /edit-character.html?id=123
     const isEditMode = !!characterId;
-    
+    let authorID = 0;
+    let authorName = "";
+    let authorIcon = "";
     if(isEditMode) {
       document.getElementById("formTitle").textContent = "Edit Character";
       document.getElementById("submitBtn").textContent = "Update Character";
@@ -155,6 +157,9 @@
               document.getElementById("genderSelect").value = character.gender || '';
               document.getElementById("sfwSelect").value = character.rating || '';
               document.getElementById("backBtn").href = "profile.html"
+              authorID = character.userID;
+              authorName = character.username;
+              authorIcon = character.avatar;
               // Populate tags if available
               if(character.tags && Array.isArray(character.tags)) {
                 character.tags.forEach(tag => addTag(tag));
@@ -213,12 +218,19 @@
                 "gender": gender,
                 "rating": rating,
                 "tags": Array.from(tags),
-                // Conditionally spread user-related properties only if not in edit mode
-                ...(!isEditMode && {
-                    "userID": user.id,
-                    "username": user.username,
-                    "avatar": user.avatar
-                })
+                // Spread different properties based on `isEditMode`
+                ...(isEditMode 
+                    ? { /* Edit mode: Include properties you want when editing */ 
+                        "userID": authorID,
+                        "username": authorName,
+                        "avatar": authorIcon
+                    } 
+                    : { /* Non-edit mode: Include user-related fields */
+                        "userID": user.id,
+                        "username": user.username,
+                        "avatar": user.avatar
+                    }
+                )
             };
             
             // If editing, include the character ID
