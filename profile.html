@@ -75,7 +75,7 @@
         const user = JSON.parse(localStorage.getItem('user'));
         const myUserId = user ? user.id : null;
         const favCharacters = user.favCharacters || [];
-
+        let excludedTags = []
         if (!myUserId) {
           document.getElementById('characterGrid').innerText = "User not logged in or user ID missing.";
           return;
@@ -87,14 +87,15 @@
               : Object.entries(data).filter(([id, character]) => favCharacters.includes(character.id));
           } else {
             characterArray = Object.entries(data).filter(([id, character]) => character.userID === userId);
+            excludedTags = JSON.parse(localStorage.getItem('tagPrefs') || '{}');
           }
         } else {
           characterArray = Object.entries(data)
         }
         if (type === 'mine') {
-          populateGrid(characterArray, [], [], false);
+          populateGrid(characterArray, [], excludedTags, false);
         } else if (type === 'favorites') {
-          populateGrid(characterArray, [], [], true);
+          populateGrid(characterArray, [], excludedTags, true);
         } else if (type === 'review') {
           populateGrid(characterArray, ['Review'], [], false);
         }
