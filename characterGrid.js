@@ -21,17 +21,9 @@ async function renderCharacterCard(character, showDetailsOnClick) {
         const grid = document.getElementById("characterGrid");
         const charDiv = document.createElement("div");
         charDiv.classList.add("character");
-    
-        let imageUrl = `https://chatcord-server.onrender.com/get-characters/${character.id}`;    
-        // Fetch the avatar URL and set it as image src
-        try {
-            const response = await fetch(imageUrl);
-            const data = await response.json();
-            imageUrl = data.signed_avatar_url;
-        } catch (error) {
-            console.error('Error fetching avatar URL:', error);
-        }
 
+        const imageUrl = character.char_url
+    
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
