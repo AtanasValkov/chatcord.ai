@@ -38,9 +38,23 @@
     
     // Viewing own profile, add For Review tab if admin/moderator
     if (accessLevel === 'admin' || accessLevel === 'moderator') {
-      const forReviewTab = `<span class="separator">|</span><span class="tab" id="forReviewTab">For Review</span>`;
-      header.innerHTML += forReviewTab;
+      // Create separator element
+      const separator = document.createElement('span');
+      separator.className = 'separator';
+      separator.textContent = '|';
+      
+      // Create the tab element
+      const forReviewTab = document.createElement('span');
+      forReviewTab.className = 'tab';
+      forReviewTab.id = 'forReviewTab';
+      forReviewTab.textContent = 'For Review';
+      
+      // Add click handler directly
       forReviewTab.addEventListener('click', () => loadCharacters('review'));
+      
+      // Append to header
+      header.appendChild(separator);
+      header.appendChild(forReviewTab);
     }
     
     if (userId && username) {
