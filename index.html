@@ -268,10 +268,13 @@
                         
                             const tagList = document.querySelector(".sidebar ul");
                             tagList.innerHTML = ""; // Clear previous tags
+
+                            const excludedTags = ["Review"]; // Add tags you want to completely ignore
                         
                             const savedTagPrefs = JSON.parse(localStorage.getItem('tagPrefs') || '{}');
                         
                             tags.forEach(([tag, frequency]) => {
+                              if (excludedTags.includes(tag)) return;
                               const listItem = document.createElement("li");
                         
                               // Create include checkbox
