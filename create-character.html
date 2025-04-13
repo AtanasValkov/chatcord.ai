@@ -143,26 +143,27 @@
       fetch(`https://chatcord-server.onrender.com/get-characters`)
         .then(res => res.json())
         .then(data => {
-          // Prepopulate fields with fetched data
-          document.getElementById("characterName").value = data[characterId].char_name || '';
-          document.getElementById("charDescription").value = data[characterId].char_persona || '';
-          document.getElementById("charGreeting").value = data[characterId].char_greeting || '';
-          document.getElementById("charScenario").value = data[characterId].world_scenario || '';
-          document.getElementById("charDialogue").value = data[characterId].example_dialogue || '';
-          document.getElementById("displayText").value = data[characterId].description || '';
-          document.getElementById("genderSelect").value = data[characterId].gender || '';
-          document.getElementById("sfwSelect").value = data[characterId].rating || '';
-          document.getElementById("backBtn").href = "profile.html"
-          // Populate tags if available
-          if(data[characterId].tags && Array.isArray(data[characterId].tags)) {
-            data[characterId].tags.forEach(tag => addTag(tag));
-          }
-          
-          const imageUrl = `https://chatcord-server.onrender.com/get-characters/${characterId}`;
-          const previewImage = document.getElementById("previewImage");
-          previewImage.src = imageUrl;
-          previewImage.style.display = "block";
-        })
+            const character = data.find(c => c._id === characterId); // or c.id, depending on your schema
+            if (character) {
+              // Prepopulate fields with fetched data
+              document.getElementById("characterName").value = character.char_name || '';
+              document.getElementById("charDescription").value = character.char_persona || '';
+              document.getElementById("charGreeting").value = character.char_greeting || '';
+              document.getElementById("charScenario").value = character.world_scenario || '';
+              document.getElementById("charDialogue").value = character.example_dialogue || '';
+              document.getElementById("displayText").value = character.description || '';
+              document.getElementById("genderSelect").value = character.gender || '';
+              document.getElementById("sfwSelect").value = character.rating || '';
+              document.getElementById("backBtn").href = "profile.html"
+              // Populate tags if available
+              if(character.tags && Array.isArray(character.tags)) {
+                character.tags.forEach(tag => addTag(tag));
+              }
+                
+              const previewImage = document.getElementById("previewImage");
+              previewImage.src = character.char_url;
+              previewImage.style.display = "block";
+            })
         .catch(err => console.error("Error fetching character data:", err));
     }
     
