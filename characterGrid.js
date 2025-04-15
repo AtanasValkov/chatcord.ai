@@ -330,65 +330,35 @@ async function createBot(id) {
 
     currentCharId = id;
     const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user.id;
+    let guilds = [];
+    try {
+        guilds = await fetchGuilds(userId);
+    } catch (err) {
+        alert("Failed to load guilds: " + err.message);
+        return;
+    }
+
     const guildSelect = document.getElementById("guild-select");
     const favoriteGuildId = localStorage.getItem("favoriteGuildId");
 
-    const loadGuildsIntoDropdown = (guilds) => {
-        guildSelect.innerHTML = '<option value="">Select a Server</option>';
-        let hasFavorite = false;
-
-        // Create all options first
-        guilds.forEach(guild => {
-            const option = document.createElement("option");
-            option.value = guild.id;
-            option.textContent = guild.name;
-            if (guild.id === favoriteGuildId) {
-                option.selected = true;
-                hasFavorite = true;
-            }
-            guildSelect.appendChild(option);
+    if (favoriteGuildId) {
+        guilds.sort((a, b) => {
+            if (a.guild_id === favoriteGuildId) return -1;
+            if (b.guild_id === favoriteGuildId) return 1;
+            return 0;
         });
-
-        // Preserve favorite only if it exists in the list
-        if (favoriteGuildId && !hasFavorite) {
-            localStorage.removeItem("favoriteGuildId");
-        }
-
-        guildSelect.disabled = false;
-    };
-
-    try {
-        const guildData = await fetchUserGuilds(user.id);
-        loadGuildsIntoDropdown(guildData.guilds);
-
-        // Set favorite selection after DOM update
-        if (favoriteGuildId && guildSelect.querySelector(`option[value="${favoriteGuildId}"]`)) {
-            guildSelect.value = favoriteGuildId;
-            // Delay the change event until after DOM settles
-            setTimeout(() => guildSelect.dispatchEvent(new Event("change")), 0);
-        }
-    } catch (err) {
-        console.error("Error loading guilds:", err);
     }
-    
-    // Guild select change handler
-    guildSelect.addEventListener("change", async function() {
-        const guildId = this.value;
-        if (!guildId || guildId === "undefined") {
-            document.getElementById("channel-select").innerHTML = '<option value="">Select a Channel</option>';
-            return;
-        }
-    });
 
-    document.getElementById("refresh-guilds").addEventListener("click", async () => {
-        try {
-            const guildData = await fetchUserGuilds(user.id, true); // force refresh
-            loadGuildsIntoDropdown(guildData.guilds);
-        } catch (err) {
-            alert("Failed to refresh guilds: " + err.message);
-        }
+    guildSelect.innerHTML = '<option value="">Select a Server</option>';
+    guilds.forEach(guild => {
+        const option = document.createElement("option");
+        option.value = guild.guild_id;
+        option.textContent = guild.name;
+        guildSelect.appendChild(option);
     });
-    
+    guildSelect.disabled = false;
+
     // When user selects a server, fetch channels for that server
     document.getElementById("guild-select").addEventListener("change", async function() {
         const guildId = this.value;
@@ -399,7 +369,7 @@ async function createBot(id) {
         channelSelect.disabled = true;
         channelSelect.innerHTML = '<option value="">Select a Channel</option>';
         loadButton.disabled = true;
-        console.log(guildId)
+        
         if (!guildId) return;
         
         // Abort any previous request
@@ -410,7 +380,6 @@ async function createBot(id) {
         const signal = window.fetchController.signal;
         
         try {
-            console.log("second:", guildId)
             const botInGuild = await isBotInGuild(guildId, signal);
             if (botInGuild) {
                 const data = await fetchChannels(guildId, signal);
@@ -450,6 +419,28 @@ async function createBot(id) {
             }
         }
     });
+
+    document.getElementById("refresh-guilds").addEventListener("click", async () => {
+        try {
+            const userId = YOUR_LOGGED_IN_USER_ID; // Replace with actual user ID value
+            const guilds = await fetchGuilds(userId, true);
+    
+            const guildSelect = document.getElementById("guild-select");
+            guildSelect.innerHTML = '<option value="">Select a Server</option>';
+            guilds.forEach(guild => {
+                const option = document.createElement("option");
+                option.value = guild.guild_id;
+                option.textContent = guild.name;
+                guildSelect.appendChild(option);
+            });
+    
+            guildSelect.disabled = false;
+            guildSelect.dispatchEvent(new Event("change"));
+        } catch (err) {
+            alert("Failed to refresh guilds: " + err.message);
+        }
+    });
+
 
     // When user selects a channel, enable load character button
     document.getElementById("channel-select").addEventListener("change", async function() {
@@ -535,6 +526,15 @@ function promptToAddBot(guildId) {
     closeModal();
 }
 
+async function fetchGuilds(userId, forceRefresh = false) {
+    const url = `https://chatcord-server.onrender.com/user/${userId}/guilds${forceRefresh ? '?force_refresh=true' : ''}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Failed to fetch guilds");
+    const data = await response.json();
+    return data.guilds;
+}
+
+
 // Fetch channels for a specific server (guild) using access_token
 async function fetchChannels(guildId, signal, forceRefresh = false) {
     const url = `https://chatcord-server.onrender.com/guilds/${guildId}/channels${forceRefresh ? '?force_refresh=true' : ''}`;
@@ -542,15 +542,6 @@ async function fetchChannels(guildId, signal, forceRefresh = false) {
     if (!response.ok) throw new Error("Failed to fetch channels");
     return response.json();
 }
-
-// Fetch servers refresh
-async function fetchUserGuilds(userId, forceRefresh = false) {
-    const url = `https://chatcord-server.onrender.com/user/${userId}/guilds${forceRefresh ? '?force_refresh=true' : ''}`;
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("Failed to fetch user guilds");
-    return response.json();
-}
-
 
 // Close Modal
 function closeModal() {
