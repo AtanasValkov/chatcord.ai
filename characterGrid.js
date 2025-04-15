@@ -341,7 +341,7 @@ async function createBot(id) {
 
     const guildSelect = document.getElementById("guild-select");
     const favoriteGuildId = localStorage.getItem("favoriteGuildId");
-
+    const forceRefreshBtn = document.getElementById("force-refresh-channels");
     if (favoriteGuildId) {
         guilds.sort((a, b) => {
             if (a.guild_id === favoriteGuildId) return -1;
@@ -422,7 +422,8 @@ async function createBot(id) {
 
     document.getElementById("refresh-guilds").addEventListener("click", async () => {
         try {
-            const userId = YOUR_LOGGED_IN_USER_ID; // Replace with actual user ID value
+            const user = JSON.parse(localStorage.getItem("user"));
+            const userId = user.id;
             const guilds = await fetchGuilds(userId, true);
     
             const guildSelect = document.getElementById("guild-select");
@@ -448,7 +449,6 @@ async function createBot(id) {
         // Attach the event listener
         loadButton.addEventListener("click", handleCreateWebhookClick);
         const channelId = this.value;
-        const forceRefreshBtn = document.getElementById("force-refresh-channels");
         forceRefreshBtn.disabled = true;
         forceRefreshBtn.onclick = null;
 
