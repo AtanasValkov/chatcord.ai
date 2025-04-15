@@ -221,12 +221,7 @@
                                     if (data.user) {
                                         // Store user data in localStorage
                                         localStorage.setItem("user", JSON.stringify(data.user));
-                                        if (data.guilds) {
-                                            localStorage.setItem("guilds", JSON.stringify(data.guilds));
-                                            loadSettings();
-                                        }
-                                        // Store access token in localStorage
-                                        localStorage.setItem("access_token", data.access_token);
+                                        loadSettings();
                                         window.history.replaceState({}, document.title, "index.html");
                                         const user = JSON.parse(localStorage.getItem("user"));
                                         if (user) {
@@ -630,7 +625,15 @@
                                   }
                                 }
 
-                                const guilds = JSON.parse(localStorage.getItem("guilds"));
+                                const user = JSON.parse(localStorage.getItem("user"));
+                                const userId = user.id;
+                                let guilds = [];
+                                try {
+                                    guilds = await fetchGuilds(userId);
+                                } catch (err) {
+                                    alert("Failed to load guilds: " + err.message);
+                                    return;
+                                }
                                 const favoriteGuildSelect = document.getElementById("favoriteGuild");
                                 // Get the stored favorite guild from localStorage (if any)
                                 const favoriteGuildId = localStorage.getItem("favoriteGuildId");
