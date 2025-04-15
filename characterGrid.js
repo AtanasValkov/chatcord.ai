@@ -333,30 +333,25 @@ async function createBot(id) {
     const guildSelect = document.getElementById("guild-select");
     const favoriteGuildId = localStorage.getItem("favoriteGuildId");
 
-    // Modified: Function now checks if favorite exists in the guild list
     const loadGuildsIntoDropdown = (guilds) => {
         guildSelect.innerHTML = '<option value="">Select a Server</option>';
-        
-        // Check if favorite guild exists in the current guild list
-        const hasFavorite = guilds.some(guild => guild.id === favoriteGuildId);
-        
-        // Only sort if favorite exists
-        if (favoriteGuildId && hasFavorite) {
-            guilds.sort((a, b) => (a.id === favoriteGuildId ? -1 : 1));
-        }
+        let hasFavorite = false;
 
+        // Create all options first
         guilds.forEach(guild => {
             const option = document.createElement("option");
             option.value = guild.id;
             option.textContent = guild.name;
-            // NEW: Add 'selected' attribute if it's the favorite
-            if (guild.id === favoriteGuildId) option.selected = true;
+            if (guild.id === favoriteGuildId) {
+                option.selected = true;
+                hasFavorite = true;
+            }
             guildSelect.appendChild(option);
         });
 
-        // NEW: Verify the selected option exists after populating
+        // Preserve favorite only if it exists in the list
         if (favoriteGuildId && !hasFavorite) {
-            localStorage.removeItem("favoriteGuildId"); // Clean up invalid favorite
+            localStorage.removeItem("favoriteGuildId");
         }
 
         guildSelect.disabled = false;
@@ -366,17 +361,23 @@ async function createBot(id) {
         const guildData = await fetchUserGuilds(user.id);
         loadGuildsIntoDropdown(guildData.guilds);
 
-        // NEW: Set the value only if the option exists
-        if (favoriteGuildId) {
-            const optionExists = Array.from(guildSelect.options).some(opt => opt.value === favoriteGuildId);
-            if (optionExists) {
-                guildSelect.value = favoriteGuildId;
-                guildSelect.dispatchEvent(new Event("change"));
-            }
+        // Set favorite selection after DOM update
+        if (favoriteGuildId && guildSelect.querySelector(`option[value="${favoriteGuildId}"]`)) {
+            guildSelect.value = favoriteGuildId;
+            // Delay the change event until after DOM settles
+            setTimeout(() => guildSelect.dispatchEvent(new Event("change")), 0);
         }
     } catch (err) {
         console.error("Error loading guilds:", err);
     }
+    
+    // Guild select change handler
+    guildSelect.addEventListener("change", async function() {
+        const guildId = this.value;
+        if (!guildId || guildId === "undefined") {
+            document.getElementById("channel-select").innerHTML = '<option value="">Select a Channel</option>';
+            return;
+        }
 
     document.getElementById("refresh-guilds").addEventListener("click", async () => {
         try {
