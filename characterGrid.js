@@ -328,30 +328,52 @@ async function createBot(id) {
         btn.addEventListener("click", closeModal);
     });
 
-    // Update the global character id:
     currentCharId = id;
     const user = JSON.parse(localStorage.getItem("user"));
     const guildSelect = document.getElementById("guild-select");
-    // Get the stored favorite guild from localStorage (if any)
     const favoriteGuildId = localStorage.getItem("favoriteGuildId");
-    
+
+    // Modified: Function now checks if favorite exists in the guild list
     const loadGuildsIntoDropdown = (guilds) => {
         guildSelect.innerHTML = '<option value="">Select a Server</option>';
-        if (favoriteGuildId) {
-            guilds.sort((a, b) => (a.id === favoriteGuildId ? -1 : b.id === favoriteGuildId ? 1 : 0));
+        
+        // Check if favorite guild exists in the current guild list
+        const hasFavorite = guilds.some(guild => guild.id === favoriteGuildId);
+        
+        // Only sort if favorite exists
+        if (favoriteGuildId && hasFavorite) {
+            guilds.sort((a, b) => (a.id === favoriteGuildId ? -1 : 1));
         }
+
         guilds.forEach(guild => {
             const option = document.createElement("option");
             option.value = guild.id;
             option.textContent = guild.name;
+            // NEW: Add 'selected' attribute if it's the favorite
+            if (guild.id === favoriteGuildId) option.selected = true;
             guildSelect.appendChild(option);
         });
+
+        // NEW: Verify the selected option exists after populating
+        if (favoriteGuildId && !hasFavorite) {
+            localStorage.removeItem("favoriteGuildId"); // Clean up invalid favorite
+        }
+
         guildSelect.disabled = false;
     };
-    
+
     try {
         const guildData = await fetchUserGuilds(user.id);
         loadGuildsIntoDropdown(guildData.guilds);
+
+        // NEW: Set the value only if the option exists
+        if (favoriteGuildId) {
+            const optionExists = Array.from(guildSelect.options).some(opt => opt.value === favoriteGuildId);
+            if (optionExists) {
+                guildSelect.value = favoriteGuildId;
+                guildSelect.dispatchEvent(new Event("change"));
+            }
+        }
     } catch (err) {
         console.error("Error loading guilds:", err);
     }
