@@ -395,6 +395,23 @@ function createBot(id) {
                         channelSelect.appendChild(option);
                     });
                     channelSelect.disabled = false;
+                    forceRefreshBtn.disabled = false;
+                    forceRefreshBtn.onclick = async function () {
+                        try {
+                            const refreshed = await fetchChannels(guildId, signal, true);
+                            if (Array.isArray(refreshed.channels)) {
+                                channelSelect.innerHTML = '<option value="">Select a Channel</option>';
+                                refreshed.channels.forEach(channel => {
+                                    const option = document.createElement("option");
+                                    option.value = channel.id;
+                                    option.textContent = channel.name;
+                                    channelSelect.appendChild(option);
+                                });
+                            }
+                        } catch (err) {
+                            alert("Force refresh failed: " + err.message);
+                        }
+                    };
                 }
             } else {
                 promptToAddBot(guildId);
@@ -412,7 +429,10 @@ function createBot(id) {
         // Attach the event listener
         loadButton.addEventListener("click", handleCreateWebhookClick);
         const channelId = this.value;
-    
+        const forceRefreshBtn = document.getElementById("force-refresh-channels");
+        forceRefreshBtn.disabled = true;
+        forceRefreshBtn.onclick = null;
+
         loadButton.disabled = !channelId;
     });
 
@@ -488,8 +508,9 @@ function promptToAddBot(guildId) {
 }
 
 // Fetch channels for a specific server (guild) using access_token
-async function fetchChannels(guildId, signal) {
-    const response = await fetch(`https://chatcord-server.onrender.com/guilds/${guildId}/channels`, { signal });
+async function fetchChannels(guildId, signal, forceRefresh = false) {
+    const url = `https://chatcord-server.onrender.com/guilds/${guildId}/channels${forceRefresh ? '?force_refresh=true' : ''}`;
+    const response = await fetch(url, { signal });
     if (!response.ok) throw new Error("Failed to fetch channels");
     return response.json();
 }
