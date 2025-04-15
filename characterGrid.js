@@ -330,37 +330,41 @@ function createBot(id) {
 
     // Update the global character id:
     currentCharId = id;
-    
-    const guilds = JSON.parse(localStorage.getItem("guilds"));
+    const user = JSON.parse(localStorage.getItem("user"));
+    const guilds = fetchUserGuilds(user.id);
     const guildSelect = document.getElementById("guild-select");
     // Get the stored favorite guild from localStorage (if any)
     const favoriteGuildId = localStorage.getItem("favoriteGuildId");
     
-    // Sort guilds to put the favorite guild at the top (if exists)
-    if (favoriteGuildId) {
-        guilds.sort((a, b) => {
-            // Check if a is the favorite guild
-            if (a.id === favoriteGuildId) return -1;
-            // Check if b is the favorite guild
-            if (b.id === favoriteGuildId) return 1;
-            return 0; // No change in order for other guilds
-        });
-    }
-    
-    // Populate the favorite guild dropdown with the user's guilds
-    if (guilds) {
+    const loadGuildsIntoDropdown = (guilds) => {
+        guildSelect.innerHTML = '<option value="">Select a Server</option>';
+        if (favoriteGuildId) {
+            guilds.sort((a, b) => (a.id === favoriteGuildId ? -1 : b.id === favoriteGuildId ? 1 : 0));
+        }
         guilds.forEach(guild => {
-            // Check if the option already exists
-            const existingOption = guildSelect.querySelector(`option[value="${guild.id}"]`);
-            if (!existingOption) {
-                const option = document.createElement("option");
-                option.value = guild.id;
-                option.textContent = guild.name;
-                guildSelect.appendChild(option);
-            }
+            const option = document.createElement("option");
+            option.value = guild.id;
+            option.textContent = guild.name;
+            guildSelect.appendChild(option);
         });
         guildSelect.disabled = false;
+    };
+    
+    try {
+        const guildData = await fetchUserGuilds(user.id);
+        loadGuildsIntoDropdown(guildData.guilds);
+    } catch (err) {
+        console.error("Error loading guilds:", err);
     }
+
+    document.getElementById("refresh-guilds").addEventListener("click", async () => {
+        try {
+            const guildData = await fetchUserGuilds(user.id, true); // force refresh
+            loadGuildsIntoDropdown(guildData.guilds);
+        } catch (err) {
+            alert("Failed to refresh guilds: " + err.message);
+        }
+    });
     
     // When user selects a server, fetch channels for that server
     document.getElementById("guild-select").addEventListener("change", async function() {
@@ -514,6 +518,15 @@ async function fetchChannels(guildId, signal, forceRefresh = false) {
     if (!response.ok) throw new Error("Failed to fetch channels");
     return response.json();
 }
+
+// Fetch servers refresh
+async function fetchUserGuilds(userId, forceRefresh = false) {
+    const url = `https://chatcord-server.onrender.com/user/${userId}/guilds${forceRefresh ? '?force_refresh=true' : ''}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Failed to fetch user guilds");
+    return response.json();
+}
+
 
 // Close Modal
 function closeModal() {
