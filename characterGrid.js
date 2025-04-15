@@ -484,6 +484,7 @@ function promptToAddBot(guildId) {
     channelSelect.disabled = true;
     channelSelect.innerHTML = '<option value="">Select a Channel</option>';
     guildSelect.innerHTML = '<option value="">Select a Server</option>';
+    closeModal();
 }
 
 // Fetch channels for a specific server (guild) using access_token
