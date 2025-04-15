@@ -371,37 +371,37 @@ function createBot(id) {
         
         channelSelect.disabled = true;
         channelSelect.innerHTML = '<option value="">Select a Channel</option>';
-
         loadButton.disabled = true;
         
-        if (!guildId) return; // If still default option, stop here
+        if (!guildId) return;
         
-        if (guildId) {
-            // This can later be turned into a database call to see all guilds bot is in, for now we keep it Discord API
-            const botInGuild = await isBotInGuild(guildId);
-            // Attempt to create the webhook
+        // Abort any previous request
+        if (window.fetchController) {
+            window.fetchController.abort();
+        }
+        window.fetchController = new AbortController();
+        const signal = window.fetchController.signal;
+        
+        try {
+            const botInGuild = await isBotInGuild(guildId, signal);
             if (botInGuild) {
-                try {
-                    // Fetch the channels
-                    const data = await fetchChannels(guildId);
-                    
-                    if (Array.isArray(data.channels)) {
-                        const channels = data.channels;    
-                        channels.forEach(channel => {
-                            const option = document.createElement("option");
-                            option.value = channel.id;
-                            option.textContent = channel.name;
-                            channelSelect.appendChild(option);
-                        });
-                        channelSelect.disabled = false;
-                    } else {
-                        throw new Error('Channels data is not in the expected array format');
-                    }
-                } catch (error) {
-                    alert("Failed to fetch channels: " + error);
+                const data = await fetchChannels(guildId, signal);
+                if (Array.isArray(data.channels)) {
+                    channelSelect.innerHTML = '<option value="">Select a Channel</option>'; // Clear again to avoid duplicates
+                    data.channels.forEach(channel => {
+                        const option = document.createElement("option");
+                        option.value = channel.id;
+                        option.textContent = channel.name;
+                        channelSelect.appendChild(option);
+                    });
+                    channelSelect.disabled = false;
                 }
             } else {
-                promptToAddBot(guildId);  // Bot not in the guild, prompt user to add
+                promptToAddBot(guildId);
+            }
+        } catch (error) {
+            if (error.name !== 'AbortError') {
+                alert("Failed to fetch channels: " + error);
             }
         }
     });
@@ -466,11 +466,9 @@ async function createWebhook(guildId, channelId, characterId) {
     }
 }
 
-async function isBotInGuild(guildId) {
-    const response = await fetch(`https://chatcord-server.onrender.com/guilds/${guildId}/is-bot-member`);
-    if (!response.ok) {
-        throw new Error("Failed to verify bot presence");
-    }
+async function isBotInGuild(guildId, signal) {
+    const response = await fetch(`https://chatcord-server.onrender.com/guilds/${guildId}/is-bot-member`, { signal });
+    if (!response.ok) throw new Error("Failed to verify bot presence");
     const { isBotInGuild } = await response.json();
     return isBotInGuild;
 }
@@ -489,14 +487,10 @@ function promptToAddBot(guildId) {
 }
 
 // Fetch channels for a specific server (guild) using access_token
-async function fetchChannels(guildId) {
-    const response = await fetch(`https://chatcord-server.onrender.com/guilds/${guildId}/channels`);
-    
-    if (!response.ok) {
-        throw new Error("Failed to fetch channels: " + response.statusText);
-    }
-
-    return await response.json();
+async function fetchChannels(guildId, signal) {
+    const response = await fetch(`https://chatcord-server.onrender.com/guilds/${guildId}/channels`, { signal });
+    if (!response.ok) throw new Error("Failed to fetch channels");
+    return response.json();
 }
 
 // Close Modal
