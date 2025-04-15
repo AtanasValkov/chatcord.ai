@@ -399,7 +399,7 @@ async function createBot(id) {
         channelSelect.disabled = true;
         channelSelect.innerHTML = '<option value="">Select a Channel</option>';
         loadButton.disabled = true;
-        
+        console.log(guildId)
         if (!guildId) return;
         
         // Abort any previous request
@@ -410,6 +410,7 @@ async function createBot(id) {
         const signal = window.fetchController.signal;
         
         try {
+            console.log("second:", guildId)
             const botInGuild = await isBotInGuild(guildId, signal);
             if (botInGuild) {
                 const data = await fetchChannels(guildId, signal);
