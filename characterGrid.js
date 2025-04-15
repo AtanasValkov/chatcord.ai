@@ -378,6 +378,7 @@ async function createBot(id) {
             document.getElementById("channel-select").innerHTML = '<option value="">Select a Channel</option>';
             return;
         }
+    }
 
     document.getElementById("refresh-guilds").addEventListener("click", async () => {
         try {
