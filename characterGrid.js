@@ -323,7 +323,7 @@ function debounce(func, delay) {
     };
 }
 
-function createBot(id) {
+async function createBot(id) {
     document.querySelectorAll(".close").forEach(btn => {
         btn.addEventListener("click", closeModal);
     });
