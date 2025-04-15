@@ -631,7 +631,6 @@
                                 try {
                                     guilds = await fetchGuilds(userId);
                                 } catch (err) {
-                                    alert("Failed to load guilds: " + err.message);
                                     return;
                                 }
                                 const favoriteGuildSelect = document.getElementById("favoriteGuild");
