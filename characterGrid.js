@@ -253,7 +253,7 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     const createBotButton = document.createElement("button");
     createBotButton.innerText = "Load Character";
     createBotButton.onclick = function() {
-        createBot(charID);
+        await createBot(charID);
     };
     detailsPanelMadeBy.appendChild(createBotButton);
 
