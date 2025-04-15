@@ -454,9 +454,10 @@ async function createBot(id) {
     // When user selects a channel, enable load character button
     document.getElementById("channel-select").addEventListener("change", async function() {
         const loadButton = document.getElementById("create-webhook-btn");
+        const channelId = this.value;
         // Attach the event listener
         loadButton.addEventListener("click", handleCreateWebhookClick);
-        const channelId = this.value;
+
         forceRefreshBtn.disabled = true;
         forceRefreshBtn.onclick = null;
 
