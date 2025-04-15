@@ -331,7 +331,6 @@ async function createBot(id) {
     // Update the global character id:
     currentCharId = id;
     const user = JSON.parse(localStorage.getItem("user"));
-    const guilds = fetchUserGuilds(user.id);
     const guildSelect = document.getElementById("guild-select");
     // Get the stored favorite guild from localStorage (if any)
     const favoriteGuildId = localStorage.getItem("favoriteGuildId");
