@@ -365,7 +365,8 @@ async function createBot(id) {
         const channelSelect = document.getElementById("channel-select");        
         const loadButton = document.getElementById("create-webhook-btn");
         loadButton.removeEventListener("click", handleCreateWebhookClick);
-        
+        forceRefreshBtn.disabled = true;
+        forceRefreshBtn.onclick = null;
         channelSelect.disabled = true;
         channelSelect.innerHTML = '<option value="">Select a Channel</option>';
         loadButton.disabled = true;
@@ -434,7 +435,6 @@ async function createBot(id) {
                 option.textContent = guild.name;
                 guildSelect.appendChild(option);
             });
-    
             guildSelect.disabled = false;
             guildSelect.dispatchEvent(new Event("change"));
         } catch (err) {
