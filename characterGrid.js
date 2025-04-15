@@ -342,6 +342,14 @@ async function createBot(id) {
     const guildSelect = document.getElementById("guild-select");
     const favoriteGuildId = localStorage.getItem("favoriteGuildId");
     const forceRefreshBtn = document.getElementById("force-refresh-channels");
+    const channelSelect = document.getElementById("channel-select");        
+    const loadButton = document.getElementById("create-webhook-btn");
+    loadButton.removeEventListener("click", handleCreateWebhookClick);
+    forceRefreshBtn.disabled = true;
+    forceRefreshBtn.onclick = null;
+    channelSelect.disabled = true;
+    channelSelect.innerHTML = '<option value="">Select a Channel</option>';
+    
     if (favoriteGuildId) {
         guilds.sort((a, b) => {
             if (a.guild_id === favoriteGuildId) return -1;
