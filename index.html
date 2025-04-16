@@ -120,7 +120,7 @@
 
     <div class="container">
         <aside class="sidebar">
-            <input type="text" id="Bar" placeholder="..." class="-bar">
+            <input type="text" id="searchBar" placeholder="Search..." class="search-bar">
             <h2>Tags</h2>
             <ul id="tagFilters"></ul>
         </aside>
@@ -141,7 +141,7 @@
                     <option value="desc">Descending</option>
                     <option value="asc">Ascending</option>
                   </select>
-                  <input type="text" id="BarCharacters" placeholder="..." />
+                  <input type="text" id="searchBarCharacters" placeholder="Search..." />
                 </div>
             
                 <div class="character-grid" id="characterGrid">Loading characters...Check back in 1 to 2 minutes.</div>
@@ -150,7 +150,7 @@
 
                         async function verifyUser() {
                             // Extract 'code' from the URL
-                            const urlParams = new URLParams(window.location.);
+                            const urlParams = new URLSearchParams(window.location.search);
                             const code = urlParams.get("code");
                             const user = JSON.parse(localStorage.getItem("user"));            
                             //const provider = urlParams.get("provider");
@@ -343,10 +343,10 @@
                                     return;
                                 }
 
-                                // Get the  query and convert it to lowercase for case-insensitive matching
-                                const Query = document.getElementById("s").value.toLowerCase();
+                                // Get the search query and convert it to lowercase for case-insensitive matching
+                                const searchQuery = document.getElementById("searchBarCharacters").value.toLowerCase();
                                 const filteredCharacters = Object.entries(characters).filter(([id, char]) => 
-                                    Query === "" || char.char_name.toLowerCase().includes(searchQuery)
+                                    searchQuery === "" || char.char_name.toLowerCase().includes(searchQuery)
                                 );
                                 // Get the selected sort option and order
                                 const sortOption = document.getElementById("sortOptions").value;
@@ -462,7 +462,7 @@
                         });
 
                         // Character grid search bar
-                        document.getElementById("s").addEventListener("input", loadCharacters);
+                        document.getElementById("searchBarCharacters").addEventListener("input", loadCharacters);
 
                         // Settings
                         async function loadSettings() {
@@ -724,7 +724,11 @@
                             const urlParamsChar = new URLSearchParams(window.location.search);
                             const charID = urlParamsChar.get("charID");
                             if (charID) {
-                                
+                                const searchBar = document.getElementById("searchBarCharacters");
+                                searchBar.value = charID;
+                                // Manually dispatch the input event
+                                const inputEvent = new Event('input', { bubbles: true });
+                                searchBar.dispatchEvent(inputEvent);
                             }
                         }
                         initialize();
