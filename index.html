@@ -635,17 +635,12 @@
                                 }
 
                                 const user = JSON.parse(localStorage.getItem("user"));
-                                if (user) {
-                                    const userId = user.id;
-                                    let guilds = [];
-                                    try {
-                                        guilds = await fetchGuilds(userId);
-                                    } catch (err) {
-                                        return;
-                                    }
-                                } else {
-                                    alert("Please log in.")
-                                    return
+                                const userId = user.id;
+                                let guilds = [];
+                                try {
+                                    guilds = await fetchGuilds(userId);
+                                } catch (err) {
+                                    return;
                                 }
                                 const favoriteGuildSelect = document.getElementById("favoriteGuild");
                                 // Get the stored favorite guild from localStorage (if any)
