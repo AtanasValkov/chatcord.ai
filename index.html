@@ -120,7 +120,7 @@
 
     <div class="container">
         <aside class="sidebar">
-            <input type="text" id="searchBar" placeholder="Search..." class="search-bar">
+            <input type="text" id="Bar" placeholder="..." class="-bar">
             <h2>Tags</h2>
             <ul id="tagFilters"></ul>
         </aside>
@@ -141,7 +141,7 @@
                     <option value="desc">Descending</option>
                     <option value="asc">Ascending</option>
                   </select>
-                  <input type="text" id="searchBarCharacters" placeholder="Search..." />
+                  <input type="text" id="BarCharacters" placeholder="..." />
                 </div>
             
                 <div class="character-grid" id="characterGrid">Loading characters...Check back in 1 to 2 minutes.</div>
@@ -150,7 +150,7 @@
 
                         async function verifyUser() {
                             // Extract 'code' from the URL
-                            const urlParams = new URLSearchParams(window.location.search);
+                            const urlParams = new URLParams(window.location.);
                             const code = urlParams.get("code");
                             const user = JSON.parse(localStorage.getItem("user"));            
                             //const provider = urlParams.get("provider");
@@ -343,10 +343,10 @@
                                     return;
                                 }
 
-                                // Get the search query and convert it to lowercase for case-insensitive matching
-                                const searchQuery = document.getElementById("searchBarCharacters").value.toLowerCase();
+                                // Get the  query and convert it to lowercase for case-insensitive matching
+                                const Query = document.getElementById("s").value.toLowerCase();
                                 const filteredCharacters = Object.entries(characters).filter(([id, char]) => 
-                                    searchQuery === "" || char.char_name.toLowerCase().includes(searchQuery)
+                                    Query === "" || char.char_name.toLowerCase().includes(searchQuery)
                                 );
                                 // Get the selected sort option and order
                                 const sortOption = document.getElementById("sortOptions").value;
@@ -462,7 +462,7 @@
                         });
 
                         // Character grid search bar
-                        document.getElementById("searchBarCharacters").addEventListener("input", loadCharacters);
+                        document.getElementById("s").addEventListener("input", loadCharacters);
 
                         // Settings
                         async function loadSettings() {
@@ -626,12 +626,17 @@
                                 }
 
                                 const user = JSON.parse(localStorage.getItem("user"));
-                                const userId = user.id;
-                                let guilds = [];
-                                try {
-                                    guilds = await fetchGuilds(userId);
-                                } catch (err) {
-                                    return;
+                                if (user) {
+                                    const userId = user.id;
+                                    let guilds = [];
+                                    try {
+                                        guilds = await fetchGuilds(userId);
+                                    } catch (err) {
+                                        return;
+                                    }
+                                } else {
+                                    alert("Please log in.")
+                                    return
                                 }
                                 const favoriteGuildSelect = document.getElementById("favoriteGuild");
                                 // Get the stored favorite guild from localStorage (if any)
@@ -716,6 +721,11 @@
                             });
 
                             loadCharacters(); // Then load characters
+                            const urlParamsChar = new URLSearchParams(window.location.search);
+                            const charID = urlParamsChar.get("charID");
+                            if (charID) {
+                                
+                            }
                         }
                         initialize();
                     </script>
