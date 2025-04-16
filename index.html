@@ -635,12 +635,19 @@
                                 }
 
                                 const user = JSON.parse(localStorage.getItem("user"));
-                                const userId = user.id;
-                                let guilds = [];
-                                try {
-                                    guilds = await fetchGuilds(userId);
-                                } catch (err) {
+                                let guilds = []; // Declare in outer scope
+                                
+                                if (user) {
+                                  const userId = user.id;
+                                  try {
+                                    guilds = await fetchGuilds(userId); // Assign fetched data
+                                  } catch (err) {
+                                    console.error("Failed to fetch guilds:", err);
                                     return;
+                                  }
+                                } else {
+                                  alert("Please log in.");
+                                  return;
                                 }
                                 const favoriteGuildSelect = document.getElementById("favoriteGuild");
                                 // Get the stored favorite guild from localStorage (if any)
