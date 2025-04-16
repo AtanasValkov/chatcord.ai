@@ -30,9 +30,12 @@
     const username = params.get('username');
     let characterArray = [];
     const user = JSON.parse(localStorage.getItem("user"));
-    const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`);
-    const userData = await userResponse.json();
-    const accessLevel = userData.user?.access_level?.toLowerCase();
+    let accessLevel = null;
+    if (user) {
+      const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`);
+      const userData = await userResponse.json();
+      accessLevel = userData.user?.access_level?.toLowerCase();
+    }
 
     const header = document.getElementById('profileHeader');
     
@@ -76,10 +79,6 @@
         const myUserId = user ? user.id : null;
         const favCharacters = user.favCharacters || [];
         let excludedTags = []
-        if (!myUserId) {
-          document.getElementById('characterGrid').innerText = "User not logged in or user ID missing.";
-          return;
-        }
         if ( type !== 'review') {
           if (!userId) {
             characterArray = (type === 'mine') 
