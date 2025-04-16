@@ -344,6 +344,7 @@
                                 }
 
                                 const urlParamsChar = new URLSearchParams(window.location.search);
+                                window.history.replaceState({}, document.title, "index.html");
                                 const charID = urlParamsChar.get("charID");
                                 let searchQuery = ""
                                 const searchInput = document.getElementById("searchBarCharacters");
