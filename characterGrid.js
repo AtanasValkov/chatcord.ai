@@ -330,6 +330,10 @@ async function createBot(id) {
 
     currentCharId = id;
     const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+        alert("Please log in to add characters to your server.")
+        return
+    }
     const userId = user.id;
     let guilds = [];
     try {
@@ -443,6 +447,7 @@ async function createBot(id) {
                 option.textContent = guild.name;
                 guildSelect.appendChild(option);
             });
+
             guildSelect.disabled = false;
             guildSelect.dispatchEvent(new Event("change"));
         } catch (err) {
