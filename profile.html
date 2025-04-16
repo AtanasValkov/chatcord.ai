@@ -77,7 +77,7 @@
         // Get the current user's ID from localStorage
         const user = JSON.parse(localStorage.getItem('user'));
         const myUserId = user ? user.id : null;
-        const favCharacters = user.favCharacters || [];
+        const favCharacters = user ? user.favCharacters : [];
         let excludedTags = []
         if ( type !== 'review') {
           if (!userId) {
