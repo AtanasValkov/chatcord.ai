@@ -343,8 +343,17 @@
                                     return;
                                 }
 
+                                const urlParamsChar = new URLSearchParams(window.location.search);
+                                const charID = urlParamsChar.get("charID");
+                                let searchQuery = ""
+                                const searchInput = document.getElementById("searchBarCharacters");
+
+                                if (charID && characters[charID]) {
+                                    searchInput.value = characters[charID].char_name;
+                                }
+
                                 // Get the search query and convert it to lowercase for case-insensitive matching
-                                const searchQuery = document.getElementById("searchBarCharacters").value.toLowerCase();
+                                searchQuery = searchInput.value.toLowerCase();
                                 const filteredCharacters = Object.entries(characters).filter(([id, char]) => 
                                     searchQuery === "" || char.char_name.toLowerCase().includes(searchQuery)
                                 );
@@ -721,15 +730,6 @@
                             });
 
                             loadCharacters(); // Then load characters
-                            const urlParamsChar = new URLSearchParams(window.location.search);
-                            const charID = urlParamsChar.get("charID");
-                            if (charID) {
-                                const searchBar = document.getElementById("searchBarCharacters");
-                                searchBar.value = charID;
-                                // Manually dispatch the input event
-                                const inputEvent = new Event('input', { bubbles: true });
-                                searchBar.dispatchEvent(inputEvent);
-                            }
                         }
                         initialize();
                     </script>
