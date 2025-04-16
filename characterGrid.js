@@ -409,7 +409,7 @@ async function createBot(id) {
                                 channelSelect.innerHTML = '<option value="">Select a Channel</option>';
                                 refreshed.channels.forEach(channel => {
                                     const option = document.createElement("option");
-                                    option.value = channel.channel_id;
+                                    option.value = channel.id; // Refreshed channels come from Discord with .id instead of .channel_id
                                     option.textContent = channel.name;
                                     channelSelect.appendChild(option);
                                 });
