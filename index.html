@@ -345,13 +345,11 @@
 
                                 const urlParamsChar = new URLSearchParams(window.location.search);
                                 const charID = urlParamsChar.get("charID");
-                                console.log(charID)
-                                console.log(characters[charID])
                                 let searchQuery = ""
                                 const searchInput = document.getElementById("searchBarCharacters");
-
-                                if (charID && characters[charID]) {
-                                    searchInput.value = characters[charID].char_name;
+                                const matchedChar = characters.find(char => char.id === charID);
+                                if (charID && matchedChar) {
+                                    searchInput.value = matchedChar.char_name;
                                 }
 
                                 // Get the search query and convert it to lowercase for case-insensitive matching
