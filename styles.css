@@ -332,6 +332,24 @@ body, header, .modal-content {
     transform: scale(1.2);
 }
 
+/* Interaction Buttons */
+.favorite, .thumbs-up, .thumbs-down, .share {
+    font-size: 24px;
+    color: #ccc;
+    cursor: pointer;
+    margin-left: 15px;
+    transition: transform 0.3s ease, color 0.3s;
+}
+
+.favorite:hover, .thumbs-up:hover, .thumbs-down:hover, .share:hover {
+    opacity: 0.7;
+}
+
+.share:active {
+    transform: scale(1.2);
+    color: #2196f3; /* or whatever blue you like */
+}
+
  .details-panel-madeBy {
      display: flex;
      align-items: center;
