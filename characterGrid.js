@@ -138,7 +138,7 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
         event.stopPropagation();
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user) {
-            alert("Please log in to like characters.");
+            showToast("Please log in to favorite characters.");
             return;
         }
         user.favCharacters = user.favCharacters || [];
@@ -174,7 +174,7 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
         event.stopPropagation();
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user) {
-            alert("Please log in to like characters.");
+            showToast("Please log in to like characters.");
             return;
         }
         thumbsUpBtn.classList.toggle('active');
@@ -198,7 +198,7 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
         event.stopPropagation();
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user) {
-            alert("Please log in to like characters.");
+            showToast("Please log in to dislike characters.");
             return;
         }
         thumbsDownBtn.classList.toggle('active');
@@ -212,11 +212,33 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
         }
     });
 
+    // Create share button
+    const shareBtn = document.createElement("span");
+    shareBtn.classList.add("share");
+    shareBtn.id = "shareBtn";
+    shareBtn.innerHTML = '<i class="fas fa-share-alt"></i>';
+
+    shareBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+    
+        const shareLink = `https://chatcord.win/index.html?charID=${charID}`;
+    
+        // Copy to clipboard
+        navigator.clipboard.writeText(shareLink).then(() => {
+            showToast("Character link copied!");
+        }).catch(err => {
+            console.error("Failed to copy text: ", err);
+            showToast("Failed to copy link.");
+        });
+    });
+
+
     // Append elements
     detailsPanelLike.appendChild(characterName);
     detailsPanelLike.appendChild(favoriteBtn);
     detailsPanelLike.appendChild(thumbsUpBtn);
     detailsPanelLike.appendChild(thumbsDownBtn);
+    detailsPanelLike.appendChild(shareBtn);
 
     detailsPanel.appendChild(characterImage);
     detailsPanel.appendChild(detailsPanelLike);
@@ -293,14 +315,14 @@ function deleteCharacter(characterId) {
     .then(res => res.json())
     .then(data => {
       if (data.success) {
-        alert('Character deleted successfully.');
+        showToast('Character deleted successfully.');
         document.getElementById(`character-${characterId}`).remove();
       } else {
-        alert("Error: " + (data.error || "Unknown error"));
+        showToast("Error: " + (data.error || "Unknown error"));
       }
     })
     .catch(err => {
-      alert('Error deleting character.');
+      showToast('Error deleting character.');
       console.error(err);
     });
   }
@@ -331,7 +353,7 @@ async function createBot(id) {
     currentCharId = id;
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
-        alert("Please log in to add characters to your server.")
+        showToast("Please log in to add characters to your server.")
         return
     }
     const userId = user.id;
@@ -339,7 +361,7 @@ async function createBot(id) {
     try {
         guilds = await fetchGuilds(userId);
     } catch (err) {
-        alert("Failed to load guilds: " + err.message);
+        showToast("Failed to load guilds: " + err.message);
         return;
     }
 
@@ -419,7 +441,7 @@ async function createBot(id) {
                                 });
                             }
                         } catch (err) {
-                            alert("Force refresh failed: " + err.message);
+                            showToast("Force refresh failed: " + err.message);
                         }
                     };
                 }
@@ -428,7 +450,7 @@ async function createBot(id) {
             }
         } catch (error) {
             if (error.name !== 'AbortError') {
-                alert("Failed to fetch channels: " + error);
+                showToast("Failed to fetch channels: " + error);
             }
         }
     });
@@ -451,7 +473,7 @@ async function createBot(id) {
             guildSelect.disabled = false;
             guildSelect.dispatchEvent(new Event("change"));
         } catch (err) {
-            alert("Failed to refresh guilds: " + err.message);
+            showToast("Failed to refresh guilds: " + err.message);
         }
     });
 
@@ -491,7 +513,7 @@ async function handleCreateWebhookClick() {
             // Proceed with creating the webhook
             createWebhook(guildId, channelId, currentCharId);
         } catch (error) {
-            alert("Failed to create webhook: " + error);
+            showToast("Failed to create webhook: " + error);
         }
     }
 }
@@ -512,10 +534,10 @@ async function createWebhook(guildId, channelId, characterId) {
     const responseData = await response.json();
     console.log("Response Data:", responseData);  
     if (response.ok) {
-        alert(responseData.message);
+        showToast(responseData.message);
         closeModal();
     } else {
-        alert("Error: " + responseData.error);
+        showToast("Error: " + responseData.error);
     }
 }
 
@@ -529,7 +551,7 @@ async function isBotInGuild(guildId, signal) {
 // Prompt the user to add the bot to the server
 function promptToAddBot(guildId) {
     const addBotUrl = `https://discord.com/oauth2/authorize?client_id=1352038053757190206&scope=bot&permissions=536873984&guild_id=${guildId}`;
-    alert("The bot is not in this guild. Please add the bot to the guild.");
+    showToast("The bot is not in this guild. Please add the bot to the guild.");
     window.open(addBotUrl, '_blank');
     const channelSelect = document.getElementById("channel-select");        
     const guildSelect = document.getElementById("guild-select");    
@@ -560,4 +582,20 @@ async function fetchChannels(guildId, signal, forceRefresh = false) {
 // Close Modal
 function closeModal() {
     document.getElementById("modal").style.display = "none";
+}
+
+function showToast(message) {
+    const toast = document.createElement("div");
+    toast.className = "custom-toast";
+    toast.innerText = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add("show");
+    }, 10); // slight delay to trigger animation
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => document.body.removeChild(toast), 300);
+    }, 2000); // visible for 2s
 }
