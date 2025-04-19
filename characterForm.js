@@ -68,7 +68,6 @@ function populateFields(character) {
   const previewImage = document.getElementById("previewImage");
   previewImage.src = character.char_url;
   previewImage.style.display = "block";
-  }
 }
 
 function addReviewControls(characterId) {
