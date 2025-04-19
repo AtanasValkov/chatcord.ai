@@ -57,9 +57,9 @@ function populateFields(character) {
   document.getElementById("genderSelect").value = character.gender || '';
   document.getElementById("sfwSelect").value = character.rating || '';
   document.getElementById("backBtn").href = "profile.html"
-  authorID = character.userID;
-  authorName = character.username;
-  authorIcon = character.avatar;
+  let authorID = character.userID;
+  let authorName = character.username;
+  let authorIcon = character.avatar;
   // Populate tags if available
   if(character.tags && Array.isArray(character.tags)) {
    character.tags.forEach(tag => addTag(tag));
