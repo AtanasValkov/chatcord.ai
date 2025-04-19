@@ -89,14 +89,14 @@
             //excludedTags = JSON.parse(localStorage.getItem('tagPrefs') || '{}');
           }
         } else {
-          characterArray = Object.entries(data)
+          characterArray = Object.entries(data).filter(([id, character]) => character.review_status === "pending");
         }
         if (type === 'mine') {
           populateGrid(characterArray, [], excludedTags, false);
         } else if (type === 'favorites') {
           populateGrid(characterArray, [], excludedTags, true);
         } else if (type === 'review') {
-          populateGrid(characterArray, ['Review'], [], false);
+          populateGrid(characterArray, [], [], false);
         }
         
       } catch (error) {
