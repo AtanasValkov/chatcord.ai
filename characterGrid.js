@@ -12,12 +12,15 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
         if (includeTags.length > 0 && !character.tags.some(tag => includeTags.includes(tag))) {
             return;
         }
-
-        renderCharacterCard(character, showDetailsOnClick);
+        if (character.review_status === 'pending') {
+            renderCharacterCard(character, showDetailsOnClick, true);
+        } else {
+            renderCharacterCard(character, showDetailsOnClick, false);
+        }
         });
 }
 
-async function renderCharacterCard(character, showDetailsOnClick) {
+async function renderCharacterCard(character, showDetailsOnClick, reviewDisplay) {
         const grid = document.getElementById("characterGrid");
         const charDiv = document.createElement("div");
         charDiv.classList.add("character");
@@ -33,45 +36,54 @@ async function renderCharacterCard(character, showDetailsOnClick) {
         let downloads = getRandomInt(1, 99);
         let stars = getRandomInt(1, 99);
         let comments = getRandomInt(1, 99);
-
-        if (showDetailsOnClick) {
-            charDiv.onclick = () => showDetails(
-                character.id,
-                character.char_name || "Unknown Character",
-                character.description || character.world_scenario || "No scenario available.",
-                imageUrl,
-                character.tags || [],
-                character.userID,
-                character.username,
-                character.avatar
-            );
-            
-            charDiv.innerHTML = `
-                <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
-                <p>${character.char_name || 'Unknown'}</p>
-                <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
-                <div class="tags" id="characterTags"></div>
-            `;
-            let characterTags = charDiv.querySelector("#characterTags");
-            const tags = Array.isArray(character.tags) ? character.tags.slice(0, 6) : []; // Limit to 6 tags
-            tags.forEach(tag => {
-                let tagElement = document.createElement("span");
-                tagElement.classList.add("tag");
-                tagElement.textContent = tag;
-                characterTags.appendChild(tagElement);
-            });
+        if (!reviewDisplay) {
+            if (showDetailsOnClick) {
+                charDiv.onclick = () => showDetails(
+                    character.id,
+                    character.char_name || "Unknown Character",
+                    character.description || character.world_scenario || "No scenario available.",
+                    imageUrl,
+                    character.tags || [],
+                    character.userID,
+                    character.username,
+                    character.avatar
+                );
+                
+                charDiv.innerHTML = `
+                    <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+                    <p>${character.char_name || 'Unknown'}</p>
+                    <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
+                    <div class="tags" id="characterTags"></div>
+                `;
+                let characterTags = charDiv.querySelector("#characterTags");
+                const tags = Array.isArray(character.tags) ? character.tags.slice(0, 6) : []; // Limit to 6 tags
+                tags.forEach(tag => {
+                    let tagElement = document.createElement("span");
+                    tagElement.classList.add("tag");
+                    tagElement.textContent = tag;
+                    characterTags.appendChild(tagElement);
+                });
+            } else {
+                charDiv.id = `character-${character.id}`;
+                charDiv.innerHTML = `
+                    <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+                    <p>${character.char_name || 'Unknown'}</p>
+                    <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
+                    <button class="edit-btn">Edit</button>
+                    <button class="delete-btn">Delete</button>
+                `;
+                charDiv.querySelector(".delete-btn").addEventListener("click", () => deleteCharacter(character.id));
+                charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(character.id));
+            }
         } else {
-            charDiv.id = `character-${character.id}`;
-            charDiv.innerHTML = `
-                <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
-                <p>${character.char_name || 'Unknown'}</p>
-                <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
-                <button class="edit-btn">Edit</button>
-                <button class="delete-btn">Delete</button>
-            `;
-            charDiv.querySelector(".delete-btn").addEventListener("click", () => deleteCharacter(character.id));
-            charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(character.id));
-        }
+                charDiv.id = `character-${character.id}`;
+                charDiv.innerHTML = `
+                    <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+                    <p>${character.char_name || 'Unknown'}</p>
+                    <button class="review-btn">Review</button>
+                `;
+                charDiv.querySelector(".review-btn").addEventListener("click", () => reviewCharacter(character.id));
+        } 
         grid.appendChild(charDiv);
 }
 
@@ -300,6 +312,10 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
 // Functions for profile page
 function editCharacter(characterId) {
     window.location.href = `create-character.html?id=${encodeURIComponent(characterId)}`;
+}
+
+function reviewCharacter(characterId) {
+    window.location.href = `review.html?id=${encodeURIComponent(characterId)}`;
 }
 
 function deleteCharacter(characterId) {
