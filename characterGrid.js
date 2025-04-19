@@ -5,10 +5,8 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
 
     characters.forEach(([id, character]) => {
         // Block character if any of its tags are in the exclusion list.
-        if (character.tags.some(tag => excludeTags.includes(tag) || character.tags.includes("Review"))) {
-            if(!character.tags.some(tag => includeTags.includes("Review"))) {
-                return;
-            }
+        if (character.tags.some(tag => excludeTags.includes(tag))) {
+            return;
         }
         // If any include filters are active, the character must have at least one of those tags.
         if (includeTags.length > 0 && !character.tags.some(tag => includeTags.includes(tag))) {
