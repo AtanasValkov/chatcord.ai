@@ -271,6 +271,10 @@ body, header, .modal-content {
     z-index: 1501;
 }
 
+.details-panel-like {
+    text-align: center;
+}
+
 .details-panel img {
     width: 100%;
     border-radius: 8px;
