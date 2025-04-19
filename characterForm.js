@@ -47,6 +47,30 @@ function addFieldCheckboxes() {
   });
 }
 
+function populateFields(character) {
+  document.getElementById("characterName").value = character.char_name || '';
+  document.getElementById("charDescription").value = character.char_persona || '';
+  document.getElementById("charGreeting").value = character.char_greeting || '';
+  document.getElementById("charScenario").value = character.world_scenario || '';
+  document.getElementById("charDialogue").value = character.example_dialogue || '';
+  document.getElementById("displayText").value = character.description || '';
+  document.getElementById("genderSelect").value = character.gender || '';
+  document.getElementById("sfwSelect").value = character.rating || '';
+  document.getElementById("backBtn").href = "profile.html"
+  authorID = character.userID;
+  authorName = character.username;
+  authorIcon = character.avatar;
+  // Populate tags if available
+  if(character.tags && Array.isArray(character.tags)) {
+   character.tags.forEach(tag => addTag(tag));
+  }
+  
+  const previewImage = document.getElementById("previewImage");
+  previewImage.src = character.char_url;
+  previewImage.style.display = "block";
+  }
+}
+
 function addReviewControls(characterId) {
   const form = document.getElementById('characterForm');
   form.querySelector('#submitBtn').remove();
