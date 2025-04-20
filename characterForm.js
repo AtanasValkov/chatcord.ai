@@ -1,7 +1,9 @@
 let authorID = null;
 let currentUser = null;
+let charID = null;
 export async function initCharacterForm({ mode, characterId }) {
   if (characterId) {
+    charID = characterId;
     const data = await fetch(`https://chatcord-server.onrender.com/get-characters`).then(r => r.json());
     const char = data.find(c => c.id === characterId);
     if (char) populateFields(char);
@@ -443,7 +445,7 @@ async function onSubmit(mode, e) {
     userID: user.id,
     username: user.username,
     avatar: user.avatar,
-    ...(mode === 'edit' && { id: characterId })
+    ...(mode === 'edit' && { id: charID })
   };
 
   // Prepare FormData (incl. file if any)
