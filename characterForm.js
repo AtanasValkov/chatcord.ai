@@ -24,6 +24,12 @@ function disableAllInputs() {
     .forEach(el => el.disabled = true);
   document.getElementById('tagInput').style.display = 'none';
   document.getElementById('suggestions').style.display = 'none';
+  // Remove click event listeners from all tags
+  const tags = document.querySelectorAll('.tag');
+  tags.forEach(tag => {
+    tag.style.cursor = 'default'; // Change cursor to indicate it's not clickable
+    tag.replaceWith(tag.cloneNode(true)); // This removes all event listeners
+  });
 }
 
 function addFieldCheckboxes() {
