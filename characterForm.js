@@ -140,9 +140,9 @@ function addReviewControls(characterId) {
 
   // Add buttons
   const btns = [
-    { text: 'Approve', decision: 'approve' },
+    { text: 'Approve', decision: 'approved' },
     { text: 'Request Changes', decision: 'request_changes' },
-    { text: 'Deny', decision: 'deny' }
+    { text: 'Deny', decision: 'denied' }
   ];
 
   btns.forEach(({ text, decision }) => {
@@ -411,7 +411,7 @@ async function handleReviewSubmit(decision, characterId) {
   const reason = document.getElementById('reviewReason').value;
   const notes = document.getElementById('reviewNotes').value;
   
-  if (decision === 'approve') {
+  if (decision === 'approved') {
     if (checkedFields.length > 0) {
       alert('You cannot approve and still have fields marked as needing changes.');
       return;
@@ -420,7 +420,7 @@ async function handleReviewSubmit(decision, characterId) {
       alert('You cannot approve and still select a reason for rejection.');
       return;
     }
-  } else if ((decision === 'request_changes' || decision === 'deny')) {
+  } else if ((decision === 'request_changes' || decision === 'denied')) {
     if (checkedFields.length === 0) {
       alert('Please check at least one field that needs attention.');
       return;
@@ -437,7 +437,7 @@ async function handleReviewSubmit(decision, characterId) {
     decision,
     reason,
     notes,
-    fields: decision === 'approve' ? [] : checkedFields,
+    fields: decision === 'approved' ? [] : checkedFields,
     reviewerId: currentUser?.id || null,
     authorId: authorID
   };
