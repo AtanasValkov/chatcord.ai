@@ -440,9 +440,9 @@ async function onSubmit(mode, e) {
     description: document.getElementById('displayText').value,
     gender, rating,
     tags: Array.from(tags),
-    userID: mode === 'edit' ? authorID : user.id,
-    username: mode === 'edit' ? authorName : user.username,
-    avatar: mode === 'edit' ? authorIcon : user.avatar,
+    userID: user.id,
+    username: user.username,
+    avatar: user.avatar,
     ...(mode === 'edit' && { id: characterId })
   };
 
