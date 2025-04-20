@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Character</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #1a1a2e;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            max-width: 100%;
+        }
+        input {
+            background: #333;
+            color: white;
+        }
+        button {
+            background: #ff6600;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ff4500;
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .tag {
+            background: #ff6600;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .tag:hover {
+            background: #ff4500;
+        }
+        .back-btn {
+            display: inline-block;
+            background: #ff6600;
+            color: white;
+            padding: 10px 20px;
+            margin: 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .description-input {
+            width: 100%;
+            min-height: 50px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: none;
+            resize: none;
+            background: #333;
+            color: white;
+        }
+        .suggestions { position: relative; background: #ff6600; border: 0px solid #ccc; max-height: 150px; overflow-y: auto; width: 200px; }
+        .suggestion-item { padding: 5px; cursor: pointer; color: white;}
+        .suggestion-item:hover { background: #ff4500; }
+        
+    </style>
+</head>
+<body>
+<div class="container">
+  <h1 id="formTitle">Create a New Character</h1>
+  <form id="characterForm">
+    <input type="file" id="imageUpload" accept="image/*">
+    <img id="previewImage" style="display: none; width: 200px;" />
+    <h2>Name</h2>
+    <input type="text" id="characterName" placeholder="Character Name" required>
+    <h2>Persona</h2>
+    <textarea id="charDescription" class="description-input" placeholder="Character Description" cols="40" rows="5" required></textarea>
+    <h2>Greeting</h2>
+    <textarea id="charGreeting" class="description-input" placeholder="Greeting" cols="40" rows="5" required></textarea>
+    <h2>Scenario</h2>
+    <textarea id="charScenario" class="description-input" placeholder="Scenario" cols="40" rows="5" required></textarea>
+    <h2>Example Dialogue</h2>
+    <textarea id="charDialogue" class="description-input" placeholder="Example Dialogue" cols="40" rows="5" required></textarea>
+    <div>
+      <h2>Display Text</h2>
+      <textarea id="displayText" class="description-input" placeholder="Text shown on the frontpage" cols="40" rows="5" required></textarea>
+      <label for="genderSelect">Gender:</label>
+      <select id="genderSelect" required>
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Nonbinary">Nonbinary</option>
+      </select>
+      
+      <label for="sfwSelect">Content Rating:</label>
+      <select id="sfwSelect" required>
+        <option value="">Select Rating</option>
+        <option value="SFW">SFW</option>
+        <option value="NSFW">NSFW</option>
+      </select>
+    </div>
+    <div class="tags" id="tagContainer"></div>
+    <input type="text" id="tagInput" placeholder="Press Enter after each Tag">
+    <div id="suggestions" class="suggestions"></div>
+    <button type="submit" id="submitBtn">Edit Character</button>
+    <a href="index.html" id="backBtn" class="back-btn">Back</a>
+  </form>
+</div>
+  <script type="module">
+    import { initCharacterForm } from './characterForm.js';
+    const id = new URLSearchParams(location.search).get('id');
+    initCharacterForm({ mode: 'edit', characterId: id });
+  </script>
+</body>
+</html>
