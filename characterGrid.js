@@ -311,7 +311,7 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
 
 // Functions for profile page
 function editCharacter(characterId) {
-    window.location.href = `create-character.html?id=${encodeURIComponent(characterId)}`;
+    window.location.href = `edit-character.html?id=${encodeURIComponent(characterId)}`;
 }
 
 function reviewCharacter(characterId) {
