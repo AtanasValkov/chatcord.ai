@@ -114,6 +114,14 @@ form.appendChild(reasonSelect);
     b.addEventListener('click', () => handleReviewSubmit(decision, characterId));
     form.appendChild(b);
   });
+
+  // Add back button
+  const backLink = document.createElement('a');
+  backLink.href = 'profile.html';
+  backLink.id = 'backBtn';
+  backLink.className = 'back-btn';
+  backLink.textContent = 'Back';
+  form.appendChild(backLink);
 }
 
 function setupTagInput() {
