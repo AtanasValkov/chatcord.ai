@@ -13,7 +13,7 @@ export async function initCharacterForm({ mode, characterId }) {
 
   if (mode === 'create' || mode === 'edit') {
     document.getElementById('characterForm')
-      .addEventListener('submit', onSubmit.bind(null, mode));
+    .addEventListener('submit', e => onSubmit(mode, e));
   } else if (mode === 'review') {
     disableAllInputs();
     addFieldCheckboxes();
@@ -403,6 +403,80 @@ function autoGrowTextareas() {
     });
 }
 
+async function onSubmit(mode, e) {
+  e.preventDefault();
+
+  // Grabs the current user
+  const user = JSON.parse(localStorage.getItem('user'));
+  const userRes = await fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`);
+  const { user: userData } = await userRes.json();
+
+  // Collect tags
+  const tags = new Set(
+    Array.from(document.querySelectorAll('#tagContainer .tag'))
+      .map(tag => tag.textContent.trim())
+  );
+
+  const gender = document.getElementById('genderSelect').value;
+  const rating = document.getElementById('sfwSelect').value;
+  if (gender) tags.add(gender);
+  if (rating) tags.add(rating);
+
+  const accessLevel = userData.access_level?.toLowerCase();
+  if (accessLevel === 'admin' || accessLevel === 'moderator') {
+    if (mode === 'create') tags.add('Featured');
+  } else {
+    tags.delete('Featured');
+    tags.add('Review');
+  }
+
+  // Build payload
+  const payload = {
+    char_name: document.getElementById('characterName').value,
+    char_persona: document.getElementById('charDescription').value,
+    char_greeting: document.getElementById('charGreeting').value,
+    world_scenario: document.getElementById('charScenario').value,
+    example_dialogue: document.getElementById('charDialogue').value,
+    description: document.getElementById('displayText').value,
+    gender, rating,
+    tags: Array.from(tags),
+    userID: mode === 'edit' ? authorID : user.id,
+    username: mode === 'edit' ? authorName : user.username,
+    avatar: mode === 'edit' ? authorIcon : user.avatar,
+    ...(mode === 'edit' && { id: characterId })
+  };
+
+  // Prepare FormData (incl. file if any)
+  const formData = new FormData();
+  formData.append('json', JSON.stringify(payload));
+  if (imageFile) formData.append('file', imageFile);
+
+  // Fire off to the correct endpoint
+  const endpoint = mode === 'edit'
+    ? 'https://chatcord-server.onrender.com/update_character'
+    : 'https://chatcord-server.onrender.com/upload_json';
+
+  const res = await fetch(endpoint, { method: 'POST', body: formData });
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(`Error: ${data.error||'Unknown error'}`);
+    return;
+  }
+
+  alert(
+    accessLevel === 'admin' || accessLevel === 'moderator'
+      ? (mode==='edit'?'Character updated':'Character created')
+      : (mode==='edit'?'Updated & sent for review':'Created & sent for review')
+  );
+  if (mode === 'edit') {
+    window.location.href = 'profile.html';
+  } else {
+    e.target.reset();
+    document.getElementById('previewImage').src = '';
+    document.getElementById('tagContainer').innerHTML = '';
+  }
+}
 
 async function handleReviewSubmit(decision, characterId) {
   const checkedFields = Array.from(document.querySelectorAll('.field-checkbox'))
