@@ -1,12 +1,11 @@
 let authorID = null;
+let currentUser = null;
 export async function initCharacterForm({ mode, characterId }) {
   if (characterId) {
     const data = await fetch(`https://chatcord-server.onrender.com/get-characters`).then(r => r.json());
     const char = data.find(c => c.id === characterId);
     if (char) populateFields(char);
   }
-
-
   
   setupTagInput();
   setupImageUpload();
@@ -19,8 +18,37 @@ export async function initCharacterForm({ mode, characterId }) {
     disableAllInputs();
     addFieldCheckboxes();
     addReviewControls(characterId);
+    sendReviewLock(characterId);
   }
 }
+
+/**
+ * Send a placeholder review to lock the character for review.
+ * Only updates the character status to "in_review" without creating a review record.
+ */
+async function sendReviewLock(characterId) {
+  try {
+    currentUser = JSON.parse(localStorage.getItem('user'));
+    const payload = {
+      characterId,
+      decision: 'request_changes',
+      reason: null,
+      notes: null,
+      fields: [],
+      reviewerId: currentUser.id,
+      authorId: authorID
+    };
+
+    await fetch('https://chatcord-server.onrender.com/character-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch (err) {
+    console.error('Failed to acquire review lock:', err);
+  }
+}
+
 
 function disableAllInputs() {
   document.querySelectorAll('input, textarea, select')
@@ -381,7 +409,7 @@ async function handleReviewSubmit(decision, characterId) {
       return;
     }
   }
-  const currentUser = JSON.parse(localStorage.getItem('user'));
+  currentUser = JSON.parse(localStorage.getItem('user'));
 
   const payload = {
     characterId,
