@@ -74,11 +74,17 @@ function addReviewControls(characterId) {
   const form = document.getElementById('characterForm');
   form.querySelector('#submitBtn').remove();
 
-  // Add reason dropdown
-  const reasonSelect = document.createElement('select');
-  reasonSelect.id = 'reviewReason';
-  reasonSelect.innerHTML = '<option value="">-- Select Reason --</option>';
-  form.appendChild(reasonSelect);
+// Add reason dropdown
+const reasonSelect = document.createElement('select');
+reasonSelect.id = 'reviewReason';
+reasonSelect.innerHTML = `
+  <option value="">-- Select Reason --</option>
+  <option value="underage_content">Underage Content</option>
+  <option value="hateful_content">Hateful Content</option>
+  <option value="extreme_violence">Extreme Sadism/Torture</option>
+  <option value="bestiality">Bestiality Content</option>
+`;
+form.appendChild(reasonSelect);
 
   // Add optional notes input
   const notes = document.createElement('textarea');
