@@ -27,7 +27,7 @@ function disableAllInputs() {
 }
 
 function addFieldCheckboxes() {
-  const fieldIds = ['imageInput', 'nameInput', 'descriptionInput', 'greetingInput', 'scenarioInput', 'dialogueInput', 'displayTextInput', 'sfwSelect', 'tagInput'];
+  const fieldIds = ['previewImage', 'characterName', 'charDescription', 'charGreeting', 'charScenario', 'charDialogue', 'displayText', 'sfwSelect', 'tags'];
   fieldIds.forEach(id => {
     const field = document.getElementById(id);
     if (field) {
