@@ -62,7 +62,6 @@ function populateFields(character) {
   document.getElementById("displayText").value = character.description || '';
   document.getElementById("genderSelect").value = character.gender || '';
   document.getElementById("sfwSelect").value = character.rating || '';
-  document.getElementById("backBtn").href = "profile.html"
   let authorID = character.userID;
   let authorName = character.username;
   let authorIcon = character.avatar;
