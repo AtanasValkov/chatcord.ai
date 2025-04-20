@@ -19,6 +19,14 @@ export async function initCharacterForm({ mode, characterId }) {
     addFieldCheckboxes();
     addReviewControls(characterId);
     sendReviewLock(characterId);
+    window.addEventListener('beforeunload', () => {
+      if (characterId) {
+        navigator.sendBeacon(
+          'https://chatcord-server.onrender.com/character-unlock',
+          new Blob([JSON.stringify({ characterId })], { type: 'application/json' })
+        );
+      }
+    });
   }
 }
 
@@ -152,6 +160,19 @@ function addReviewControls(characterId) {
   backLink.className = 'back-btn';
   backLink.textContent = 'Back';
   form.appendChild(backLink);
+  backLink.addEventListener('click', async (e) => {
+    e.preventDefault(); // prevent default navigation
+  
+    // Send unlock request
+    await fetch('https://chatcord-server.onrender.com/character-unlock', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ characterId })
+    });
+  
+    // Now go back or redirect
+    window.location.href = backLink.href;
+  });
 }
 
 function setupTagInput() {
@@ -430,6 +451,7 @@ async function handleReviewSubmit(decision, characterId) {
 
     if (!res.ok) throw new Error('Failed to submit review');
     alert('Review submitted successfully.');
+    window.location.href = "profile.html";
   } catch (err) {
     console.error(err);
     alert('There was an error submitting the review.');
