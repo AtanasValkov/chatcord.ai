@@ -249,9 +249,9 @@ function addTag(tagText) {
 
     tagContainer.appendChild(tag);
 }
-
+let imageFile;
 function setupImageUpload() {
-  var imageFile;
+
   var jsonData;
   
   document.getElementById("imageUpload").addEventListener("change", function(event) {
