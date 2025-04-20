@@ -1,3 +1,4 @@
+let authorID = null;
 export async function initCharacterForm({ mode, characterId }) {
   if (characterId) {
     const data = await fetch(`https://chatcord-server.onrender.com/get-characters`).then(r => r.json());
@@ -5,6 +6,8 @@ export async function initCharacterForm({ mode, characterId }) {
     if (char) populateFields(char);
   }
 
+
+  
   setupTagInput();
   setupImageUpload();
   autoGrowTextareas();
@@ -62,7 +65,7 @@ function populateFields(character) {
   document.getElementById("displayText").value = character.description || '';
   document.getElementById("genderSelect").value = character.gender || '';
   document.getElementById("sfwSelect").value = character.rating || '';
-  let authorID = character.userID;
+  authorID = character.userID;
   let authorName = character.username;
   let authorIcon = character.avatar;
   // Populate tags if available
@@ -79,17 +82,17 @@ function addReviewControls(characterId) {
   const form = document.getElementById('characterForm');
   form.querySelector('#submitBtn').remove();
 
-// Add reason dropdown
-const reasonSelect = document.createElement('select');
-reasonSelect.id = 'reviewReason';
-reasonSelect.innerHTML = `
-  <option value="">-- Select Reason --</option>
-  <option value="underage_content">Underage Content</option>
-  <option value="hateful_content">Hateful Content</option>
-  <option value="extreme_violence">Extreme Sadism/Torture</option>
-  <option value="bestiality">Bestiality Content</option>
-`;
-form.appendChild(reasonSelect);
+  // Add reason dropdown
+  const reasonSelect = document.createElement('select');
+  reasonSelect.id = 'reviewReason';
+  reasonSelect.innerHTML = `
+    <option value="">-- Select Reason --</option>
+    <option value="underage_content">Underage Content</option>
+    <option value="hateful_content">Hateful Content</option>
+    <option value="extreme_violence">Extreme Sadism/Torture</option>
+    <option value="bestiality">Bestiality Content</option>
+  `;
+  form.appendChild(reasonSelect);
 
   // Add optional notes input
   const notes = document.createElement('textarea');
@@ -356,25 +359,42 @@ async function handleReviewSubmit(decision, characterId) {
   const checkedFields = Array.from(document.querySelectorAll('.field-checkbox'))
     .filter(c => c.checked)
     .map(c => c.dataset.field);
-
-  if ((decision === 'request_changes' || decision === 'deny') && checkedFields.length === 0) {
-    alert('Please check at least one field that needs attention.');
-    return;
-  }
-
   const reason = document.getElementById('reviewReason').value;
   const notes = document.getElementById('reviewNotes').value;
+  
+  if (decision === 'approve') {
+    if (checkedFields.length > 0) {
+      alert('You cannot approve and still have fields marked as needing changes.');
+      return;
+    }
+    if (reason) {
+      alert('You cannot approve and still select a reason for rejection.');
+      return;
+    }
+  } else if ((decision === 'request_changes' || decision === 'deny')) {
+    if (checkedFields.length === 0) {
+      alert('Please check at least one field that needs attention.');
+      return;
+    }
+    if (!reason) {
+      alert('Please select a reason for requesting changes or denying.');
+      return;
+    }
+  }
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   const payload = {
     characterId,
     decision,
     reason,
     notes,
-    fields: decision === 'approve' ? [] : checkedFields
+    fields: decision === 'approve' ? [] : checkedFields,
+    reviewerId: currentUser?.id || null,
+    authorId: authorID
   };
 
   try {
-    const res = await fetch('/character-feedback', {
+    const res = await fetch('https://chatcord-server.onrender.com/character-feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -386,4 +406,4 @@ async function handleReviewSubmit(decision, characterId) {
     console.error(err);
     alert('There was an error submitting the review.');
   }
-} // end
+}
