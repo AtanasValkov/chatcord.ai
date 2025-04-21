@@ -114,18 +114,14 @@
         this.classList.remove('active');
     });
 
-    if (!userId) {
-      // Wait for the DOM to load
-      document.addEventListener('DOMContentLoaded', async () => {
-        document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine'));
-        document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites'));
+  if (!userId) {
+    // Set up tab listeners immediately (DOM is already ready in modules)
+    document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine'));
+    document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites'));
   
-        // Load 'My Characters' by default
-        await loadCharacters('mine');
-      });
-    } else {
-      await loadCharacters('favorites');
-    }
+    // Load 'My Characters' by default
+    await loadCharacters('mine');
+  }
   </script>
 </body>
 </html>
