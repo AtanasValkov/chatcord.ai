@@ -91,7 +91,7 @@
           position: fixed;
           top: 20px;               /* distance from top of viewport */
           right: 20px;             /* distance from right edge */
-          width: 250px;
+          width: 300px;
           max-height: calc(100vh - 40px);
           overflow-y: auto;
           background: rgba(0,0,0,0.8);
@@ -104,7 +104,18 @@
         @media (max-width: 800px) {
           /* hide sidebar or make it full-width on small screens */
           .review-sidebar {
-            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            top: auto;
+            width: 100%;
+            max-height: 40vh;
+            overflow-y: auto;
+            border-radius: 10px 10px 0 0;
+            background: rgba(0,0,0,0.95);
+            padding: 15px;
+            z-index: 1000;
           }
         }
     </style>
