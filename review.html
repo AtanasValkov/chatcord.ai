@@ -89,9 +89,9 @@
         .suggestion-item:hover { background: #ff4500; }
         .review-sidebar {
           position: fixed;
-          top: 20px;               /* distance from top of viewport */
-          right: 20px;             /* distance from right edge */
-          width: 300px;
+          top: 20vh;               /* distance from top of viewport */
+          right: 20vh;             /* distance from right edge */
+          width: 30vh;
           max-height: calc(100vh - 40px);
           overflow-y: auto;
           background: rgba(0,0,0,0.8);
@@ -105,15 +105,13 @@
           /* hide sidebar or make it full-width on small screens */
           .review-sidebar {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            top: auto;
-            width: 100%;
-            max-height: 40vh;
+            right: 4vh;
+            top: 20vh;
+            width: 30vh;
+            max-height: calc(100vh - 40px);
             overflow-y: auto;
             border-radius: 10px 10px 0 0;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0, 0, 0, 0.8);
             padding: 15px;
             z-index: 1000;
           }
