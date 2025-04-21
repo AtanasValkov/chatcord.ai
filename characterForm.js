@@ -124,8 +124,10 @@ function addReviewControls(characterId) {
   const sidebar = document.getElementById('reviewSidebar');
   const isMobile = window.innerWidth <= 915;
   sidebar.innerHTML = `
-    ${isMobile ? `<button id="toggleSidebar" style="width: 100%; margin-bottom: 10px;">☰</button>` : ''}
-    <div id="sidebarContent">
+    <div id="sidebarToggleWrapper">
+      ${isMobile ? `<button id="toggleSidebar" style="width: 100%; margin-bottom: 10px;">☰</button>` : ''}
+    </div>
+    <div id="sidebarContent" style="display: ${isMobile ? 'none' : 'block'};">
       <h2>Review Controls</h2>
     </div>
   `;
