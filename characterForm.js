@@ -122,7 +122,27 @@ function addReviewControls(characterId) {
 
   // Get the sidebar container
   const sidebar = document.getElementById('reviewSidebar');
-  sidebar.innerHTML = `<h2>Review Controls</h2>`;
+  const isMobile = window.innerWidth <= 915;
+  sidebar.innerHTML = `
+    ${isMobile ? `<button id="toggleSidebar" style="width: 100%; margin-bottom: 10px;">☰</button>` : ''}
+    <div id="sidebarContent">
+      <h2>Review Controls</h2>
+    </div>
+  `;
+  const sidebarContent = document.getElementById('sidebarContent');
+
+  // Only add toggle behavior on mobile
+  if (isMobile) {
+    const toggleBtn = document.getElementById('toggleSidebar');
+    toggleBtn.addEventListener('click', () => {
+      const isHidden = sidebarContent.style.display === 'none';
+      sidebarContent.style.display = isHidden ? 'block' : 'none';
+      toggleBtn.textContent = isHidden ? '☰' : '☰';
+    });
+
+    // Start collapsed on mobile
+    sidebarContent.style.display = 'none';
+  }
 
   // Add reason dropdown
   const reasonSelect = document.createElement('select');
@@ -134,7 +154,7 @@ function addReviewControls(characterId) {
     <option value="extreme_violence">Extreme Sadism/Torture</option>
     <option value="bestiality">Bestiality Content</option>
   `;
-  sidebar.appendChild(reasonSelect);
+  sidebarContent.appendChild(reasonSelect);
 
   // Notes textarea
   const notes = document.createElement('textarea');
@@ -143,7 +163,7 @@ function addReviewControls(characterId) {
   notes.rows = 3;
   notes.style.width = '100%';
   notes.style.margin = '10px 0';
-  sidebar.appendChild(notes);
+  sidebarContent.appendChild(notes);
 
   // Decision buttons
   const decisions = [
@@ -160,7 +180,7 @@ function addReviewControls(characterId) {
     btn.style.width = '100%';
     btn.style.margin = '5px 0';
     btn.addEventListener('click', () => handleReviewSubmit(decision, characterId));
-    sidebar.appendChild(btn);
+    sidebarContent.appendChild(btn);
   });
 
   // Add back button
