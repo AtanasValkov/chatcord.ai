@@ -87,7 +87,26 @@
         .suggestions { position: relative; background: #ff6600; border: 0px solid #ccc; max-height: 150px; overflow-y: auto; width: 200px; }
         .suggestion-item { padding: 5px; cursor: pointer; color: white;}
         .suggestion-item:hover { background: #ff4500; }
+        .review-sidebar {
+          position: fixed;
+          top: 20px;               /* distance from top of viewport */
+          right: 20px;             /* distance from right edge */
+          width: 250px;
+          max-height: calc(100vh - 40px);
+          overflow-y: auto;
+          background: rgba(0,0,0,0.8);
+          padding: 15px;
+          border-radius: 8px;
+          color: white;
+          z-index: 1000;           /* stay on top */
+        }
         
+        @media (max-width: 800px) {
+          /* hide sidebar or make it full-width on small screens */
+          .review-sidebar {
+            display: none;
+          }
+        }
     </style>
 </head>
 <body>
