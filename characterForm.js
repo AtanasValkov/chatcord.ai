@@ -531,7 +531,8 @@ async function onSubmit(mode, e) {
       e.target.reset();
       document.getElementById('previewImage').src = '';
       document.getElementById('tagContainer').innerHTML = '';
-    } catch (err) {
+    } 
+  } catch (err) {
       // Network or unexpected error: re‑enable
       form.querySelectorAll('input, button, select, textarea')
           .forEach(el => el.disabled = false);
