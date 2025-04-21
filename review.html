@@ -98,6 +98,7 @@
           padding: 15px;
           border-radius: 8px;
           color: white;
+          transition: max-height 0.3s ease;
           z-index: 1000;           /* stay on top */
         }
         
@@ -114,6 +115,10 @@
             background: rgba(0, 0, 0, 0.8);
             padding: 15px;
             z-index: 1000;
+          }
+          .review-sidebar.collapsed {
+            max-height: 10vh; /* Just enough for the toggle button */
+            overflow: hidden;
           }
         }
     </style>
