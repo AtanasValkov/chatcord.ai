@@ -321,7 +321,6 @@ function setupImageUpload() {
   });
 }
 
-
 // Detect file type using magic numbers
 function detectFileType(arrayBuffer) {
     const dataView = new DataView(arrayBuffer);
@@ -441,6 +440,18 @@ function autoGrowTextareas() {
 async function onSubmit(mode, e) {
   e.preventDefault();
 
+  // === DISABLE EVERYTHING ===
+  const form = document.getElementById('characterForm');
+  form
+    .querySelectorAll('input, button, select, textarea')
+    .forEach(el => el.disabled = true);
+
+  // Show a loading indicator:
+  const submitBtn = form.querySelector('button[type="submit"]');
+  if (submitBtn) {
+    submitBtn.textContent = 'Saving…';
+  }
+
   // Grabs the current user
   const user = JSON.parse(localStorage.getItem('user'));
   const userRes = await fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`);
@@ -480,37 +491,59 @@ async function onSubmit(mode, e) {
     avatar: user.avatar,
     ...(mode === 'edit' && { id: charID })
   };
-
-  // Prepare FormData (incl. file if any)
-  const formData = new FormData();
-  formData.append('json', JSON.stringify(payload));
-  if (imageFile) formData.append('file', imageFile);
-
-  // Fire off to the correct endpoint
-  const endpoint = mode === 'edit'
-    ? 'https://chatcord-server.onrender.com/update_character'
-    : 'https://chatcord-server.onrender.com/upload_json';
-
-  const res = await fetch(endpoint, { method: 'POST', body: formData });
-  const data = await res.json();
-
-  if (!res.ok) {
-    alert(`Error: ${data.error||'Unknown error'}`);
-    return;
-  }
-
-  alert(
-    accessLevel === 'admin' || accessLevel === 'moderator'
-      ? (mode==='edit'?'Character updated':'Character created')
-      : (mode==='edit'?'Updated & sent for review':'Created & sent for review')
-  );
-  if (mode === 'edit') {
-    window.location.href = 'profile.html';
-  } else {
-    e.target.reset();
-    document.getElementById('previewImage').src = '';
-    document.getElementById('tagContainer').innerHTML = '';
-  }
+  try {
+    // Prepare FormData (incl. file if any)
+    const formData = new FormData();
+    formData.append('json', JSON.stringify(payload));
+    if (imageFile) formData.append('file', imageFile);
+  
+    // Fire off to the correct endpoint
+    const endpoint = mode === 'edit'
+      ? 'https://chatcord-server.onrender.com/update_character'
+      : 'https://chatcord-server.onrender.com/upload_json';
+  
+    const res = await fetch(endpoint, { method: 'POST', body: formData });
+    const data = await res.json();
+  
+    if (!res.ok) {
+      // On server‑side error, re‑enable the controls:
+      form.querySelectorAll('input, button, select, textarea')
+          .forEach(el => el.disabled = false);
+      if (submitBtn) {
+        if(mode=== 'edit') {
+          submitBtn.textContent = 'Edit Character';
+        } else {
+          submitBtn.textContent = 'Create Character';
+        }
+      }
+      alert(`Error: ${data.error || 'Unknown error'}`);
+      return;
+    }
+  
+    alert(
+      accessLevel === 'admin' || accessLevel === 'moderator'
+        ? (mode==='edit'?'Character updated':'Character created')
+        : (mode==='edit'?'Updated & sent for review':'Created & sent for review')
+    );
+    if (mode === 'edit') {
+      window.location.href = 'profile.html';
+    } else {
+      e.target.reset();
+      document.getElementById('previewImage').src = '';
+      document.getElementById('tagContainer').innerHTML = '';
+    } catch (err) {
+      // Network or unexpected error: re‑enable
+      form.querySelectorAll('input, button, select, textarea')
+          .forEach(el => el.disabled = false);
+      if (submitBtn) {
+        if(mode=== 'edit') {
+          submitBtn.textContent = 'Edit Character';
+        } else {
+          submitBtn.textContent = 'Create Character';
+        }
+      }
+      alert(`Unexpected error: ${err.message}`);
+    }
 }
 
 async function handleReviewSubmit(decision, characterId) {
