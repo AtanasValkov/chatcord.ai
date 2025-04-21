@@ -136,16 +136,19 @@ function addReviewControls(characterId) {
   // Only add toggle behavior on mobile
   if (isMobile) {
     const toggleBtn = document.getElementById('toggleSidebar');
+    const sidebarEl = document.getElementById('reviewSidebar');
+  
     toggleBtn.addEventListener('click', () => {
-      const isHidden = sidebarContent.style.display === 'none';
-      sidebarContent.style.display = isHidden ? 'block' : 'none';
-      toggleBtn.textContent = isHidden ? '☰' : '☰';
+      const isCollapsed = sidebarEl.classList.contains('collapsed');
+      sidebarContent.style.display = isCollapsed ? 'block' : 'none';
+      sidebarEl.classList.toggle('collapsed');
+      toggleBtn.textContent = isCollapsed ? '☰' : '☰'; // You can swap icons if you want
     });
-
+  
     // Start collapsed on mobile
     sidebarContent.style.display = 'none';
+    sidebar.classList.add('collapsed');
   }
-
   // Add reason dropdown
   const reasonSelect = document.createElement('select');
   reasonSelect.id = 'reviewReason';
