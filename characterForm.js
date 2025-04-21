@@ -120,6 +120,10 @@ function addReviewControls(characterId) {
   const form = document.getElementById('characterForm');
   form.querySelector('#submitBtn').remove();
 
+  // Get the sidebar container
+  const sidebar = document.getElementById('reviewSidebar');
+  sidebar.innerHTML = `<h2>Review Controls</h2>`;
+
   // Add reason dropdown
   const reasonSelect = document.createElement('select');
   reasonSelect.id = 'reviewReason';
@@ -130,29 +134,33 @@ function addReviewControls(characterId) {
     <option value="extreme_violence">Extreme Sadism/Torture</option>
     <option value="bestiality">Bestiality Content</option>
   `;
-  form.appendChild(reasonSelect);
+  sidebar.appendChild(reasonSelect);
 
-  // Add optional notes input
+  // Notes textarea
   const notes = document.createElement('textarea');
   notes.id = 'reviewNotes';
   notes.placeholder = 'Additional notes (optional)';
-  notes.style.marginTop = '10px';
   notes.rows = 3;
-  form.appendChild(notes);
+  notes.style.width = '100%';
+  notes.style.margin = '10px 0';
+  sidebar.appendChild(notes);
 
-  // Add buttons
-  const btns = [
+  // Decision buttons
+  const decisions = [
     { text: 'Approve', decision: 'approved' },
     { text: 'Request Changes', decision: 'request_changes' },
     { text: 'Deny', decision: 'denied' }
   ];
 
-  btns.forEach(({ text, decision }) => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.textContent = text;
-    b.addEventListener('click', () => handleReviewSubmit(decision, characterId));
-    form.appendChild(b);
+  decisions.forEach(({ text, decision }) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = text;
+    btn.style.display = 'block';
+    btn.style.width = '100%';
+    btn.style.margin = '5px 0';
+    btn.addEventListener('click', () => handleReviewSubmit(decision, characterId));
+    sidebar.appendChild(btn);
   });
 
   // Add back button
@@ -481,6 +489,10 @@ async function onSubmit(mode, e) {
 }
 
 async function handleReviewSubmit(decision, characterId) {
+  // disable controls
+  const sidebar = document.getElementById('reviewSidebar');
+  sidebar.querySelectorAll('button, select, textarea').forEach(el => el.disabled = true);
+
   const checkedFields = Array.from(document.querySelectorAll('.field-checkbox'))
     .filter(c => c.checked)
     .map(c => c.dataset.field);
@@ -507,14 +519,17 @@ async function handleReviewSubmit(decision, characterId) {
     }
   }
   currentUser = JSON.parse(localStorage.getItem('user'));
-
+  if (!currentUser.id) {
+    alert('You must be logged in to submit a review.');
+    return;
+  }
   const payload = {
     characterId,
     decision,
     reason,
     notes,
     fields: decision === 'approved' ? [] : checkedFields,
-    reviewerId: currentUser?.id || null,
+    reviewerId: currentUser.id,
     authorId: authorID
   };
 
@@ -531,5 +546,7 @@ async function handleReviewSubmit(decision, characterId) {
   } catch (err) {
     console.error(err);
     alert('There was an error submitting the review.');
+    // re-enable controls on failure
+    sidebar.querySelectorAll('button, select, textarea').forEach(el => el.disabled = false);
   }
 }
