@@ -241,36 +241,37 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
         });
     });
 
-    (function() {
-        fetch(`https://chatcord-server.onrender.com/get-user/${currentUser.id}`)
-            .then(res => res.json())
-            .then(({ user: userData }) => {
-                const accessLevel = userData.access_level?.toLowerCase();
-    
-                if (accessLevel === 'admin' || accessLevel === 'moderator') {
-                    // Create 'Moderate character' button
-                    const modCharButton = document.createElement("button");
-                    modCharButton.innerText = "MOD";
-                    modCharButton.onclick = function() {
-                        reviewCharacter(charID);
-                    };
-                }
-    
-                // Append other elements regardless of access level
-                detailsPanelLike.appendChild(characterName);
-                detailsPanelLike.appendChild(favoriteBtn);
-                detailsPanelLike.appendChild(thumbsUpBtn);
-                detailsPanelLike.appendChild(thumbsDownBtn);
-                detailsPanelLike.appendChild(shareBtn);
-                if (accessLevel === 'admin' || accessLevel === 'moderator') {    
-                    // Append moderator button if user is admin/mod
-                    detailsPanelLike.appendChild(modCharButton);
-                }
-            })
-            .catch(err => {
-                console.error("Failed to fetch user info:", err);
-            });
-    })();
+(function() {
+    fetch(`https://chatcord-server.onrender.com/get-user/${currentUser.id}`)
+        .then(res => res.json())
+        .then(({ user: userData }) => {
+            const accessLevel = userData.access_level?.toLowerCase();
+            let modCharButton;
+
+            if (accessLevel === 'admin' || accessLevel === 'moderator') {
+                // Create 'Moderate character' button
+                modCharButton = document.createElement("button");
+                modCharButton.innerText = "MOD";
+                modCharButton.onclick = function() {
+                    reviewCharacter(charID);
+                };
+            }
+
+            // Append other elements regardless of access level
+            detailsPanelLike.appendChild(characterName);
+            detailsPanelLike.appendChild(favoriteBtn);
+            detailsPanelLike.appendChild(thumbsUpBtn);
+            detailsPanelLike.appendChild(thumbsDownBtn);
+            detailsPanelLike.appendChild(shareBtn);
+
+            if (modCharButton) {
+                detailsPanelLike.appendChild(modCharButton);
+            }
+        })
+        .catch(err => {
+            console.error("Failed to fetch user info:", err);
+        });
+})();
 
     detailsPanel.appendChild(characterImage);
     detailsPanel.appendChild(detailsPanelLike);
