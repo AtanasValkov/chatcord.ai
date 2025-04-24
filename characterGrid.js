@@ -198,7 +198,6 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
         }
     });
                         
-
     // Create thumbs down button
     const thumbsDownBtn = document.createElement("span");
     thumbsDownBtn.classList.add("thumbs-down");
@@ -242,6 +241,18 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
         });
     });
 
+    const userRes = await fetch(`https://chatcord-server.onrender.com/get-user/${currentUser.id}`);
+    const { user: userData } = await userRes.json();
+    
+    const accessLevel = userData.access_level?.toLowerCase();
+    if (accessLevel === 'admin' || accessLevel === 'moderator') {
+        // Create 'Moderate character' button
+        const modCharButton = document.createElement("button");
+        modCharButton.innerText = "MOD";
+        modCharButton.onclick = function() {
+            reviewCharacter(charID);
+        };
+    }
 
     // Append elements
     detailsPanelLike.appendChild(characterName);
@@ -249,6 +260,9 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     detailsPanelLike.appendChild(thumbsUpBtn);
     detailsPanelLike.appendChild(thumbsDownBtn);
     detailsPanelLike.appendChild(shareBtn);
+    if (accessLevel === 'admin' || accessLevel === 'moderator') {
+        detailsPanelLike.appendChild(modCharButton);
+    }
 
     detailsPanel.appendChild(characterImage);
     detailsPanel.appendChild(detailsPanelLike);
