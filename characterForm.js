@@ -551,25 +551,35 @@ async function handleReviewSubmit(decision, characterId) {
   if (decision === 'approved') {
     if (checkedFields.length > 0) {
       alert('You cannot approve and still have fields marked as needing changes.');
+      // re-enable controls on failure
+      sidebar.querySelectorAll('button, select, textarea').forEach(el => el.disabled = false);
       return;
     }
     if (reason) {
       alert('You cannot approve and still select a reason for rejection.');
+      // re-enable controls on failure
+      sidebar.querySelectorAll('button, select, textarea').forEach(el => el.disabled = false);
       return;
     }
   } else if ((decision === 'request_changes' || decision === 'denied')) {
     if (checkedFields.length === 0) {
       alert('Please check at least one field that needs attention.');
+      // re-enable controls on failure
+      sidebar.querySelectorAll('button, select, textarea').forEach(el => el.disabled = false);
       return;
     }
     if (!reason) {
       alert('Please select a reason for requesting changes or denying.');
+      // re-enable controls on failure
+      sidebar.querySelectorAll('button, select, textarea').forEach(el => el.disabled = false);
       return;
     }
   }
   currentUser = JSON.parse(localStorage.getItem('user'));
   if (!currentUser.id) {
     alert('You must be logged in to submit a review.');
+    // re-enable controls on failure
+    sidebar.querySelectorAll('button, select, textarea').forEach(el => el.disabled = false);
     return;
   }
   const payload = {
