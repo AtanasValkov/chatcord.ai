@@ -355,13 +355,13 @@
 
                                 // Get the search query and convert it to lowercase for case-insensitive matching
                                 searchQuery = searchInput.value.toLowerCase();
-                                const filteredCharacters = Object.entries(characters).filter(([id, char]) => 
+                                let filteredCharacters = Object.entries(characters).filter(([id, char]) => 
                                     searchQuery === "" || char.char_name.toLowerCase().includes(searchQuery)
                                 );
+                                filteredCharacters = Object.entries(filteredCharacters).filter(([id, character]) => character.review_status === "approved");
                                 // Get the selected sort option and order
                                 const sortOption = document.getElementById("sortOptions").value;
                                 const sortOrder = document.getElementById("sortOrder").value; // "asc" or "desc"
-
 
                                 // Default sorting in our comparator is descending, so multiplier reverses it if ascending.
                                 const multiplier = sortOrder === "asc" ? -1 : 1;
