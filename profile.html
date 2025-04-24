@@ -115,10 +115,9 @@
     // Set up tab listeners immediately (DOM is already ready in modules)
     document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine'));
     document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites'));
-  
-    // Load 'My Characters' by default
-    await loadCharacters('mine');
   }
+  // Load 'My Characters' by default
+  await loadCharacters('mine');
   </script>
 </body>
 </html>
