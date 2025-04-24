@@ -241,8 +241,8 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
         });
     });
 
-    const userRes = await fetch(`https://chatcord-server.onrender.com/get-user/${currentUser.id}`);
-    const { user: userData } = await userRes.json();
+    const userRes = fetch(`https://chatcord-server.onrender.com/get-user/${currentUser.id}`);
+    const { user: userData } = userRes.json();
     
     const accessLevel = userData.access_level?.toLowerCase();
     if (accessLevel === 'admin' || accessLevel === 'moderator') {
