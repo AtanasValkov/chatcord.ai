@@ -196,16 +196,6 @@ function addReviewControls(characterId) {
   backLink.textContent = 'Back';
   form.appendChild(backLink);
   backLink.addEventListener('click', async (e) => {
-    e.preventDefault(); // prevent default navigation
-  
-    // Send unlock request
-    await fetch('https://chatcord-server.onrender.com/character-unlock', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ characterId })
-    });
-  
-    // Now go back or redirect
     window.location.href = backLink.href;
   });
 }
