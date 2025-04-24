@@ -358,7 +358,7 @@
                                 let filteredCharacters = Object.entries(characters).filter(([id, char]) => 
                                     searchQuery === "" || char.char_name.toLowerCase().includes(searchQuery)
                                 );
-                                filteredCharacters = Object.entries(filteredCharacters).filter(([id, character]) => character.review_status === "approved");
+                                filteredCharacters = filteredCharacters.filter(char => char.review_status === "approved");
                                 // Get the selected sort option and order
                                 const sortOption = document.getElementById("sortOptions").value;
                                 const sortOrder = document.getElementById("sortOrder").value; // "asc" or "desc"
