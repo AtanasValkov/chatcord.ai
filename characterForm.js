@@ -132,14 +132,39 @@ async function populateFields(character) {
   }
 
   const sidebar = document.getElementById("reviewSidebar");
+  const isMobile = window.innerWidth <= 915;
   if (review && (review.reason || review.notes)) {
     sidebar.style.display = "block";
     sidebar.innerHTML = `
+    <div id="sidebarToggleWrapper">
+      ${isMobile ? `<button id="toggleSidebar" style="width: 100%; margin-bottom: 10px;">☰</button>` : ''}
+    </div>
+    
+    <div id="sidebarContent" style="display: ${isMobile ? 'none' : 'block'};">
       <h4>Review: ${review.reason || "No reason provided"}</h4>
       <p>${review.notes || "No additional notes."}</p>
+    </div>
     `;
   } else {
     sidebar.style.display = "none";
+  }
+  
+  const sidebarContent = document.getElementById('sidebarContent');
+  // Only add toggle behavior on mobile
+  if (isMobile) {
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const sidebarEl = document.getElementById('reviewSidebar');
+  
+    toggleBtn.addEventListener('click', () => {
+      const isCollapsed = sidebarEl.classList.contains('collapsed');
+      sidebarContent.style.display = isCollapsed ? 'block' : 'none';
+      sidebarEl.classList.toggle('collapsed');
+      toggleBtn.textContent = isCollapsed ? '☰' : '☰'; // You can swap icons if you want
+    });
+  
+    // Start collapsed on mobile
+    sidebarContent.style.display = 'none';
+    sidebar.classList.add('collapsed');
   }
 }
 
