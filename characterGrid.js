@@ -66,14 +66,18 @@ async function renderCharacterCard(character, showDetailsOnClick, reviewDisplay)
             } else {
                 charDiv.id = `character-${character.id}`;
                 charDiv.innerHTML = `
-                    <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
-                    <p>${character.char_name || 'Unknown'}</p>
-                    <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
-                    <button class="edit-btn">Edit</button>
-                    <button class="delete-btn">Delete</button>
+                    <div class="character-card">
+                        ${character.review_status === "request_changes" ? '<span class="feedback-badge">⚠️ Feedback</span>' : ''}
+                        <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
+                        <p>${character.char_name || 'Unknown'}</p>
+                        <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
+                        <button class="edit-btn">Edit</button>
+                        <button class="delete-btn">Delete</button>
+                    </div>
                 `;
-                charDiv.querySelector(".delete-btn").addEventListener("click", () => deleteCharacter(character.id));
-                charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(character.id));
+                if (character.review_status === "request_changes") {
+                    charDiv.querySelector(".edit-btn").classList.add("attention");
+                }
             }
         } else {
                 charDiv.id = `character-${character.id}`;
