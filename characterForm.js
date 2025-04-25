@@ -123,7 +123,7 @@ async function populateFields(character) {
     console.warn("Couldn't load review:", err);
     return;
   }
-
+  console.log(review)
   if (review.status !== 'request_changes') {
     return;
   }
