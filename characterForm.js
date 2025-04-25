@@ -124,6 +124,10 @@ async function populateFields(character) {
     return;
   }
 
+  if (review.status !=== 'request_changes') {
+    return;
+  }
+
   if (review.affected_fields && Array.isArray(review.affected_fields)) {
     review.affected_fields.forEach(fieldId => {
       const el = document.getElementById(fieldId);
@@ -134,15 +138,12 @@ async function populateFields(character) {
   const sidebar = document.getElementById("reviewSidebar");
   const isMobile = window.innerWidth <= 915;
   if (review && (review.reason || review.notes)) {
-    sidebar.style.display = "block";
     sidebar.innerHTML = `
     <div id="sidebarToggleWrapper">
       ${isMobile ? `<button id="toggleSidebar" style="width: 100%; margin-bottom: 10px;">☰</button>` : ''}
     </div>
-    
     <div id="sidebarContent" style="display: ${isMobile ? 'none' : 'block'};">
-      <h4>Review: ${review.reason || "No reason provided"}</h4>
-      <p>${review.notes || "No additional notes."}</p>
+      <h2>Feedback</h2>
     </div>
     `;
   } else {
@@ -166,6 +167,14 @@ async function populateFields(character) {
     sidebarContent.style.display = 'none';
     sidebar.classList.add('collapsed');
   }
+  // Adding review reason and notes
+  const reviewReason = document.createElement('h4');
+  reviewReason.textContent = `Review: ${review.reason || "No reason provided"}`;
+  sidebarContent.appendChild(reviewReason);
+  
+  const reviewNotes = document.createElement('p');
+  reviewNotes.textContent = `${review.notes || "No additional notes."}`;
+  sidebarContent.appendChild(reviewNotes);
 }
 
 function addReviewControls(characterId) {
