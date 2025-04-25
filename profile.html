@@ -82,7 +82,13 @@
         if ( type !== 'review') {
           if (!userId) {
             characterArray = (type === 'mine') 
-              ? Object.entries(data).filter(([id, character]) => character.userID === myUserId) 
+              ? Object.entries(data)
+                  .filter(([id, character]) => character.userID === myUserId)
+                  .sort((a, b) => {
+                    const aStatus = a[1].review_status;
+                    const bStatus = b[1].review_status;
+                    return (aStatus === 'request_changes' ? -1 : 0) - (bStatus === 'request_changes' ? -1 : 0);
+                  })
               : Object.entries(data).filter(([id, character]) => favCharacters.includes(character.id) && character.review_status === "approved");
           } else {
             characterArray = Object.entries(data).filter(([id, character]) => character.userID === userId && character.review_status === "approved");
