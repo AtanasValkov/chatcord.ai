@@ -477,6 +477,26 @@ button:disabled {
     color: #666;
 }
 
+/* Review Page */
+.review-highlight {
+  border: 2px solid #e74c3c !important;
+  border-radius: 4px;
+}
+.review-sidebar {
+  padding: 12px;
+  background: #fff7f7;
+  border-left: 3px solid #e74c3c;
+  font-size: 0.9rem;
+}
+.review-sidebar h4 {
+  margin: 0 0 6px;
+  color: #c0392b;
+}
+.review-sidebar p {
+  margin: 0 4px 8px;
+  line-height: 1.4;
+}
+
 /* Profile Page */
 .profilePage {
     text-align: center;
