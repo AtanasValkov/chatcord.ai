@@ -75,6 +75,8 @@ async function renderCharacterCard(character, showDetailsOnClick, reviewDisplay)
                         <button class="delete-btn">Delete</button>
                     </div>
                 `;
+                charDiv.querySelector(".delete-btn").addEventListener("click", () => deleteCharacter(character.id));
+                charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(character.id));
                 if (character.review_status === "request_changes") {
                     charDiv.querySelector(".edit-btn").classList.add("attention");
                 }
