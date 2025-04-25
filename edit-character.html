@@ -116,6 +116,24 @@
            margin: 0 4px 8px;
            line-height: 1.4;
          }
+        @media (max-width: 800px) {
+          /* hide sidebar or make it full-width on small screens */
+          .review-sidebar {
+            position: fixed;
+            right: 4vh;
+            top: 20vh;
+            width: 30vh;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            border-radius: 10px 10px 0 0;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            z-index: 1000;
+          }
+          .review-sidebar.collapsed {
+            max-width: 10vh; /* Just enough for the toggle button */
+            overflow: hidden;
+          }
     </style>
 </head>
 <body>
