@@ -117,7 +117,7 @@ async function populateFields(character) {
 
   let review;
   try {
-    const res = await fetch(`/api/reviews/latest?charId=${character.id}`);
+    const res = await fetch(`https://chatcord-server.onrender.com/reviews/latest?charId=${character.id}`);
     review = await res.json();
   } catch (err) {
     console.warn("Couldn't load review:", err);
