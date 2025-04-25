@@ -1,5 +1,5 @@
 
-export function populateGrid(characters, includeTags = [], excludeTags = [], showDetailsOnClick) {
+export function populateGrid(characters, includeTags = [], excludeTags = [], showDetailsOnClick, accessLevel = '') {
     const grid = document.getElementById("characterGrid");
     grid.innerHTML = ""; // Clear existing content
 
@@ -13,14 +13,14 @@ export function populateGrid(characters, includeTags = [], excludeTags = [], sho
             return;
         }
         if (character.review_status === 'pending') {
-            renderCharacterCard(character, showDetailsOnClick, true);
+            renderCharacterCard(character, showDetailsOnClick, true, accessLevel);
         } else {
-            renderCharacterCard(character, showDetailsOnClick, false);
+            renderCharacterCard(character, showDetailsOnClick, false, accessLevel);
         }
         });
 }
 
-async function renderCharacterCard(character, showDetailsOnClick, reviewDisplay) {
+async function renderCharacterCard(character, showDetailsOnClick, reviewDisplay, accessLevel) {
         const grid = document.getElementById("characterGrid");
         const charDiv = document.createElement("div");
         charDiv.classList.add("character");
@@ -88,7 +88,11 @@ async function renderCharacterCard(character, showDetailsOnClick, reviewDisplay)
                     <p>${character.char_name || 'Unknown'}</p>
                     <button class="review-btn">Review</button>
                 `;
-                charDiv.querySelector(".review-btn").addEventListener("click", () => reviewCharacter(character.id));
+                if (accessLevel === "admin" || accessLevel === "moderator") {
+                    charDiv.querySelector(".review-btn").addEventListener("click", () => reviewCharacter(character.id));
+                } else {
+                    charDiv.querySelector(".review-btn").innerText = "Character In Review";
+                }
         } 
         grid.appendChild(charDiv);
 }
