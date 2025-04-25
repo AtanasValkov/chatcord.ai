@@ -6,7 +6,7 @@ export async function initCharacterForm({ mode, characterId }) {
     charID = characterId;
     const data = await fetch(`https://chatcord-server.onrender.com/get-characters`).then(r => r.json());
     const char = data.find(c => c.id === characterId);
-    if (char) populateFields(char);
+    if (char) populateFields(char, mode);
   }
   
   setupTagInput();
@@ -94,7 +94,7 @@ function addFieldCheckboxes() {
   });
 }
 
-async function populateFields(character) {
+async function populateFields(character, mode) {
   document.getElementById("characterName").value = character.char_name || '';
   document.getElementById("charDescription").value = character.char_persona || '';
   document.getElementById("charGreeting").value = character.char_greeting || '';
@@ -114,66 +114,68 @@ async function populateFields(character) {
   const previewImage = document.getElementById("previewImage");
   previewImage.src = character.char_url;
   previewImage.style.display = "block";
-
-  let review;
-  try {
-    const res = await fetch(`https://chatcord-server.onrender.com/api/reviews/latest?charId=${character.id}`);
-    review = await res.json();
-  } catch (err) {
-    console.warn("Couldn't load review:", err);
-    return;
-  }
-  if (review.status !== 'request_changes') {
-    return;
-  }
-
-  if (review.affected_fields && Array.isArray(review.affected_fields)) {
-    review.affected_fields.forEach(fieldId => {
-      const el = document.getElementById(fieldId);
-      if (el) el.classList.add("review-highlight");
-    });
-  }
-
-  const sidebar = document.getElementById("reviewSidebar");
-  const isMobile = window.innerWidth <= 915;
-  if (review && (review.reason || review.notes)) {
-    sidebar.innerHTML = `
-    <div id="sidebarToggleWrapper">
-      ${isMobile ? `<button id="toggleSidebar" style="width: 100%; margin-bottom: 10px;">☰</button>` : ''}
-    </div>
-    <div id="sidebarContent" style="display: ${isMobile ? 'none' : 'block'};">
-      <h2>Feedback</h2>
-    </div>
-    `;
-  } else {
-    sidebar.style.display = "none";
-  }
+  if (mode === 'edit')
+  {
+    let review;
+    try {
+      const res = await fetch(`https://chatcord-server.onrender.com/api/reviews/latest?charId=${character.id}`);
+      review = await res.json();
+    } catch (err) {
+      console.warn("Couldn't load review:", err);
+      return;
+    }
+    if (review.status !== 'request_changes') {
+      return;
+    }
   
-  const sidebarContent = document.getElementById('sidebarContent');
-  // Only add toggle behavior on mobile
-  if (isMobile) {
-    const toggleBtn = document.getElementById('toggleSidebar');
-    const sidebarEl = document.getElementById('reviewSidebar');
+    if (review.affected_fields && Array.isArray(review.affected_fields)) {
+      review.affected_fields.forEach(fieldId => {
+        const el = document.getElementById(fieldId);
+        if (el) el.classList.add("review-highlight");
+      });
+    }
   
-    toggleBtn.addEventListener('click', () => {
-      const isCollapsed = sidebarEl.classList.contains('collapsed');
-      sidebarContent.style.display = isCollapsed ? 'block' : 'none';
-      sidebarEl.classList.toggle('collapsed');
-      toggleBtn.textContent = isCollapsed ? '☰' : '☰'; // You can swap icons if you want
-    });
-  
-    // Start collapsed on mobile
-    sidebarContent.style.display = 'none';
-    sidebar.classList.add('collapsed');
+    const sidebar = document.getElementById("reviewSidebar");
+    const isMobile = window.innerWidth <= 915;
+    if (review && (review.reason || review.notes)) {
+      sidebar.innerHTML = `
+      <div id="sidebarToggleWrapper">
+        ${isMobile ? `<button id="toggleSidebar" style="width: 100%; margin-bottom: 10px;">☰</button>` : ''}
+      </div>
+      <div id="sidebarContent" style="display: ${isMobile ? 'none' : 'block'};">
+        <h2>Feedback</h2>
+      </div>
+      `;
+    } else {
+      sidebar.style.display = "none";
+    }
+    
+    const sidebarContent = document.getElementById('sidebarContent');
+    // Only add toggle behavior on mobile
+    if (isMobile) {
+      const toggleBtn = document.getElementById('toggleSidebar');
+      const sidebarEl = document.getElementById('reviewSidebar');
+    
+      toggleBtn.addEventListener('click', () => {
+        const isCollapsed = sidebarEl.classList.contains('collapsed');
+        sidebarContent.style.display = isCollapsed ? 'block' : 'none';
+        sidebarEl.classList.toggle('collapsed');
+        toggleBtn.textContent = isCollapsed ? '☰' : '☰'; // You can swap icons if you want
+      });
+    
+      // Start collapsed on mobile
+      sidebarContent.style.display = 'none';
+      sidebar.classList.add('collapsed');
+    }
+    // Adding review reason and notes
+    const reviewReason = document.createElement('h4');
+    reviewReason.textContent = `Review: ${review.reason || "No reason provided"}`;
+    sidebarContent.appendChild(reviewReason);
+    
+    const reviewNotes = document.createElement('p');
+    reviewNotes.textContent = `${review.notes || "No additional notes."}`;
+    sidebarContent.appendChild(reviewNotes);
   }
-  // Adding review reason and notes
-  const reviewReason = document.createElement('h4');
-  reviewReason.textContent = `Review: ${review.reason || "No reason provided"}`;
-  sidebarContent.appendChild(reviewReason);
-  
-  const reviewNotes = document.createElement('p');
-  reviewNotes.textContent = `${review.notes || "No additional notes."}`;
-  sidebarContent.appendChild(reviewNotes);
 }
 
 function addReviewControls(characterId) {
