@@ -124,7 +124,7 @@ async function populateFields(character) {
     return;
   }
 
-  if (review.status !=== 'request_changes') {
+  if (review.status !== 'request_changes') {
     return;
   }
 
