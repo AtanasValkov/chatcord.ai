@@ -377,6 +377,11 @@ body, header, .modal-content {
   100% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0); }
 }
 
+.delete-btn {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
 /* Tags */
 .tags {
     display: flex;
