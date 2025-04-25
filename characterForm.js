@@ -94,7 +94,7 @@ function addFieldCheckboxes() {
   });
 }
 
-function populateFields(character) {
+async function populateFields(character) {
   document.getElementById("characterName").value = character.char_name || '';
   document.getElementById("charDescription").value = character.char_persona || '';
   document.getElementById("charGreeting").value = character.char_greeting || '';
@@ -114,6 +114,33 @@ function populateFields(character) {
   const previewImage = document.getElementById("previewImage");
   previewImage.src = character.char_url;
   previewImage.style.display = "block";
+
+  let review;
+  try {
+    const res = await fetch(`/api/reviews/latest?charId=${character.id}`);
+    review = await res.json();
+  } catch (err) {
+    console.warn("Couldn't load review:", err);
+    return;
+  }
+
+  if (review.affected_fields && Array.isArray(review.affected_fields)) {
+    review.affected_fields.forEach(fieldId => {
+      const el = document.getElementById(fieldId);
+      if (el) el.classList.add("review-highlight");
+    });
+  }
+
+  const sidebar = document.getElementById("reviewSidebar");
+  if (review && (review.reason || review.notes)) {
+    sidebar.style.display = "block";
+    sidebar.innerHTML = `
+      <h4>Review: ${review.reason || "No reason provided"}</h4>
+      <p>${review.notes || "No additional notes."}</p>
+    `;
+  } else {
+    sidebar.style.display = "none";
+  }
 }
 
 function addReviewControls(characterId) {
