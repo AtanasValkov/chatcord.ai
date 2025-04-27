@@ -451,7 +451,7 @@ function parsePNGMetadata(arrayBuffer) {
         offset += 12 + chunkLength;
     }
 
-    document.getElementById("charDescription").textContent = "Not a tavern card.";
+    document.getElementById("charDescription").value = "Not a tavern card.";
 }
 
 // Decode Base64 JSON metadata
@@ -461,7 +461,7 @@ function decodeBase64JSON(base64Str) {
         jsonData = JSON.parse(jsonString);
 
         document.getElementById("characterName").value = jsonData['name'] || '';
-        document.getElementById("charDescription").textContent = jsonData['personality'] || jsonData['description'] || 'No description available.';
+        document.getElementById("charDescription").value = jsonData['personality'] || jsonData['description'] || 'No description available.';
         document.getElementById("charGreeting").value = jsonData['first_mes'] || '';
         document.getElementById("charScenario").value = jsonData['scenario'] || '';
         document.getElementById("charDialogue").value = jsonData['mes_example'] || '';
