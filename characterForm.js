@@ -337,9 +337,6 @@ function addTag(tagText) {
 }
 let imageFile;
 function setupImageUpload() {
-
-  var jsonData;
-  
   document.getElementById("imageUpload").addEventListener("change", function(event) {
       const file = event.target.files[0];
       if (!file) return;
