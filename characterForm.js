@@ -12,7 +12,6 @@ export async function initCharacterForm({ mode, characterId }) {
   
   setupTagInput();
   setupImageUpload();
-  autoGrowTextareas();
 
   if (mode === 'create' || mode === 'edit') {
     document.getElementById('characterForm')
@@ -478,13 +477,6 @@ function decodeBase64JSON(base64Str) {
     } catch (e) {
         console.error("Error decoding metadata:", e);
     }
-}
-
-function autoGrowTextareas() {
-    document.getElementById("charDescription").addEventListener("input", function() {
-        this.style.height = "auto";
-        this.style.height = (this.scrollHeight) + "px";
-    });
 }
 
 async function onSubmit(mode, e) {
