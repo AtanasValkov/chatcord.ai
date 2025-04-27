@@ -1,6 +1,7 @@
 let authorID = null;
 let currentUser = null;
 let charID = null;
+let jsonData = null;
 export async function initCharacterForm({ mode, characterId }) {
   if (characterId) {
     charID = characterId;
