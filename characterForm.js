@@ -571,6 +571,9 @@ async function onSubmit(mode, e) {
       window.location.href = 'profile.html';
     } else {
       e.target.reset();
+      if (submitBtn) {
+        submitBtn.textContent = 'Create Character';
+      }
       document.getElementById('previewImage').src = '';
       document.getElementById('tagContainer').innerHTML = '';
     } 
