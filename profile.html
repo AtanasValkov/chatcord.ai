@@ -57,7 +57,7 @@
       document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine', accessLevel));
       document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites', accessLevel));
         // Load 'My Characters' by default for my profile
-      await loadCharacters('mine', accessLevel);
+      await loadCharacters('review', accessLevel);
       // Append to header
       header.appendChild(separator);
       header.appendChild(forReviewTab);
