@@ -121,11 +121,14 @@
     // Set up tab listeners immediately (DOM is already ready in modules)
     document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine', ''));
     document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites', ''));
-  }
-  // Load 'My Characters' by default
-  if (accessLevel === 'admin' || accessLevel === 'moderator') {
-    await loadCharacters('review', accessLevel);
+    if (accessLevel === 'admin' || accessLevel === 'moderator') {
+      await loadCharacters('review', accessLevel);
+    } else {
+      // Load 'My Characters' by default
+      await loadCharacters('mine', accessLevel);
+    }
   } else {
+    // Load 'My Characters' by default
     await loadCharacters('mine', accessLevel);
   }
   </script>
