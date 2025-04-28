@@ -123,7 +123,7 @@
     document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites', ''));
   }
   // Load 'My Characters' by default
-  if (accessLevel === 'admin' || accesssLevel === 'moderator') {
+  if (accessLevel === 'admin' || accessLevel === 'moderator') {
     await loadCharacters('review', accessLevel);
   } else {
     await loadCharacters('mine', accessLevel);
