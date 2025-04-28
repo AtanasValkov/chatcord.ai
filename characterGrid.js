@@ -558,7 +558,7 @@ async function handleCreateWebhookClick() {
     if (guildId && channelId) {
         try {
             // Proceed with creating the webhook
-            createWebhook(guildId, channelId, currentCharId);
+            createWebhook(channelId, currentCharId);
         } catch (error) {
             showToast("Failed to create webhook: " + error);
         }
@@ -566,7 +566,8 @@ async function handleCreateWebhookClick() {
 }
 
 // Create the webhook in the selected channel
-async function createWebhook(guildId, channelId, characterId) {
+async function createWebhook(channelId, characterId) {
+    const user = JSON.parse(localStorage.getItem("user"));
     const response = await fetch('https://chatcord-server.onrender.com/create-webhook', {
         method: 'POST',
         headers: {
@@ -574,7 +575,8 @@ async function createWebhook(guildId, channelId, characterId) {
         },
         body: JSON.stringify({
             channel_id: channelId,
-            character_id: characterId
+            character_id: characterId,
+            user_id: user.id,
         })
     });
 
