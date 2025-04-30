@@ -52,7 +52,7 @@ async function renderCharacterCard(character, showDetailsOnClick, reviewDisplay,
                 charDiv.innerHTML = `
                     <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
                     <p>${character.char_name || 'Unknown'}</p>
-                    <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
+                    <div>${character.downloads} ⬇ | ${character.favorites} ❤️ | ${character.likes - character.dislikes} 👍 | ${character.comments} 💬</div>
                     <div class="tags" id="characterTags"></div>
                 `;
                 let characterTags = charDiv.querySelector("#characterTags");
@@ -70,7 +70,7 @@ async function renderCharacterCard(character, showDetailsOnClick, reviewDisplay,
                         ${character.review_status === "request_changes" ? '<span class="feedback-badge">⚠️ Feedback</span>' : ''}
                         <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
                         <p>${character.char_name || 'Unknown'}</p>
-                        <div>${downloads || 0} ⬇ | ${likes || 0} ❤️ | ${stars || 0} ⭐ | ${comments || 0} 💬</div>
+                        <div>${character.downloads} ⬇ | ${character.favorites} ❤️ | ${character.likes - character.dislikes} 👍 | ${character.comments} 💬</div>
                         <button class="edit-btn">Edit</button>
                         <button class="delete-btn">Delete</button>
                     </div>
