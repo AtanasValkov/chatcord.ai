@@ -134,7 +134,7 @@
                     <option value="downloads">Downloads</option>
                     <option value="likes">Likes</option>
                     <option value="comments">Comments</option>
-                    <option value="stars">Stars</option>
+                    <option value="favorites">Favorites</option>
                     <option value="date">Date Created</option>
                   </select>
                   <select id="sortOrder">
@@ -384,7 +384,7 @@
                                             // Convert to numbers for correct sorting
                                             diff = (parseInt(charB.comments, 10) || 0) - (parseInt(charA.comments, 10) || 0);
                                             break;
-                                        case "stars":
+                                        case "favorites":
                                             // Convert to numbers for correct sorting
                                             diff = (parseInt(charB.favorites, 10) || 0) - (parseInt(charA.favorites, 10) || 0);
                                             break;
