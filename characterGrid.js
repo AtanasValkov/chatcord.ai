@@ -583,6 +583,18 @@ async function createWebhook(channelId, characterId) {
     const responseData = await response.json();
     console.log("Response Data:", responseData);  
     if (response.ok) {
+        // ✅ Interact call to increment 'downloads'
+        await fetch('https://chatcord-server.onrender.com/interact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: user.id,
+                character_id: characterId,
+                interaction_type: "download"
+            })
+        });
         showToast(responseData.message);
         closeModal();
     } else {
