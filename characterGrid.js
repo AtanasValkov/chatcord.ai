@@ -137,88 +137,61 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     characterName.innerText = name || "Default Name";
 
     const user = JSON.parse(localStorage.getItem("user"));
-    let requestScheduled = false;
+    const favoriteBtn   = document.createElement("span");
+    const thumbsUpBtn   = document.createElement("span");
+    const thumbsDownBtn = document.createElement("span");
     
-    // 2) Create the buttons
-    const favoriteBtn  = document.createElement("span");
-    const thumbsUpBtn  = document.createElement("span");
-    const thumbsDownBtn= document.createElement("span");
-    
-    // common setup
-    favoriteBtn.classList.add("favorite");   favoriteBtn.innerHTML   = '<i class="fas fa-heart"></i>';
-    thumbsUpBtn.classList.add("thumbs-up");  thumbsUpBtn.innerHTML   = '<i class="fas fa-thumbs-up"></i>';
+    favoriteBtn.classList.add("favorite");     favoriteBtn.innerHTML   = '<i class="fas fa-heart"></i>';
+    thumbsUpBtn.classList.add("thumbs-up");    thumbsUpBtn.innerHTML   = '<i class="fas fa-thumbs-up"></i>';
     thumbsDownBtn.classList.add("thumbs-down"); thumbsDownBtn.innerHTML = '<i class="fas fa-thumbs-down"></i>';
     
-    // 3) Load server state
-    if (user) {
-      fetch("https://chatcord-server.onrender.com/get-interactions", {
-        method: "POST",
-        headers: { "Content-Type":"application/json" },
-        body: JSON.stringify({ user_id: user.id, character_id: charID })
-      })
-      .then(res => res.json())
-      .then(({ interactions }) => {
-        if (interactions.includes("favorite")) favoriteBtn.classList.add("active");
-        if (interactions.includes("like"))     thumbsUpBtn.classList.add("active");
-        if (interactions.includes("dislike"))  thumbsDownBtn.classList.add("active");
-      })
-      .catch(err => console.error("Failed to load interactions:", err));
-    }
-    
-    // 4) Wire up favorite (debounced)
-    favoriteBtn.addEventListener("click", event => {
-      event.stopPropagation();
-      if (!user) {
-        showToast("Please log in to favorite characters.");
-        return;
-      }
-      const isFav = favoriteBtn.classList.toggle("active");
-      const type  = isFav ? "favorite" : "unfavorite";
-    
-      clearTimeout(favoriteBtn._timeout);
-      favoriteBtn._timeout = setTimeout(() => {
-        fetch("https://chatcord-server.onrender.com/interact", {
-          method: "POST",
-          headers: { "Content-Type":"application/json" },
-          body: JSON.stringify({
-            user_id:      user.id,
-            character_id: charID,
-            interaction_type: type
-          })
-        })
-        .then(() => { /* could check status here */ })
-        .catch(err => console.error("Fav error:", err));
-      }, 1000);
-    });
-    
-    // 5) Wire up like/dislike (each with own debounce)
-    function makeToggle(btn, oppositeBtn, onType, offType) {
+    // 2) Helper to debounce with initial≠final check
+    function makeDebouncedToggle(btn, oppositeBtn, interactionOn, interactionOff) {
       btn.addEventListener("click", event => {
         event.stopPropagation();
         if (!user) { showToast("Please log in…"); return; }
     
-        const nowOn = btn.classList.toggle("active");
-        oppositeBtn.classList.remove("active");
-        const type = nowOn ? onType : offType;
+        // 2a) Capture initial state on first click of burst
+        if (btn._initialState === undefined) {
+          btn._initialState = btn.classList.contains("active");
+        }
     
+        // 2b) Immediately toggle UI, and clear any opposite
+        const nowOn = btn.classList.toggle("active");
+        if (oppositeBtn) oppositeBtn.classList.remove("active");
+    
+        // 2c) Debounce: after 1s of no clicks, compare initial vs final
         clearTimeout(btn._timeout);
         btn._timeout = setTimeout(() => {
-          fetch("https://chatcord-server.onrender.com/interact", {
-            method: "POST",
-            headers: { "Content-Type":"application/json" },
-            body: JSON.stringify({
-              user_id: user.id,
-              character_id: charID,
-              interaction_type: type
+          const initial = btn._initialState;
+          const final   = btn.classList.contains("active");
+          // Only fire if truly changed
+          if (initial !== final) {
+            const type = final ? interactionOn : interactionOff;
+            fetch("https://chatcord-server.onrender.com/interact", {
+              method: "POST",
+              headers: { "Content-Type":"application/json" },
+              body: JSON.stringify({
+                user_id:      user.id,
+                character_id: charID,
+                interaction_type: type
+              })
             })
-          })
-          .then(() => {})
-          .catch(err => console.error(`${onType} error:`, err));
+            .then(() => {})
+            .catch(err => console.error(`${interactionOn} error:`, err));
+          }
+          // cleanup for next burst
+          delete btn._initialState;
         }, 1000);
       });
     }
-    makeToggle(thumbsUpBtn, thumbsDownBtn, "like", "unlike");
-    makeToggle(thumbsDownBtn, thumbsUpBtn, "dislike", "undislike");
+    
+    // 3) Apply for each button
+    //    favorite has no “opposite”
+    makeDebouncedToggle(favoriteBtn, null,        "favorite",   "unfavorite");
+    //    like ↔︎ dislike are opposites
+    makeDebouncedToggle(thumbsUpBtn,   thumbsDownBtn, "like",       "unlike");
+    makeDebouncedToggle(thumbsDownBtn, thumbsUpBtn,   "dislike",    "undislike");
 
     // Create share button
     const shareBtn = document.createElement("span");
