@@ -143,7 +143,6 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     const favoriteBtn  = document.createElement("span");
     const thumbsUpBtn  = document.createElement("span");
     const thumbsDownBtn= document.createElement("span");
-    const shareBtn     = document.createElement("span");
     
     // common setup
     favoriteBtn.classList.add("favorite");   favoriteBtn.innerHTML   = '<i class="fas fa-heart"></i>';
