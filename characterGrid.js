@@ -136,101 +136,90 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     characterName.id = "characterName";
     characterName.innerText = name || "Default Name";
 
-    let requestScheduled = false;
-    // Create favorite button
-    const favoriteBtn = document.createElement("span");
-    favoriteBtn.classList.add("favorite");
-    favoriteBtn.id = "favoriteBtn";
-    favoriteBtn.innerHTML = '<i class="fas fa-heart"></i>';
-    
-    
-    // Set initial state if already favorited
     const user = JSON.parse(localStorage.getItem("user"));
-    const interactions = await loadCharacterInteractions(user.id, charID);
-
-    if (interactions.includes('favorite')) favoriteBtn.classList.add('active');
-    if (interactions.includes('like')) thumbsUpBtn.classList.add('active');
-    if (interactions.includes('dislike')) thumbsDownBtn.classList.add('active');
+    let requestScheduled = false;
     
-    favoriteBtn.addEventListener('click', (event) => {
-        event.stopPropagation();
-        if (!user) {
-            showToast("Please log in to favorite characters.");
-            return;
-        }
-    const isNowFavorited = favoriteBtn.classList.toggle("active");
-    const interactionType = isNowFavorited ? "favorite" : "unfavorite";
+    // 2) Create the buttons
+    const favoriteBtn  = document.createElement("span");
+    const thumbsUpBtn  = document.createElement("span");
+    const thumbsDownBtn= document.createElement("span");
+    const shareBtn     = document.createElement("span");
     
-    await fetch('https://chatcord-server.onrender.com/interact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            user_id: user.id,
+    // common setup
+    favoriteBtn.classList.add("favorite");   favoriteBtn.innerHTML   = '<i class="fas fa-heart"></i>';
+    thumbsUpBtn.classList.add("thumbs-up");  thumbsUpBtn.innerHTML   = '<i class="fas fa-thumbs-up"></i>';
+    thumbsDownBtn.classList.add("thumbs-down"); thumbsDownBtn.innerHTML = '<i class="fas fa-thumbs-down"></i>';
+    
+    // 3) Load server state
+    if (user) {
+      fetch("https://chatcord-server.onrender.com/get-interactions", {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({ user_id: user.id, character_id: charID })
+      })
+      .then(res => res.json())
+      .then(({ interactions }) => {
+        if (interactions.includes("favorite")) favoriteBtn.classList.add("active");
+        if (interactions.includes("like"))     thumbsUpBtn.classList.add("active");
+        if (interactions.includes("dislike"))  thumbsDownBtn.classList.add("active");
+      })
+      .catch(err => console.error("Failed to load interactions:", err));
+    }
+    
+    // 4) Wire up favorite (debounced)
+    favoriteBtn.addEventListener("click", event => {
+      event.stopPropagation();
+      if (!user) {
+        showToast("Please log in to favorite characters.");
+        return;
+      }
+      const isFav = favoriteBtn.classList.toggle("active");
+      const type  = isFav ? "favorite" : "unfavorite";
+    
+      clearTimeout(favoriteBtn._timeout);
+      favoriteBtn._timeout = setTimeout(() => {
+        fetch("https://chatcord-server.onrender.com/interact", {
+          method: "POST",
+          headers: { "Content-Type":"application/json" },
+          body: JSON.stringify({
+            user_id:      user.id,
             character_id: charID,
-            interaction_type: interactionType
+            interaction_type: type
+          })
         })
+        .then(() => { /* could check status here */ })
+        .catch(err => console.error("Fav error:", err));
+      }, 1000);
     });
-
-
-    // Create thumbs up button
-    thumbsUpBtn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      if (!user) { showToast("Please log in…"); return; }
     
-      // Toggle UI state
-      const isNowLiked = thumbsUpBtn.classList.toggle('active');
-      thumbsDownBtn.classList.remove('active');
+    // 5) Wire up like/dislike (each with own debounce)
+    function makeToggle(btn, oppositeBtn, onType, offType) {
+      btn.addEventListener("click", event => {
+        event.stopPropagation();
+        if (!user) { showToast("Please log in…"); return; }
     
-      if (!requestScheduled) {
-        requestScheduled = true;
-        setTimeout(async () => {
-          // Decide whether this is a “like” or an “unlike”
-          const interactionType = isNowLiked ? 'like' : 'unlike';
+        const nowOn = btn.classList.toggle("active");
+        oppositeBtn.classList.remove("active");
+        const type = nowOn ? onType : offType;
     
-          await fetch('https://chatcord-server.onrender.com/interact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+        clearTimeout(btn._timeout);
+        btn._timeout = setTimeout(() => {
+          fetch("https://chatcord-server.onrender.com/interact", {
+            method: "POST",
+            headers: { "Content-Type":"application/json" },
             body: JSON.stringify({
               user_id: user.id,
               character_id: charID,
-              interaction_type: interactionType
+              interaction_type: type
             })
-          });
-    
-          requestScheduled = false;
+          })
+          .then(() => {})
+          .catch(err => console.error(`${onType} error:`, err));
         }, 1000);
-      }
-    });
-                        
-    // Create thumbs down button
-    thumbsDownBtn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      if (!user) { showToast("Please log in…"); return; }
-    
-      // Toggle UI state
-      const isNowDisliked = thumbsDownBtn.classList.toggle('active');
-      thumbsDownBtn.classList.remove('active');
-    
-      if (!requestScheduled) {
-        requestScheduled = true;
-        setTimeout(async () => {
-          // Decide whether this is a “dislike” or an “undislike”
-          const interactionType = isNowDisliked ? 'dislike' : 'undislike';
-    
-          await fetch('https://chatcord-server.onrender.com/interact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              user_id: user.id,
-              character_id: charID,
-              interaction_type: interactionType
-            })
-          });
-    
-          requestScheduled = false;
-        }, 1000);
-      }
-    });
+      });
+    }
+    makeToggle(thumbsUpBtn, thumbsDownBtn, "like", "unlike");
+    makeToggle(thumbsDownBtn, thumbsUpBtn, "dislike", "undislike");
 
     // Create share button
     const shareBtn = document.createElement("span");
@@ -253,35 +242,22 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     });
 
 (function() {
-    fetch(`https://chatcord-server.onrender.com/get-user/${currentUser.id}`)
-        .then(res => res.json())
-        .then(({ user: userData }) => {
-            const accessLevel = userData.access_level?.toLowerCase();
-            let modCharButton;
-
-            if (accessLevel === 'admin' || accessLevel === 'moderator') {
-                // Create 'Moderate character' button
-                modCharButton = document.createElement("button");
-                modCharButton.innerText = "MOD";
-                modCharButton.onclick = function() {
-                    reviewCharacter(charID);
-                };
-            }
-
-            // Append other elements regardless of access level
-            detailsPanelLike.appendChild(characterName);
-            detailsPanelLike.appendChild(favoriteBtn);
-            detailsPanelLike.appendChild(thumbsUpBtn);
-            detailsPanelLike.appendChild(thumbsDownBtn);
-            detailsPanelLike.appendChild(shareBtn);
-
-            if (modCharButton) {
-                detailsPanelLike.appendChild(modCharButton);
-            }
-        })
-        .catch(err => {
-            console.error("Failed to fetch user info:", err);
-        });
+    fetch(`https://chatcord-server.onrender.com/get-user/${user?.id}`)
+      .then(res => res.json())
+      .then(({ user: userData }) => {
+        const accessLevel = userData.access_level?.toLowerCase();
+        const container = detailsPanelLike; // your panel element
+    
+        container.append(characterName, favoriteBtn, thumbsUpBtn, thumbsDownBtn, shareBtn);
+    
+        if (["admin","moderator"].includes(accessLevel)) {
+          const modBtn = document.createElement("button");
+          modBtn.innerText = "MOD";
+          modBtn.onclick = () => reviewCharacter(charID);
+          container.append(modBtn);
+        }
+      })
+      .catch(err => console.error("Failed to fetch user info:", err));
 })();
 
     detailsPanel.appendChild(characterImage);
