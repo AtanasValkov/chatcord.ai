@@ -374,19 +374,19 @@
                                     switch (sortOption) {
                                         case "downloads":
                                             // Convert to numbers for correct sorting
-                                            diff = (parseInt(charB.stats?.downloads, 10) || 0) - (parseInt(charA.stats?.downloads, 10) || 0);
+                                            diff = (parseInt(charB.downloads, 10) || 0) - (parseInt(charA.downloads, 10) || 0);
                                             break;
                                         case "likes":
                                             // Convert to numbers for correct sorting
-                                            diff = (parseInt(charB.stats?.likes, 10) || 0) - (parseInt(charA.stats?.likes, 10) || 0);
+                                            diff = (parseInt(charB.likes, 10) || 0) - (parseInt(charA.likes, 10) || 0);
                                             break;
                                         case "comments":
                                             // Convert to numbers for correct sorting
-                                            diff = (parseInt(charB.stats?.comments, 10) || 0) - (parseInt(charA.stats?.comments, 10) || 0);
+                                            diff = (parseInt(charB.comments, 10) || 0) - (parseInt(charA.comments, 10) || 0);
                                             break;
                                         case "stars":
                                             // Convert to numbers for correct sorting
-                                            diff = (parseInt(charB.stats?.stars, 10) || 0) - (parseInt(charA.stats?.stars, 10) || 0);
+                                            diff = (parseInt(charB.favorites, 10) || 0) - (parseInt(charA.favorites, 10) || 0);
                                             break;
                                         case "date":
                                             // Compare dates (already properly formatted ISO 8601)
