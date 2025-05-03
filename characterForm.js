@@ -216,6 +216,7 @@ function addReviewControls(characterId) {
   reasonSelect.id = 'reviewReason';
   reasonSelect.innerHTML = `
     <option value="">-- Select Reason --</option>
+    <option value="poorly written">Poorly Written</option>
     <option value="underage_content">Underage Content</option>
     <option value="hateful_content">Hateful Content</option>
     <option value="extreme_violence">Extreme Sadism/Torture</option>
