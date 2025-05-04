@@ -108,7 +108,7 @@ function buildCardHTML(character, filters) {
 function buildMetricsHTML(character) {
   return `
     <div class="character-metrics">
-      <span title="Downloads">${character.downloads} ⬇</span>
+      <span title="Downloads">${character.downloads} ⬇️</span>
       <span title="Favorites">${character.favorites} ❤️</span>
       <span title="Rating">${character.likes - character.dislikes} 👍</span>
       <span title="Comments">${character.comments} 💬</span>
@@ -154,7 +154,7 @@ function addCardInteractions(card, character, filters) {
   }
 }
 
-function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
+function showCharacterDetails(character) {
     // Remove existing details panel if it exists
     const existingPanel = document.getElementById("detailsPanel");
     if (existingPanel) {
@@ -186,8 +186,8 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     // Create image element
     const characterImage = document.createElement("img");
     characterImage.id = "characterImage";
-    characterImage.src = img || "";
-    characterImage.alt = name;
+    characterImage.src = character.char_url || "";
+    characterImage.alt = character.char_name;
 
     // Create details panel like div
     const detailsPanelLike = document.createElement("div");
@@ -196,7 +196,7 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     // Create character name element
     const characterName = document.createElement("h2");
     characterName.id = "characterName";
-    characterName.innerText = name || "Default Name";
+    characterName.innerText = character.char_name || "Default Name";
 
     // 0) Grab the current user & charID
     const user   = JSON.parse(localStorage.getItem("user"));
@@ -215,7 +215,7 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
       fetch("https://chatcord-server.onrender.com/get-interactions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: user.id, character_id: charID })
+        body: JSON.stringify({ user_id: user.id, character_id: character.id })
       })
         .then(res => res.json())
         .then(({ interactions }) => {
@@ -254,7 +254,7 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 user_id:          user.id,
-                character_id:     charID,
+                character_id:     character.id,
                 interaction_type: type
               })
             }).catch(err => console.error(`${interactionOn} error:`, err));
@@ -280,7 +280,7 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     shareBtn.addEventListener('click', (event) => {
         event.stopPropagation();
     
-        const shareLink = `https://chatcord.win/index.html?charID=${charID}`;
+        const shareLink = `https://chatcord.win/index.html?charID=${character.id}`;
     
         // Copy to clipboard
         navigator.clipboard.writeText(shareLink).then(() => {
@@ -303,7 +303,7 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
         if (["admin","moderator"].includes(accessLevel)) {
           const modBtn = document.createElement("button");
           modBtn.innerText = "MOD";
-          modBtn.onclick = () => reviewCharacter(charID);
+          modBtn.onclick = () => reviewCharacter(character.id);
           container.append(modBtn);
         }
       })
@@ -345,7 +345,7 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     const createBotButton = document.createElement("button");
     createBotButton.innerText = "Load Character";
     createBotButton.onclick = function() {
-        createBot(charID);
+        createBot(character.id);
     };
     detailsPanelMadeBy.appendChild(createBotButton);
 
@@ -354,9 +354,9 @@ function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
     madeByDiv.classList.add("madeBy");
     madeByDiv.id = "madeBy";
     madeByDiv.innerHTML = `
-      <a href="profile.html?ID=${userID}&username=${encodeURIComponent(username)}" style="text-decoration: none;display: flex;color: inherit;align-items: anchor-center;">
-        <p style="margin: 0 10px;">Uploaded by <strong>${username}</strong></p>
-        <img src="https://cdn.discordapp.com/avatars/${userID}/${avatar}.png"
+      <a href="profile.html?ID=${character.userID}&username=${encodeURIComponent(character.username)}" style="text-decoration: none;display: flex;color: inherit;align-items: anchor-center;">
+        <p style="margin: 0 10px;">Uploaded by <strong>${character.username}</strong></p>
+        <img src="https://cdn.discordapp.com/avatars/${character.userID}/${character.avatar}.png"
              alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
       </a>
     `;
