@@ -100,7 +100,7 @@ function buildCardHTML(character, filters) {
       <h3>${character.char_name}</h3>
       ${metrics}
       ${tags}
-      ${buttons}
+      ${buttons || ''}
     </div>
   `;
 }
@@ -338,7 +338,7 @@ function showCharacterDetails(character) {
 
     // Ensure tags is a valid array before looping
     if (Array.isArray(character.tags)) {
-        tags.forEach(tag => {
+        character.tags.forEach(tag => {
             let tagElement = document.createElement("span");
             tagElement.classList.add("tag");
             tagElement.textContent = tag;
