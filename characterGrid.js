@@ -127,54 +127,65 @@ function buildTagsHTML(tags = []) {
 
 function buildButtonsHTML(character, filters) {
   if (filters.reviewMode) {
-        return `
+    return `
       <div class="card-actions">
         <button class="review-btn" aria-label="Review character">Review</button>
       </div>
     `;
   }
+  
   if (!filters.showDetails) {
+    const needsAttention = character.review_status === "request_changes" ? 'attention' : '';
     return `
       <div class="card-actions">
-        <button class="edit-btn" aria-label="Edit character">Edit</button>
+        <button class="edit-btn ${needsAttention}" aria-label="Edit character">Edit</button>
         <button class="delete-btn" aria-label="Delete character">Delete</button>
       </div>
     `;
-  } else {
-    return
   }
+  
+  return ''; // Explicit return for empty case
 }
 
 function addCardInteractions(card, character, filters) {
+  // Click handler for card
   if (filters.showDetails) {
-    // Add click handler to the entire card
     card.addEventListener('click', (event) => {
-      // Ensure we don't trigger this when clicking buttons
       if (!event.target.closest('button')) {
         showCharacterDetails(character);
       }
     });
-  } else {
-    // Keep existing button handlers
-    if (!filters.reviewMode) {
-      card.querySelector('.delete-btn').addEventListener('click', (e) => {
+  }
+
+  // Always handle review mode buttons regardless of showDetails
+  if (filters.reviewMode) {
+    const reviewBtn = card.querySelector('.review-btn');
+    if (filters.accessLevel === "admin" || filters.accessLevel === "moderator") {
+      reviewBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        deleteCharacter(character.id);
-      });
-      card.querySelector('.edit-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        editCharacter(character.id);
-        if (character.review_status === "request_changes") {
-          card.querySelector(".edit-btn").classList.add("attention");
-        }
+        reviewCharacter(character.id);
       });
     } else {
-        if (filters.accessLevel === "admin" || filters.accessLevel === "moderator") {
-          card.querySelector(".review-btn").addEventListener("click", () => reviewCharacter(character.id));
-      } else {
-          card.querySelector(".review-btn").innerText = "Character In Review";
-      }
+      reviewBtn.disabled = true;
+      reviewBtn.textContent = "In Review";
     }
+    return; // Exit early after handling review mode
+  }
+
+  // Handle edit/delete buttons only in non-review mode
+  if (!filters.showDetails) {
+    const deleteBtn = card.querySelector('.delete-btn');
+    const editBtn = card.querySelector('.edit-btn');
+    
+    deleteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteCharacter(character.id);
+    });
+
+    editBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      editCharacter(character.id);
+    });
   }
 }
 
