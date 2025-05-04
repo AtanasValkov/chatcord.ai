@@ -150,18 +150,18 @@ function addCardInteractions(card, character, filters) {
         showCharacterDetails(character);
       }
     });
-  }
-
-  // Keep existing button handlers
-  if (!filters.reviewMode) {
-    card.querySelector('.delete-btn').addEventListener('click', (e) => {
-      e.stopPropagation();
-      deleteCharacter(character.id);
-    });
-    card.querySelector('.edit-btn').addEventListener('click', (e) => {
-      e.stopPropagation();
-      editCharacter(character.id);
-    });
+  } else {
+    // Keep existing button handlers
+    if (!filters.reviewMode) {
+      card.querySelector('.delete-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteCharacter(character.id);
+      });
+      card.querySelector('.edit-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        editCharacter(character.id);
+      });
+    }
   }
 }
 
