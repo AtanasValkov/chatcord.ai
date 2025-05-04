@@ -129,7 +129,7 @@ function buildButtonsHTML(character, filters) {
   if (filters.reviewMode) {
     return buildReviewButton(character, filters.accessLevel);
   }
-  
+  return
   return `
     <div class="card-actions">
       <button class="edit-btn" aria-label="Edit character">Edit</button>
