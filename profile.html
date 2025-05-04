@@ -69,68 +69,83 @@
       header.innerHTML = `<span>${username}'s Profile</span>`;
     }
     
-async function loadCharacters(type, accessLevel) {
-  try {
-    const respChars = await fetch('https://chatcord-server.onrender.com/get-characters');
-    const data = await respChars.json();
-
-    const user = JSON.parse(localStorage.getItem('user'));
-    const myUserId = user?.id ?? null;
-
-    let favoriteSet = new Set();
-    if (myUserId) {
-      const respInter = await fetch(
-        `https://chatcord-server.onrender.com/user-interactions/${myUserId}`
-      );
-      const interData = await respInter.json();
-      interData.forEach(({ character_id, interaction_type }) => {
-        if (interaction_type === 'favorite') {
-          // Convert to number if characters' IDs are numbers
-          favoriteSet.add(Number(character_id));
+     async function loadCharacters(type, accessLevel) {
+      try {
+        // 1) Fetch all characters
+        const respChars = await fetch('https://chatcord-server.onrender.com/get-characters');
+        const allCharacters = await respChars.json();
+        
+        console.log('All characters:', allCharacters); // Debug log
+    
+        // 2) Get current user
+        const user = JSON.parse(localStorage.getItem('user'));
+        const myUserId = user?.id ?? null;
+        
+        // 3) Fetch user's favorite interactions if logged in
+        let favoriteCharacterIds = new Set();
+        if (myUserId) {
+          try {
+            const respInter = await fetch(
+              `https://chatcord-server.onrender.com/user-interactions/${myUserId}`
+            );
+            const interactions = await respInter.json();
+            console.log('User interactions:', interactions); // Debug log
+            
+            interactions.forEach(({ character_id, interaction_type }) => {
+              if (interaction_type === 'favorite') {
+                // Convert to same type as character IDs (number or string)
+                favoriteCharacterIds.add(Number(character_id)); // or String(character_id)
+              }
+            });
+            console.log('Favorite IDs:', Array.from(favoriteCharacterIds)); // Debug log
+          } catch (error) {
+            console.error('Failed to fetch interactions:', error);
+          }
         }
-      });
+    
+        // 4) Filter characters based on the requested type
+        let charactersToDisplay = allCharacters.filter(character => {
+          // First check review status (skip non-approved unless viewing mine/review)
+          if (type !== 'mine' && type !== 'review' && character.review_status !== 'approved') {
+            return false;
+          }
+    
+          // Then apply type-specific filters
+          switch (type) {
+            case 'mine':
+              return character.userID === myUserId;
+            case 'favorites':
+              return favoriteCharacterIds.has(character.id);
+            case 'review':
+              return character.review_status === 'pending';
+            default: // 'all' or any other case
+              return true;
+          }
+        });
+    
+        // 5) Special sorting for 'mine' view
+        if (type === 'mine') {
+          charactersToDisplay.sort((a, b) => {
+            // Put 'request_changes' first, then others
+            if (a.review_status === 'request_changes' && b.review_status !== 'request_changes') {
+              return -1;
+            }
+            if (b.review_status === 'request_changes' && a.review_status !== 'request_changes') {
+              return 1;
+            }
+            return 0;
+          });
+        }
+    
+        // 6) Render the characters
+        const showFavBadge = (type === 'favorites');
+        populateGrid(charactersToDisplay, [], [], showFavBadge, accessLevel);
+    
+      } catch (error) {
+        console.error("Error loading characters:", error);
+        document.getElementById('characterGrid').innerText = "Failed to load characters. Please try again.";
+      }
     }
-
-    // Filter characters based on the Set
-    const filteredCharacters = data.filter(char => 
-      favoriteSet.has(char.id) // Ensure types match here
-    );
-
-    // 4) Build an array of [id, character] tuples, filtered by `type`
-    let characterArray = Object.entries(data).filter(([id, character]) => {
-      // a) “mine” → only this user’s characters
-      if (type === 'mine') {
-        return character.userID === myUserId;
-      }
-      // b) “favorites” → only those in our favoriteSet
-      if (type === 'favorites') {
-        return favoriteSet.has(id) && character.review_status === 'approved';
-      }
-      // c) “review” → only pending
-      if (type === 'review') {
-        return character.review_status === 'pending';
-      }
-      // d) default → all approved characters
-      return character.review_status === 'approved';
-    });
-
-    // 5) (Optional) Sort “mine” by request_changes status first
-    if (type === 'mine') {
-      characterArray.sort(([, a], [, b]) => {
-        return (a.review_status === 'request_changes' ? -1 : 0)
-             - (b.review_status === 'request_changes' ? -1 : 0);
-      });
-    }
-
-    // 6) Finally, render
-    const showFavBadge = (type === 'favorites');
-    populateGrid(characterArray, [], [], showFavBadge, accessLevel);
-
-  } catch (error) {
-    console.error("Error fetching characters:", error);
-    document.getElementById('characterGrid').innerText = "Failed to load characters.";
-  }
-}
 
     // Close sidebar when clicking on the overlay
     document.getElementById('overlay').addEventListener('click', function() {
