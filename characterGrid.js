@@ -127,7 +127,11 @@ function buildTagsHTML(tags = []) {
 
 function buildButtonsHTML(character, filters) {
   if (filters.reviewMode) {
-    return buildReviewButton(character, filters.accessLevel);
+        return `
+      <div class="card-actions">
+        <button class="review-btn">Review</button>
+      </div>
+    `;
   }
   if (!filters.showDetails) {
     return `
@@ -161,6 +165,12 @@ function addCardInteractions(card, character, filters) {
         e.stopPropagation();
         editCharacter(character.id);
       });
+    } else {
+        if (filters.accessLevel === "admin" || filters.accessLevel === "moderator") {
+          charDiv.querySelector(".review-btn").addEventListener("click", () => reviewCharacter(character.id));
+      } else {
+          charDiv.querySelector(".review-btn").innerText = "Character In Review";
+      }
     }
   }
 }
