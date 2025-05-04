@@ -10,163 +10,189 @@
 <body>
   <div class="profilePage">
     <h1 id="profileHeader">
-      <span class="tab" id="myCharactersTab">My Characters</span>
+      <span class="tab active" id="myCharactersTab">My Characters</span>
       <span class="separator">|</span>
       <span class="tab" id="myFavoritesTab">My Favorites</span>
     </h1>
     <button onclick="window.location.href='index.html';" class="back-btn">Back</button>
     <div id="detailsPanelPlace"></div>
     <div class="container-profile">
-      <div class="character-grid" id="characterGrid">Loading characters...Check back in 1 to 2 minutes.</div>
+      <div class="character-grid" id="characterGrid">Loading characters...</div>
     </div>
   </div>
   <!-- Overlay element for mobile sidebar -->
   <div class="overlay" id="overlay"></div>
   <script type="module">
     import { populateGrid } from './characterGrid.js';
+    
     // Parse the URL parameters
     const params = new URLSearchParams(window.location.search);
     const userId = params.get('ID');
     const username = params.get('username');
-    let characterArray = [];
-    const user = JSON.parse(localStorage.getItem("user"));
+    
+    // Get user data
+    const user = JSON.parse(localStorage.getItem("user")) || {};
     let accessLevel = null;
-    if (user) {
-      const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`);
-      const userData = await userResponse.json();
-      accessLevel = userData.user?.access_level?.toLowerCase();
+    
+    if (user.id) {
+      try {
+        const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`);
+        const userData = await userResponse.json();
+        accessLevel = userData.user?.access_level?.toLowerCase();
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
     }
 
+    // Set up UI based on whether viewing own profile or someone else's
     const header = document.getElementById('profileHeader');
-    
-    // Viewing own profile, add For Review tab if admin/moderator
-    if (!userId && (accessLevel === 'admin' || accessLevel === 'moderator')) {
-      // Create separator element
-      const separator = document.createElement('span');
-      separator.className = 'separator';
-      separator.textContent = '|';
-      // Create the tab element
-      const forReviewTab = document.createElement('span');
-      forReviewTab.className = 'tab';
-      forReviewTab.id = 'forReviewTab';
-      forReviewTab.textContent = 'For Review';
-      
-      // Add click handler directly
-      forReviewTab.addEventListener('click', () => loadCharacters('review', accessLevel));
-      // Set up event listeners for my profile tabs
-      document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine', accessLevel));
-      document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites', accessLevel));
-        // Load 'My Characters' by default for my profile
-      await loadCharacters('review', accessLevel);
-      // Append to header
-      header.appendChild(separator);
-      header.appendChild(forReviewTab);
-    }
-    
     if (userId && username) {
-      // Replace the header content with the user's profile name
-      const header = document.getElementById('profileHeader');
+      // Viewing someone else's profile
       header.innerHTML = `<span>${username}'s Profile</span>`;
+    } else {
+      // Viewing own profile
+      if (accessLevel === 'admin' || accessLevel === 'moderator') {
+        const separator = document.createElement('span');
+        separator.className = 'separator';
+        separator.textContent = '|';
+        
+        const forReviewTab = document.createElement('span');
+        forReviewTab.className = 'tab';
+        forReviewTab.id = 'forReviewTab';
+        forReviewTab.textContent = 'For Review';
+        forReviewTab.addEventListener('click', () => loadCharacters('review', accessLevel));
+        
+        header.appendChild(separator);
+        header.appendChild(forReviewTab);
+      }
     }
+
+    // Tab click handler
+    function handleTabClick(tabElement, type) {
+      // Remove active class from all tabs
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      // Add active class to clicked tab
+      tabElement.classList.add('active');
+      // Load characters
+      loadCharacters(type, accessLevel);
+    }
+
+    // Set up tab event listeners
+    document.getElementById('myCharactersTab').addEventListener('click', () => {
+      handleTabClick(document.getElementById('myCharactersTab'), 'mine');
+    });
     
-     async function loadCharacters(type, accessLevel) {
+    document.getElementById('myFavoritesTab').addEventListener('click', () => {
+      handleTabClick(document.getElementById('myFavoritesTab'), 'favorites');
+    });
+    
+    if (document.getElementById('forReviewTab')) {
+      document.getElementById('forReviewTab').addEventListener('click', () => {
+        handleTabClick(document.getElementById('forReviewTab'), 'review');
+      });
+    }
+
+    // Main character loading function
+    async function loadCharacters(type, accessLevel) {
       try {
+        console.log(`Loading characters of type: ${type}`);
+        document.getElementById('characterGrid').innerHTML = "Loading...";
+        
         // 1) Fetch all characters
         const respChars = await fetch('https://chatcord-server.onrender.com/get-characters');
         const allCharacters = await respChars.json();
         
-        console.log('All characters:', allCharacters); // Debug log
-    
-        // 2) Get current user
-        const user = JSON.parse(localStorage.getItem('user'));
+        // 2) Get current user ID
         const myUserId = user?.id ?? null;
         
         // 3) Fetch user's favorite interactions if logged in
         let favoriteCharacterIds = new Set();
-        if (myUserId) {
+        if (myUserId && (type === 'favorites' || type === 'mine')) {
           try {
             const respInter = await fetch(
               `https://chatcord-server.onrender.com/user-interactions/${myUserId}`
             );
             const interactions = await respInter.json();
-            console.log('User interactions:', interactions); // Debug log
             
             interactions.forEach(({ character_id, interaction_type }) => {
               if (interaction_type === 'favorite') {
-                // Convert to same type as character IDs (number or string)
-                favoriteCharacterIds.add(Number(character_id)); // or String(character_id)
+                // Important: Ensure consistent data types (numbers in this case)
+                favoriteCharacterIds.add(Number(character_id));
               }
             });
-            console.log('Favorite IDs:', Array.from(favoriteCharacterIds)); // Debug log
           } catch (error) {
             console.error('Failed to fetch interactions:', error);
           }
         }
-    
+
         // 4) Filter characters based on the requested type
         let charactersToDisplay = allCharacters.filter(character => {
           // First check review status (skip non-approved unless viewing mine/review)
           if (type !== 'mine' && type !== 'review' && character.review_status !== 'approved') {
             return false;
           }
-    
+
           // Then apply type-specific filters
           switch (type) {
             case 'mine':
               return character.userID === myUserId;
             case 'favorites':
-              return favoriteCharacterIds.has(character.id);
+              return favoriteCharacterIds.has(Number(character.id)); // Ensure type match
             case 'review':
               return character.review_status === 'pending';
-            default: // 'all' or any other case
+            default:
               return true;
           }
         });
-    
+
         // 5) Special sorting for 'mine' view
         if (type === 'mine') {
           charactersToDisplay.sort((a, b) => {
-            // Put 'request_changes' first, then others
-            if (a.review_status === 'request_changes' && b.review_status !== 'request_changes') {
-              return -1;
-            }
-            if (b.review_status === 'request_changes' && a.review_status !== 'request_changes') {
-              return 1;
-            }
+            if (a.review_status === 'request_changes') return -1;
+            if (b.review_status === 'request_changes') return 1;
             return 0;
           });
         }
-    
+
         // 6) Render the characters
         const showFavBadge = (type === 'favorites');
-        populateGrid(charactersToDisplay, [], [], showFavBadge, accessLevel);
-    
+        if (charactersToDisplay.length === 0) {
+          document.getElementById('characterGrid').innerHTML = 
+            type === 'favorites' ? "You haven't favorited any characters yet." :
+            type === 'mine' ? "You haven't created any characters yet." :
+            type === 'review' ? "No characters pending review." :
+            "No characters found.";
+        } else {
+          populateGrid(charactersToDisplay, [], [], showFavBadge, accessLevel);
+        }
+
       } catch (error) {
         console.error("Error loading characters:", error);
         document.getElementById('characterGrid').innerText = "Failed to load characters. Please try again.";
       }
     }
 
+    // Initial load
+    if (userId) {
+      // Viewing someone else's profile
+      await loadCharacters('mine', accessLevel);
+    } else {
+      // Viewing own profile
+      if (accessLevel === 'admin' || accessLevel === 'moderator') {
+        await loadCharacters('review', accessLevel);
+        document.getElementById('forReviewTab').classList.add('active');
+      } else {
+        await loadCharacters('mine', accessLevel);
+        document.getElementById('myCharactersTab').classList.add('active');
+      }
+    }
+
     // Close sidebar when clicking on the overlay
     document.getElementById('overlay').addEventListener('click', function() {
-        document.getElementById('detailsPanel')?.remove();
-        this.classList.remove('active');
+      document.getElementById('detailsPanel')?.remove();
+      this.classList.remove('active');
     });
 
-  if (!userId) {
-    // Set up tab listeners immediately (DOM is already ready in modules)
-    document.getElementById('myCharactersTab').addEventListener('click', () => loadCharacters('mine', ''));
-    document.getElementById('myFavoritesTab').addEventListener('click', () => loadCharacters('favorites', ''));
-    if (accessLevel === 'admin' || accessLevel === 'moderator') {
-      await loadCharacters('review', accessLevel);
-    } else {
-      // Load 'My Characters' by default
-      await loadCharacters('mine', accessLevel);
-    }
-  } else {
-    // Load 'My Characters' by default
-    await loadCharacters('mine', accessLevel);
-  }
   </script>
 </body>
 </html>
