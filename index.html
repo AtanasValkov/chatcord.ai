@@ -398,7 +398,13 @@
                                     return multiplier * diff;
                                 });
                                 // Pass the sorted object to populateGrid
-                                populateGrid(sortedEntries, getIncludeTags(), getExcludeTags(), true);
+                                populateGrid(sortedEntries, {
+                                  showDetails: true,
+                                  reviewMode: false,
+                                  accessLevel: None,
+                                  includeTags:  getIncludeTags(),
+                                  excludeTags: getExcludeTags()
+                                });
                             } catch (error) {
                                 console.error('Error loading characters:', error);
                             }
