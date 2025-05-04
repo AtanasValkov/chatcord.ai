@@ -145,7 +145,7 @@ function addCardInteractions(card, character, filters) {
     });
   }
 
-  if (!filters.reviewMode) {
+  if (filters.reviewMode) {
     card.querySelector('.delete-btn').addEventListener('click', () => 
       deleteCharacter(character.id));
     card.querySelector('.edit-btn').addEventListener('click', () => 
