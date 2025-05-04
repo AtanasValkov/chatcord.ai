@@ -165,14 +165,14 @@ function addCardInteractions(card, character, filters) {
         e.stopPropagation();
         editCharacter(character.id);
         if (character.review_status === "request_changes") {
-          charDiv.querySelector(".edit-btn").classList.add("attention");
+          card.querySelector(".edit-btn").classList.add("attention");
         }
       });
     } else {
         if (filters.accessLevel === "admin" || filters.accessLevel === "moderator") {
-          charDiv.querySelector(".review-btn").addEventListener("click", () => reviewCharacter(character.id));
+          card.querySelector(".review-btn").addEventListener("click", () => reviewCharacter(character.id));
       } else {
-          charDiv.querySelector(".review-btn").innerText = "Character In Review";
+          card.querySelector(".review-btn").innerText = "Character In Review";
       }
     }
   }
