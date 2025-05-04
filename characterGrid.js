@@ -1,95 +1,156 @@
+export function populateGrid(
+  characters = [],
+  filters = {
+    includeTags: [],
+    excludeTags: [],
+    showDetails: true,
+    accessLevel: '',
+    reviewMode: false
+  }
+) {
+  const grid = document.getElementById("characterGrid");
+  if (!grid) {
+    console.error('Grid container not found');
+    return;
+  }
 
-export function populateGrid(characters, includeTags = [], excludeTags = [], showDetailsOnClick, accessLevel = '') {
-    const grid = document.getElementById("characterGrid");
-    grid.innerHTML = ""; // Clear existing content
+  // Clear existing content safely
+  grid.replaceChildren();
 
-    characters.forEach(([id, character]) => {
-        // Block character if any of its tags are in the exclusion list.
-        if (character.tags.some(tag => excludeTags.includes(tag))) {
-            return;
-        }
-        // If any include filters are active, the character must have at least one of those tags.
-        if (includeTags.length > 0 && !character.tags.some(tag => includeTags.includes(tag))) {
-            return;
-        }
-        if (character.review_status === 'pending') {
-            renderCharacterCard(character, showDetailsOnClick, true, accessLevel);
-        } else {
-            renderCharacterCard(character, showDetailsOnClick, false, accessLevel);
-        }
-        });
+  // Validate and normalize input
+  const safeCharacters = Array.isArray(characters) ? characters : [];
+  if (safeCharacters.length === 0) {
+    grid.innerHTML = `<div class="empty-state">No characters to display</div>`;
+    return;
+  }
+
+  // Prepare DOM fragment for batch insertion
+  const fragment = document.createDocumentFragment();
+
+  safeCharacters.forEach(character => {
+    try {
+      if (!isValidCharacter(character)) {
+        console.warn('Skipping invalid character:', character);
+        return;
+      }
+
+      if (shouldSkipCharacter(character, filters)) {
+        return;
+      }
+
+      const card = createCharacterCard(character, filters);
+      fragment.appendChild(card);
+    } catch (error) {
+      console.error('Error rendering character:', error, character);
+    }
+  });
+
+  // Insert all cards at once
+  grid.appendChild(fragment);
 }
 
-async function renderCharacterCard(character, showDetailsOnClick, reviewDisplay, accessLevel) {
-        const grid = document.getElementById("characterGrid");
-        const charDiv = document.createElement("div");
-        charDiv.classList.add("character");
+// Validation utilities
+const REQUIRED_CHARACTER_FIELDS = ['id', 'char_name', 'tags', 'review_status'];
+const isValidCharacter = (char) => 
+  REQUIRED_CHARACTER_FIELDS.every(field => field in char);
 
-        const imageUrl = character.char_url
-    
-        function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+function shouldSkipCharacter(character, filters) {
+  const { includeTags = [], excludeTags = [] } = filters;
+  
+  // Check excluded tags
+  if (excludeTags.length > 0 && 
+      character.tags.some(tag => excludeTags.includes(tag))) {
+    return true;
+  }
 
-        if (!reviewDisplay) {
-            if (showDetailsOnClick) {
-                charDiv.onclick = () => showDetails(
-                    character.id,
-                    character.char_name || "Unknown Character",
-                    character.description || character.world_scenario || "No scenario available.",
-                    imageUrl,
-                    character.tags || [],
-                    character.userID,
-                    character.username,
-                    character.avatar
-                );
-                
-                charDiv.innerHTML = `
-                    <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
-                    <p>${character.char_name || 'Unknown'}</p>
-                    <div>${character.downloads} ⬇  ${character.favorites} ❤️  ${character.likes - character.dislikes} 👍  ${character.comments} 💬</div>
-                    <div class="tags" id="characterTags"></div>
-                `;
-                let characterTags = charDiv.querySelector("#characterTags");
-                const tags = Array.isArray(character.tags) ? character.tags.slice(0, 6) : []; // Limit to 6 tags
-                tags.forEach(tag => {
-                    let tagElement = document.createElement("span");
-                    tagElement.classList.add("tag");
-                    tagElement.textContent = tag;
-                    characterTags.appendChild(tagElement);
-                });
-            } else {
-                charDiv.id = `character-${character.id}`;
-                charDiv.innerHTML = `
-                    <div class="character-card">
-                        ${character.review_status === "request_changes" ? '<span class="feedback-badge">⚠️ Feedback</span>' : ''}
-                        <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
-                        <p>${character.char_name || 'Unknown'}</p>
-                        <div>${character.downloads} ⬇  ${character.favorites} ❤️  ${character.likes - character.dislikes} 👍  ${character.comments} 💬</div>
-                        <button class="edit-btn">Edit</button>
-                        <button class="delete-btn">Delete</button>
-                    </div>
-                `;
-                charDiv.querySelector(".delete-btn").addEventListener("click", () => deleteCharacter(character.id));
-                charDiv.querySelector(".edit-btn").addEventListener("click", () => editCharacter(character.id));
-                if (character.review_status === "request_changes") {
-                    charDiv.querySelector(".edit-btn").classList.add("attention");
-                }
-            }
-        } else {
-                charDiv.id = `character-${character.id}`;
-                charDiv.innerHTML = `
-                    <img class="character-img" src="${imageUrl}" alt="${character.char_name || 'Unknown'}">
-                    <p>${character.char_name || 'Unknown'}</p>
-                    <button class="review-btn">Review</button>
-                `;
-                if (accessLevel === "admin" || accessLevel === "moderator") {
-                    charDiv.querySelector(".review-btn").addEventListener("click", () => reviewCharacter(character.id));
-                } else {
-                    charDiv.querySelector(".review-btn").innerText = "Character In Review";
-                }
-        } 
-        grid.appendChild(charDiv);
+  // Check included tags
+  if (includeTags.length > 0 && 
+      !character.tags.some(tag => includeTags.includes(tag))) {
+    return true;
+  }
+
+  return false;
+}
+
+function createCharacterCard(character, filters) {
+  const card = document.createElement('div');
+  card.className = `character ${filters.reviewMode ? 'review-mode' : ''}`;
+  card.dataset.characterId = character.id;
+  card.innerHTML = buildCardHTML(character, filters);
+
+  addCardInteractions(card, character, filters);
+  return card;
+}
+
+function buildCardHTML(character, filters) {
+  const isPendingReview = character.review_status === 'pending';
+  const hasFeedback = character.review_status === 'request_changes';
+  const metrics = buildMetricsHTML(character);
+  const tags = buildTagsHTML(character.tags);
+  const buttons = buildButtonsHTML(character, filters);
+
+  return `
+    <div class="character-card">
+      ${hasFeedback ? '<span class="feedback-badge">⚠️ Feedback</span>' : ''}
+      <img class="character-img" 
+           src="${character.char_url || 'placeholder.jpg'}" 
+           alt="${character.char_name}"
+           loading="lazy"
+           decoding="async">
+      <h3>${character.char_name}</h3>
+      ${metrics}
+      ${tags}
+      ${buttons}
+    </div>
+  `;
+}
+
+function buildMetricsHTML(character) {
+  return `
+    <div class="character-metrics">
+      <span title="Downloads">${character.downloads} ⬇</span>
+      <span title="Favorites">${character.favorites} ❤️</span>
+      <span title="Rating">${character.likes - character.dislikes} 👍</span>
+      <span title="Comments">${character.comments} 💬</span>
+    </div>
+  `;
+}
+
+function buildTagsHTML(tags = []) {
+  const safeTags = Array.isArray(tags) ? tags.slice(0, 6) : [];
+  return `
+    <div class="tags">
+      ${safeTags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+    </div>
+  `;
+}
+
+function buildButtonsHTML(character, filters) {
+  if (filters.reviewMode) {
+    return buildReviewButton(character, filters.accessLevel);
+  }
+  
+  return `
+    <div class="card-actions">
+      <button class="edit-btn" aria-label="Edit character">Edit</button>
+      <button class="delete-btn" aria-label="Delete character">Delete</button>
+    </div>
+  `;
+}
+
+function addCardInteractions(card, character, filters) {
+  if (filters.showDetails) {
+    card.querySelector('.character-img').addEventListener('click', () => {
+      showCharacterDetails(character);
+    });
+  }
+
+  if (!filters.reviewMode) {
+    card.querySelector('.delete-btn').addEventListener('click', () => 
+      deleteCharacter(character.id));
+    card.querySelector('.edit-btn').addEventListener('click', () => 
+      editCharacter(character.id));
+  }
 }
 
 function showDetails(charID, name, desc, img, tags, userID, username, avatar) {
