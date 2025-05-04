@@ -71,28 +71,30 @@
     
 async function loadCharacters(type, accessLevel) {
   try {
-    // 1) Fetch the full character list
     const respChars = await fetch('https://chatcord-server.onrender.com/get-characters');
     const data = await respChars.json();
 
-    // 2) Determine who the current user is
     const user = JSON.parse(localStorage.getItem('user'));
     const myUserId = user?.id ?? null;
 
-    // 3) If we have a user, fetch their interaction history once
     let favoriteSet = new Set();
     if (myUserId) {
       const respInter = await fetch(
         `https://chatcord-server.onrender.com/user-interactions/${myUserId}`
       );
       const interData = await respInter.json();
-      // Build a set of character_ids where interaction_type === 'favorite'
       interData.forEach(({ character_id, interaction_type }) => {
         if (interaction_type === 'favorite') {
-          favoriteSet.add(character_id);
+          // Convert to number if characters' IDs are numbers
+          favoriteSet.add(Number(character_id));
         }
       });
     }
+
+    // Filter characters based on the Set
+    const filteredCharacters = data.filter(char => 
+      favoriteSet.has(char.id) // Ensure types match here
+    );
 
     // 4) Build an array of [id, character] tuples, filtered by `type`
     let characterArray = Object.entries(data).filter(([id, character]) => {
