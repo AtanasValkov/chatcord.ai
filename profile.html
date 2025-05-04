@@ -154,11 +154,20 @@
   
       const showFavBadge = (type === 'favorites');
       if (charactersToDisplay.length === 0) {
-        // ... existing message logic
+        document.getElementById('characterGrid').innerHTML = 
+           type === 'favorites' ? "You haven't favorited any characters yet." :
+           type === 'mine' ? "You haven't created any characters yet." :
+           type === 'review' ? "No characters pending review." :
+           "No characters found.";
       } else {
-        populateGrid(charactersToDisplay, [], [], showFavBadge, accessLevel);
+        populateGrid(charactersToDisplay, {
+          showDetails: type !== 'mine',
+          reviewMode: type === 'review',
+          accessLevel: accessLevel,
+          includeTags: [],
+          excludeTags: []
+        });
       }
-  
     } catch (error) {
       console.error("Error loading characters:", error);
       document.getElementById('characterGrid').innerText = "Failed to load characters.";
