@@ -97,7 +97,7 @@ function buildCardHTML(character, filters) {
            alt="${character.char_name}"
            loading="lazy"
            decoding="async">
-      <h3>${character.char_name}</h3>
+      <h2>${character.char_name}</h2>
       ${metrics}
       ${tags}
       ${buttons || ''}
@@ -129,7 +129,7 @@ function buildButtonsHTML(character, filters) {
   if (filters.reviewMode) {
         return `
       <div class="card-actions">
-        <button class="review-btn">Review</button>
+        <button class="review-btn" aria-label="Review character">Review</button>
       </div>
     `;
   }
@@ -164,6 +164,9 @@ function addCardInteractions(card, character, filters) {
       card.querySelector('.edit-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         editCharacter(character.id);
+        if (character.review_status === "request_changes") {
+          charDiv.querySelector(".edit-btn").classList.add("attention");
+        }
       });
     } else {
         if (filters.accessLevel === "admin" || filters.accessLevel === "moderator") {
