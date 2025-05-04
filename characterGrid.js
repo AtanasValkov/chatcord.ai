@@ -136,6 +136,8 @@ function buildButtonsHTML(character, filters) {
         <button class="delete-btn" aria-label="Delete character">Delete</button>
       </div>
     `;
+  } else {
+    return
   }
 }
 
