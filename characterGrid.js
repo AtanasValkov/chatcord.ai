@@ -129,13 +129,14 @@ function buildButtonsHTML(character, filters) {
   if (filters.reviewMode) {
     return buildReviewButton(character, filters.accessLevel);
   }
-  return
-  return `
-    <div class="card-actions">
-      <button class="edit-btn" aria-label="Edit character">Edit</button>
-      <button class="delete-btn" aria-label="Delete character">Delete</button>
-    </div>
-  `;
+  if (!filters.showDetails) {
+    return `
+      <div class="card-actions">
+        <button class="edit-btn" aria-label="Edit character">Edit</button>
+        <button class="delete-btn" aria-label="Delete character">Delete</button>
+      </div>
+    `;
+  }
 }
 
 function addCardInteractions(card, character, filters) {
