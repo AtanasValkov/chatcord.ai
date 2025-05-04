@@ -141,16 +141,25 @@ function buildButtonsHTML(character, filters) {
 
 function addCardInteractions(card, character, filters) {
   if (filters.showDetails) {
-    card.querySelector('.character-img').addEventListener('click', () => {
-      showCharacterDetails(character);
+    // Add click handler to the entire card
+    card.addEventListener('click', (event) => {
+      // Ensure we don't trigger this when clicking buttons
+      if (!event.target.closest('button')) {
+        showCharacterDetails(character);
+      }
     });
   }
 
-  if (filters.reviewMode) {
-    card.querySelector('.delete-btn').addEventListener('click', () => 
-      deleteCharacter(character.id));
-    card.querySelector('.edit-btn').addEventListener('click', () => 
-      editCharacter(character.id));
+  // Keep existing button handlers
+  if (!filters.reviewMode) {
+    card.querySelector('.delete-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteCharacter(character.id);
+    });
+    card.querySelector('.edit-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      editCharacter(character.id);
+    });
   }
 }
 
@@ -316,7 +325,7 @@ function showCharacterDetails(character) {
     // Create description element
     const characterDesc = document.createElement("p");
     characterDesc.id = "characterDesc";
-    characterDesc.innerText = desc || "No description available.";
+    characterDesc.innerText = character.description || "No description available.";
     detailsPanel.appendChild(characterDesc);
 
     // Create tag container
@@ -326,7 +335,7 @@ function showCharacterDetails(character) {
     detailsPanel.appendChild(tagContainer);
 
     // Ensure tags is a valid array before looping
-    if (Array.isArray(tags)) {
+    if (Array.isArray(character.tags)) {
         tags.forEach(tag => {
             let tagElement = document.createElement("span");
             tagElement.classList.add("tag");
@@ -334,7 +343,7 @@ function showCharacterDetails(character) {
             tagContainer.appendChild(tagElement);
         });
     } else {
-        console.warn("Tags is missing or not an array:", tags);
+        console.warn("Tags is missing or not an array:", character.tags);
     }
     // Create details panel madeBy container
     const detailsPanelMadeBy = document.createElement("div");
