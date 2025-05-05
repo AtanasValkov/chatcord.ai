@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - ChatCord</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .error-box {
+            background-color: #2d2d2d;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        code {
+            background-color: #3d3d3d;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+        a {
+            color: #7289da;
+            text-decoration: none;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-box">
+        <h1>⚠️ Oops! Something went wrong</h1>
+        <p id="error-message">Loading error details...</p>
+        <a href="/">← Return to ChatCord</a>
+    </div>
+
+    <script>
+        // Parse URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const message = params.get('message') || 'Unknown error occurred';
+        const errorCode = params.get('code');
+
+        // Display error information
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.innerHTML = `
+            ${message.replace(/_/g, ' ')} 
+            ${errorCode ? `<br><code>Error code: ${errorCode}</code>` : ''}
+        `;
+    </script>
+</body>
+</html>
