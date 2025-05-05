@@ -162,13 +162,14 @@
                         
                                 if (userId && sessionToken) {
                                     // User is logged in via cookies
-                                    const userResponse = await fetch(`https://chatcord-server.onrender.com/user/${userId}`, {
+                                    const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${userId}`, {
                                         method: 'GET',
                                         credentials: 'include'
                                     });
-                        
+                                                            
                                     if (userResponse.ok) {
-                                        const user = await userResponse.json();
+                                        const responseData = await userResponse.json();
+                                        const user = responseData.user;
                                         updateUserInterface(user);
                                         
                                         // Handle OpenRouter callback if code exists
