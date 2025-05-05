@@ -148,9 +148,9 @@
                     <script type="module">
                         import { populateGrid, fetchGuilds } from './characterGrid.js';
 
-                        async function verifyUser() {
+                         async function verifyUser() {
                             try {
-                                // Check for existing cookies
+                                // Check cookies first
                                 const cookies = document.cookie.split(';').reduce((acc, cookie) => {
                                     const [name, value] = cookie.trim().split('=');
                                     acc[name] = decodeURIComponent(value);
@@ -162,40 +162,25 @@
                         
                                 if (userId && sessionToken) {
                                     // User is logged in via cookies
-                                    const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${userId}`, {
-                                        method: 'GET',
-                                        credentials: 'include'
-                                    });
-                                                            
+                                    const userResponse = await fetch(
+                                        `https://chatcord-server.onrender.com/get-user/${userId}`,
+                                        {
+                                            method: 'GET',
+                                            credentials: 'include' // Send cookies
+                                        }
+                                    );
+                        
                                     if (userResponse.ok) {
                                         const responseData = await userResponse.json();
                                         const user = responseData.user;
                                         updateUserInterface(user);
-                                        
-                                        // Handle OpenRouter callback if code exists
-                                        const urlParams = new URLSearchParams(window.location.search);
-                                        const code = urlParams.get('code');
-                                        
-                                        if (code) {
-                                            handleOpenRouterCode(code, userId);
-                                            window.history.replaceState({}, document.title, window.location.pathname);
-                                        }
-                        
                                         loadSettings();
                                     } else {
                                         handleLogout();
                                     }
                                 } else {
-                                    // Handle Discord OAuth callback if code exists
-                                    const urlParams = new URLSearchParams(window.location.search);
-                                    const code = urlParams.get('code');
-                                    
-                                    if (code) {
-                                        await handleDiscordAuth(code);
-                                        window.history.replaceState({}, document.title, window.location.pathname);
-                                    } else {
-                                        document.getElementById("settingsButton").remove();
-                                    }
+                                    // No valid session - show login state
+                                    document.getElementById("settingsButton").remove();
                                 }
                             } catch (error) {
                                 console.error('Auth error:', error);
