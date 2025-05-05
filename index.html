@@ -148,97 +148,112 @@
                     <script type="module">
                         import { populateGrid, fetchGuilds } from './characterGrid.js';
 
-                         async function verifyUser() {
-                            try {
-                                // Check cookies first
-                                const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-                                    const [name, value] = cookie.trim().split('=');
-                                    acc[name] = decodeURIComponent(value);
-                                    return acc;
-                                }, {});
-                        
-                                const userId = cookies.user_id;
-                                const sessionToken = cookies.session_token;
-                        
-                                if (userId && sessionToken) {
-                                    // User is logged in via cookies
-                                    const userResponse = await fetch(
-                                        `https://chatcord-server.onrender.com/get-user/${userId}`,
-                                        {
-                                            method: 'GET',
-                                            credentials: 'include' // Send cookies
-                                        }
-                                    );
-                        
-                                    if (userResponse.ok) {
-                                        const responseData = await userResponse.json();
-                                        const user = responseData.user;
-                                        updateUserInterface(user);
-                                        loadSettings();
-                                    } else {
-                                        handleLogout();
-                                    }
-                                } else {
-                                    // No valid session - show login state
-                                    document.getElementById("settingsButton").remove();
+                        async function verifyUser() {
+                            // Extract 'code' from the URL
+                            const urlParams = new URLSearchParams(window.location.search);
+                            const code = urlParams.get("code");
+                            const user = JSON.parse(localStorage.getItem("user"));            
+                            //const provider = urlParams.get("provider");
+                            if (user) {
+                               let endpoint = "";
+                            
+                               if (code) {
+                                   endpoint = `https://chatcord-server.onrender.com/openrouter-callback?code=${code}&user_id=${user.id}`;
+                               }
+                            
+                                if (endpoint) {
+                                    fetch(endpoint, {
+                                        method: "GET",
+                                        mode: "cors",
+                                        credentials: "include"
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        // Get the message from the response data
+                                        const message = data.message || "API key updated successfully";
+                                        // Display the message in the message div
+                                        document.getElementById("openrouterKeyMessage").textContent = message;
+                                    })
+                                    .catch(error => {
+                                        console.error("Auth error:", error);
+                                        // Display an error message in the message div
+                                        document.getElementById("openrouterKeyMessage").textContent = "An error occurred while updating the API key.";
+                                    });
                                 }
-                            } catch (error) {
-                                console.error('Auth error:', error);
-                                document.getElementById("openrouterKeyMessage").textContent = "Authentication error occurred";
-                            }
-                        }
-                        
-                        async function handleDiscordAuth(code) {
-                            const response = await fetch(`https://chatcord-server.onrender.com/callback?code=${code}`, {
-                                method: 'GET',
-                                credentials: 'include'
-                            });
+
+                                document.getElementById("loginButton").textContent = "Logout";
+                                document.getElementById("loginButton").href = "#";
+                                document.getElementById("loginButton").onclick = logout;
                             
-                            if (!response.ok) {
-                                window.location.href = '/error.html?message=auth_failed';
-                                return;
-                            }
+                                const profileButton = document.getElementById("profileButton");
+                                profileButton.innerHTML = ""; // Clear previous content
                             
-                            // Reload to pick up new cookies
-                            window.location.reload();
-                        }
-                        
-                        function handleOpenRouterCode(code, userId) {
-                            fetch(`https://chatcord-server.onrender.com/openrouter-callback?code=${code}&user_id=${userId}`, {
-                                method: "GET",
-                                credentials: "include"
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                document.getElementById("openrouterKeyMessage").textContent = 
-                                    data.message || "API key updated successfully";
-                            })
-                            .catch(error => {
-                                console.error("OpenRouter error:", error);
-                                document.getElementById("openrouterKeyMessage").textContent = 
-                                    "Error updating API key";
-                            });
-                        }
-                        
-                        function updateUserInterface(user) {
-                            document.getElementById("loginButton").textContent = "Logout";
-                            document.getElementById("loginButton").href = "#";
-                            document.getElementById("loginButton").onclick = logout;
-                        
-                            const profileButton = document.getElementById("profileButton");
-                            profileButton.innerHTML = `
-                                <span>${user.username}</span>
-                                <img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png" 
-                                     alt="Avatar" 
-                                     class="user-avatar">
-                            `;
-                        }
-                        
-                        function handleLogout() {
-                            // Clear cookies by setting expiration to past date
-                            document.cookie = "user_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.chatcord.win;";
-                            document.cookie = "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.chatcord.win;";
-                            window.location.reload();
+                                // Create a span for the username
+                                const usernameSpan = document.createElement("span");
+                                usernameSpan.textContent = user.username;
+                            
+                                // Create an avatar image
+                                const avatarIcon = document.createElement("img");
+                                avatarIcon.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+                                avatarIcon.alt = "Avatar";
+                            
+                                // Append both elements to the profile button
+                                profileButton.appendChild(usernameSpan);
+                                profileButton.appendChild(avatarIcon);
+
+                                // Load Settings
+                                loadSettings();
+                                if (code) {  
+                                    window.history.replaceState({}, document.title, "index.html");
+                                }
+                                
+                            }
+                            else if (code) {
+                                // Send 'code' to Flask backend
+                                fetch("https://chatcord-server.onrender.com/callback?code=" + code, {
+                                    method: "GET",
+                                    mode: "cors",
+                                    credentials: "include"  // If using Flask sessions
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log("User data:", data);
+                                    if (data.user) {
+                                        // Store user data in localStorage
+                                        localStorage.setItem("user", JSON.stringify(data.user));
+                                        loadSettings();
+                                        window.history.replaceState({}, document.title, "index.html");
+                                        const user = JSON.parse(localStorage.getItem("user"));
+                                        if (user) {
+                                            document.getElementById("loginButton").textContent = "Logout";
+                                            document.getElementById("loginButton").href = "#";
+                                            document.getElementById("loginButton").onclick = logout;
+                                        
+                                            const profileButton = document.getElementById("profileButton");
+                                            profileButton.innerHTML = ""; // Clear previous content
+                                        
+                                            // Create a span for the username
+                                            const usernameSpan = document.createElement("span");
+                                            usernameSpan.textContent = user.username;
+                                        
+                                            // Create an avatar image
+                                            const avatarIcon = document.createElement("img");
+                                            avatarIcon.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+                                            avatarIcon.alt = "Avatar";
+                                        
+                                            // Append both elements to the profile button
+                                            profileButton.appendChild(usernameSpan);
+                                            profileButton.appendChild(avatarIcon);
+                                        }
+                                    }
+                                })
+
+                                .catch(error => console.error("Error:", error));
+                            }
+                            // User not logged in
+                            else {
+                                document.getElementById("settingsButton").remove();
+                            }
                         }
                         
                         async function loadTags() {
