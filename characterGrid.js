@@ -688,7 +688,7 @@ function promptToAddBot(guildId) {
 export async function fetchGuilds(userId, forceRefresh = false) {
     const url = `https://chatcord-server.onrender.com/user/${userId}/guilds${forceRefresh ? '?force_refresh=true' : ''}`;
     const response = await fetch(url);
-    if (!response.ok) throw new Error("Failed to fetch guilds");
+    if (!response.ok) throw new Error("Log out and back in!");
     const data = await response.json();
     return data.guilds;
 }
