@@ -519,6 +519,20 @@ async function onSubmit(mode, e) {
     tags.add('Review');
   }
 
+  // === CHECK FOR CONFLICTING TAGS ===
+  if (tags.has('SFW') && tags.has('NSFW')) {
+      // Re-enable form controls immediately
+      form.querySelectorAll('input, button, select, textarea').forEach(el => el.disabled = false);
+      
+      // Reset submit button text
+      if (submitBtn) {
+          submitBtn.textContent = mode === 'edit' ? 'Edit Character' : 'Create Character';
+      }
+      
+      alert('Error: Character cannot have both SFW and NSFW tags. Please remove one.');
+      return; // Abort submission
+  }
+
   // Build payload
   const payload = {
     char_name: document.getElementById('characterName').value,
