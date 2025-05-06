@@ -425,7 +425,7 @@ function deleteCharacter(characterId) {
     .then(data => {
       if (data.success) {
         showToast('Character deleted successfully.');
-        document.getElementById(`character-${characterId}`).remove();
+        document.getElementById(`data-character-${characterId}`).remove();
       } else {
         showToast("Error: " + (data.error || "Unknown error"));
       }
