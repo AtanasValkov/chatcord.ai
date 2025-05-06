@@ -440,12 +440,14 @@ function parsePNGMetadata(arrayBuffer) {
         let chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset + 4, 4));
 
         if (chunkType === "tEXt") {
-            let chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkLength);
-            let textData = new TextDecoder().decode(chunkData);
+            // Extract chunk data (Latin-1 encoded)
+            const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkLength);
+            // CORRECTED: Decode as Latin-1
+            const textData = new TextDecoder('latin1').decode(chunkData);
 
             if (textData.startsWith("chara")) {
-                let base64Data = textData.split("\u0000")[1];
-                decodeBase64JSON(base64Data);
+                const base64Data = textData.split("\u0000")[1]; // Split on null byte
+                decodeBase64JSON(base64Data); // Handle Base64 + UTF-8
                 return;
             }
         }
@@ -456,17 +458,15 @@ function parsePNGMetadata(arrayBuffer) {
 // Decode Base64 JSON metadata
 function decodeBase64JSON(base64Str) {
     try {
-        // Decode Base64 to binary string
+        // Decode Base64 to bytes
         const binaryStr = atob(base64Str);
-        
         // Convert to UTF-8
         const bytes = new Uint8Array(binaryStr.length);
         for (let i = 0; i < binaryStr.length; i++) {
             bytes[i] = binaryStr.charCodeAt(i);
         }
         const jsonString = new TextDecoder('utf-8').decode(bytes);
-        
-        const jsonData = JSON.parse(jsonString);
+        jsonData = JSON.parse(jsonString);
 
         document.getElementById("characterName").value = jsonData['name'] || '';
         document.getElementById("charDescription").value = jsonData['personality'] || jsonData['description'] || 'No description available.';
