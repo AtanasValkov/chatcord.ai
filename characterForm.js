@@ -451,15 +451,22 @@ function parsePNGMetadata(arrayBuffer) {
         }
         offset += 12 + chunkLength;
     }
-
-    document.getElementById("charDescription").value = "Not a tavern card.";
 }
 
 // Decode Base64 JSON metadata
 function decodeBase64JSON(base64Str) {
     try {
-        let jsonString = atob(base64Str);
-        jsonData = JSON.parse(jsonString);
+        // Decode Base64 to binary string
+        const binaryStr = atob(base64Str);
+        
+        // Convert to UTF-8
+        const bytes = new Uint8Array(binaryStr.length);
+        for (let i = 0; i < binaryStr.length; i++) {
+            bytes[i] = binaryStr.charCodeAt(i);
+        }
+        const jsonString = new TextDecoder('utf-8').decode(bytes);
+        
+        const jsonData = JSON.parse(jsonString);
 
         document.getElementById("characterName").value = jsonData['name'] || '';
         document.getElementById("charDescription").value = jsonData['personality'] || jsonData['description'] || 'No description available.';
