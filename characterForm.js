@@ -512,11 +512,11 @@ function decodeBase64JSON(base64Str) {
         document.getElementById("charGreeting").value = jsonData['first_mes'] || '';
         document.getElementById("charScenario").value = jsonData['scenario'] || '';
         document.getElementById("charDialogue").value = jsonData['mes_example'] || '';
-        document.getElementById("displayText").value = jsonData['creator_notes'] || '';
+        document.getElementById("displayText").value = jsonData.data['creator_notes'] || '';
         // Clear and populate alternate_greetings
         const altContainer = document.getElementById('alternateGreetingsContainer');
         altContainer.innerHTML = '';
-        if (Array.isArray(jsonData.alternate_greetings)) {
+        if (Array.isArray(jsonData.data.alternate_greetings)) {
           jsonData.alternate_greetings.forEach(text => addAltGreeting(text));
         }
         const tagContainer = document.getElementById("tagContainer");
