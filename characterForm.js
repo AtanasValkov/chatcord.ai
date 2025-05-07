@@ -74,7 +74,7 @@ function disableAllInputs() {
 }
 
 function addFieldCheckboxes() {
-  const fieldIds = ['previewImage', 'characterName', 'charDescription', 'charGreeting', 'charScenario', 'charDialogue', 'displayText', 'sfwSelect', 'tagContainer'];
+  const fieldIds = ['previewImage', 'characterName', 'charDescription', 'charGreeting', 'charScenario', 'alternateGreetingsContainer', 'charDialogue', 'displayText', 'sfwSelect', 'tagContainer'];
   fieldIds.forEach(id => {
     const field = document.getElementById(id);
     if (field) {
@@ -106,6 +106,12 @@ async function populateFields(character, mode) {
   authorID = character.userID;
   let authorName = character.username;
   let authorIcon = character.avatar;
+  // Clear and populate alternate_greetings
+  const altContainer = document.getElementById('alternateGreetingsContainer');
+  altContainer.innerHTML = '';
+  if (Array.isArray(character.alternate_greetings)) {
+    character.alternate_greetings.forEach(text => addAltGreeting(text));
+  }
   // Populate tags if available
   if(character.tags && Array.isArray(character.tags)) {
    character.tags.forEach(tag => addTag(tag));
