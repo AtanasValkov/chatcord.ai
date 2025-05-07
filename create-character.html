@@ -83,6 +83,28 @@
         .suggestions { position: relative; background: #ff6600; border: 0px solid #ccc; max-height: 150px; overflow-y: auto; width: 200px; }
         .suggestion-item { padding: 5px; cursor: pointer; color: white;}
         .suggestion-item:hover { background: #ff4500; }
+        .alt-greeting-item {
+          display: flex;
+          align-items: flex-start;
+          margin-bottom: 0.5em;
+        }
+        .alt-greeting-item textarea {
+          flex: 1;
+          margin-right: 0.5em;
+        }
+        .alt-greeting-item button {
+          background: #e74c3c;
+          color: white;
+          border: none;
+          padding: 0.4em 0.6em;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        #addAltGreetingBtn {
+          margin-left: 1em;
+          padding: 0.2em 0.6em;
+          cursor: pointer;
+        }
         
     </style>
 </head>
@@ -99,6 +121,11 @@
     <h2>Greeting</h2>
     <textarea id="charGreeting" class="description-input" placeholder="Greeting" cols="40" rows="5" required></textarea>
     <h2>Scenario</h2>
+    <h2>
+    Alternate Greetings
+    <button type="button" id="addAltGreetingBtn">+ Add</button>
+    </h2>
+    <div id="alternateGreetingsContainer"></div>
     <textarea id="charScenario" class="description-input" placeholder="Scenario" cols="40" rows="5"></textarea>
     <h2>Example Dialogue</h2>
     <textarea id="charDialogue" class="description-input" placeholder="Example Dialogue" cols="40" rows="5"></textarea>
