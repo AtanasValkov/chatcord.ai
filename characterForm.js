@@ -359,8 +359,9 @@ function addAltGreeting(value = '', mode = '') {
   textarea.value = value;
   textarea.placeholder = `Alternate Greeting #${container.children.length + 1}`;
 
+  let removeBtn = null;
   if (mode !== 'review') {
-    const removeBtn = document.createElement('button');
+    removeBtn = document.createElement('button');
     removeBtn.type = 'button';
     removeBtn.textContent = '×';
     removeBtn.title = 'Remove';
