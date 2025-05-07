@@ -312,6 +312,8 @@ function setupTagInput() {
   });
 }
 
+document.getElementById('addAltGreetingBtn').addEventListener('click', () => addAltGreeting());
+
 async function fetchTags() {
     try {
         const response = await fetch('https://chatcord-server.onrender.com/get-tags');
@@ -335,6 +337,43 @@ function addTag(tagText) {
 
     tagContainer.appendChild(tag);
 }
+
+// Utility to add a single alternate greeting field
+function addAltGreeting(value = '') {
+  const container = document.getElementById('alternateGreetingsContainer');
+  const wrapper = document.createElement('div');
+  wrapper.className = 'alt-greeting-item';
+
+  const textarea = document.createElement('textarea');
+  textarea.cols = 40;
+  textarea.rows = 2;
+  textarea.value = value;
+  textarea.placeholder = `Alternate Greeting #${container.children.length + 1}`;
+
+  const removeBtn = document.createElement('button');
+  removeBtn.type = 'button';
+  removeBtn.textContent = '×';
+  removeBtn.title = 'Remove';
+  removeBtn.onclick = () => {
+    wrapper.remove();
+    updateAltPlaceholders();
+  };
+
+  wrapper.appendChild(textarea);
+  wrapper.appendChild(removeBtn);
+  container.appendChild(wrapper);
+
+  updateAltPlaceholders();
+}
+
+// Re-label placeholders after add/remove
+function updateAltPlaceholders() {
+  const items = document.querySelectorAll('#alternateGreetingsContainer .alt-greeting-item textarea');
+  items.forEach((ta, idx) => {
+    ta.placeholder = `Alternate Greeting #${idx + 1}`;
+  });
+}
+
 let imageFile;
 function setupImageUpload() {
   document.getElementById("imageUpload").addEventListener("change", function(event) {
@@ -469,11 +508,17 @@ function decodeBase64JSON(base64Str) {
         jsonData = JSON.parse(jsonString);
         console.log(jsonData)
         document.getElementById("characterName").value = jsonData['name'] || '';
-        document.getElementById("charDescription").value = jsonData['personality'] || jsonData['description'] || 'No description available.';
+        document.getElementById("charDescription").value = jsonData['description'] || jsonData['personality'] || 'No description available.';
         document.getElementById("charGreeting").value = jsonData['first_mes'] || '';
         document.getElementById("charScenario").value = jsonData['scenario'] || '';
         document.getElementById("charDialogue").value = jsonData['mes_example'] || '';
-
+        document.getElementById("displayText").value = jsonData['creator_notes'] || '';
+        // Clear and populate alternate_greetings
+        const altContainer = document.getElementById('alternateGreetingsContainer');
+        altContainer.innerHTML = '';
+        if (Array.isArray(jsonData.alternate_greetings)) {
+          jsonData.alternate_greetings.forEach(text => addAltGreeting(text));
+        }
         const tagContainer = document.getElementById("tagContainer");
         tagContainer.innerHTML = '';
 
@@ -513,6 +558,11 @@ async function onSubmit(mode, e) {
       .map(tag => tag.textContent.trim())
   );
 
+ const altItems = document.querySelectorAll('#alternateGreetingsContainer .alt-greeting-item textarea');
+    const alternates = Array.from(altItems)
+      .map(ta => ta.value.trim())
+      .filter(val => val !== '');
+
   const gender = document.getElementById('genderSelect').value;
   const rating = document.getElementById('sfwSelect').value;
   if (gender) tags.add(gender);
@@ -545,6 +595,7 @@ async function onSubmit(mode, e) {
     char_name: document.getElementById('characterName').value,
     char_persona: document.getElementById('charDescription').value,
     char_greeting: document.getElementById('charGreeting').value,
+    alternate_greetings: alternates,
     world_scenario: document.getElementById('charScenario').value,
     example_dialogue: document.getElementById('charDialogue').value,
     description: document.getElementById('displayText').value,
