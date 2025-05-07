@@ -517,7 +517,7 @@ function decodeBase64JSON(base64Str) {
         const altContainer = document.getElementById('alternateGreetingsContainer');
         altContainer.innerHTML = '';
         if (Array.isArray(jsonData.data.alternate_greetings)) {
-          jsonData.alternate_greetings.forEach(text => addAltGreeting(text));
+          jsonData.data.alternate_greetings.forEach(text => addAltGreeting(text));
         }
         const tagContainer = document.getElementById("tagContainer");
         tagContainer.innerHTML = '';
