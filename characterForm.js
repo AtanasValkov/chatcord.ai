@@ -350,7 +350,7 @@ function addAltGreeting(value = '', mode = '') {
   const container = document.getElementById('alternateGreetingsContainer');
   const wrapper = document.createElement('div');
   wrapper.className = 'alt-greeting-item';
-  wrapper.background = "black";
+  wrapper.style.background = "black";
   
   const textarea = document.createElement('textarea');
   textarea.classList.add("description-input");
