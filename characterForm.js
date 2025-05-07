@@ -467,7 +467,7 @@ function decodeBase64JSON(base64Str) {
         }
         const jsonString = new TextDecoder('utf-8').decode(bytes);
         jsonData = JSON.parse(jsonString);
-        print(jsonData)
+        console.log(jsonData)
         document.getElementById("characterName").value = jsonData['name'] || '';
         document.getElementById("charDescription").value = jsonData['personality'] || jsonData['description'] || 'No description available.';
         document.getElementById("charGreeting").value = jsonData['first_mes'] || '';
