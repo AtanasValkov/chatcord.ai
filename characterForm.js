@@ -106,9 +106,7 @@ async function populateFields(character, mode) {
   authorID = character.userID;
   let authorName = character.username;
   let authorIcon = character.avatar;
-  // Clear and populate alternate_greetings
-  const altContainer = document.getElementById('alternateGreetingsContainer');
-  altContainer.innerHTML = '';
+  // Populate alternate_greetings if available
   if (Array.isArray(character.alternate_greetings)) {
     character.alternate_greetings.forEach(text => addAltGreeting(text));
   }
