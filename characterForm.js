@@ -11,10 +11,10 @@ export async function initCharacterForm({ mode, characterId }) {
   }
   
   setupTagInput();
-  setupAlternateGreeting();
   setupImageUpload();
 
   if (mode === 'create' || mode === 'edit') {
+    setupAlternateGreeting();
     document.getElementById('characterForm')
     .addEventListener('submit', e => onSubmit(mode, e));
   } else if (mode === 'review') {
