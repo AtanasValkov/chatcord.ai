@@ -350,7 +350,7 @@ function addAltGreeting(value = '') {
 
   const textarea = document.createElement('textarea');
   textarea.cols = 40;
-  textarea.rows = 2;
+  textarea.rows = 4;
   textarea.value = value;
   textarea.placeholder = `Alternate Greeting #${container.children.length + 1}`;
 
