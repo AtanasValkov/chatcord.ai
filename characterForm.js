@@ -109,7 +109,7 @@ async function populateFields(character, mode) {
   let authorIcon = character.avatar;
   // Populate alternate_greetings if available
   if (Array.isArray(character.alternate_greetings)) {
-    character.alternate_greetings.forEach(text => addAltGreeting(text));
+    character.alternate_greetings.forEach(text => addAltGreeting(text, mode));
   }
   // Populate tags if available
   if(character.tags && Array.isArray(character.tags)) {
@@ -346,7 +346,7 @@ function addTag(tagText) {
 }
 
 // Utility to add a single alternate greeting field
-function addAltGreeting(value = '') {
+function addAltGreeting(value = '', mode = '') {
   const container = document.getElementById('alternateGreetingsContainer');
   const wrapper = document.createElement('div');
   wrapper.className = 'alt-greeting-item';
@@ -357,17 +357,21 @@ function addAltGreeting(value = '') {
   textarea.value = value;
   textarea.placeholder = `Alternate Greeting #${container.children.length + 1}`;
 
-  const removeBtn = document.createElement('button');
-  removeBtn.type = 'button';
-  removeBtn.textContent = '×';
-  removeBtn.title = 'Remove';
-  removeBtn.onclick = () => {
-    wrapper.remove();
-    updateAltPlaceholders();
-  };
+  if (mode !== 'review') {
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.textContent = '×';
+    removeBtn.title = 'Remove';
+    removeBtn.onclick = () => {
+      wrapper.remove();
+      updateAltPlaceholders();
+    };
+  }
 
   wrapper.appendChild(textarea);
-  wrapper.appendChild(removeBtn);
+  if (mode !== 'review') {
+    wrapper.appendChild(removeBtn);
+  }
   container.appendChild(wrapper);
 
   updateAltPlaceholders();
