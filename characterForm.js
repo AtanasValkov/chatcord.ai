@@ -11,6 +11,7 @@ export async function initCharacterForm({ mode, characterId }) {
   }
   
   setupTagInput();
+  setupAlternateGreeting();
   setupImageUpload();
 
   if (mode === 'create' || mode === 'edit') {
@@ -316,7 +317,9 @@ function setupTagInput() {
   });
 }
 
-document.getElementById('addAltGreetingBtn').addEventListener('click', () => addAltGreeting());
+function setupAlternateGreeting() {
+  document.getElementById('addAltGreetingBtn').addEventListener('click', () => addAltGreeting());
+}
 
 async function fetchTags() {
     try {
