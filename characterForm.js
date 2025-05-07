@@ -355,6 +355,7 @@ function addAltGreeting(value = '', mode = '') {
   textarea.classList.add("description-input");
   textarea.cols = 40;
   textarea.rows = 5;
+  textarea.background = "black";
   textarea.value = value;
   textarea.placeholder = `Alternate Greeting #${container.children.length + 1}`;
 
