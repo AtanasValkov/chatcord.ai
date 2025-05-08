@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorldBooks Manager</title>
+  <!-- Add your CSS here or link to an external stylesheet -->
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    header { margin-bottom: 20px; }
+    .container { display: flex; gap: 40px; }
+    .panel { flex: 1; border: 1px solid #ccc; border-radius: 8px; padding: 16px; }
+    .panel h2 { margin-top: 0; }
+    ul { list-style: none; padding: 0; }
+    li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+    li:last-child { border-bottom: none; }
+    .btn { cursor: pointer; padding: 4px 8px; border: 1px solid #007bff; background: #007bff; color: white; border-radius: 4px; }
+    .btn.danger { background: #dc3545; border-color: #dc3545; }
+    form { display: flex; flex-direction: column; gap: 8px; }
+    label { font-weight: bold; }
+    input[type="text"], textarea, select { padding: 6px; border-radius: 4px; border: 1px solid #ccc; width: 100%; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>WorldBooks Manager</h1>
+  </header>
+  <div class="container">
+    <!-- List of existing worldbooks -->
+    <section class="panel" id="list-panel">
+      <h2>WorldBooks</h2>
+      <ul id="worldbook-list">
+        <!-- items will be populated here -->
+      </ul>
+      <button class="btn" id="btn-show-create">+ Add New</button>
+    </section>
+
+    <!-- Create / Edit Form -->
+    <section class="panel" id="form-panel" style="display: none;">
+      <h2 id="form-title">Create WorldBook</h2>
+      <form id="worldbook-form">
+        <input type="hidden" id="wb-id" />
+        <div>
+          <label for="wb-keywords">Keywords (comma-separated)</label>
+          <input type="text" id="wb-keywords" placeholder="e.g. drink, water, thirsty, cola" required />
+        </div>
+        <div>
+          <label for="wb-context">Context</label>
+          <textarea id="wb-context" rows="3" placeholder="e.g. {{user}}'s favorite drink is cola" required></textarea>
+        </div>
+        <div>
+          <label for="wb-assign">Assign to Character</label>
+          <select id="wb-assign">
+            <option value="">-- select character --</option>
+            <!-- dynamic character list -->
+          </select>
+        </div>
+        <div style="margin-top: 12px; display: flex; gap: 8px;">
+          <button type="submit" class="btn" id="btn-save">Save</button>
+          <button type="button" class="btn danger" id="btn-cancel">Cancel</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- JS logic -->
+  <script>
+    // DOM Elements
+    const listPanel = document.getElementById('list-panel');
+    const formPanel = document.getElementById('form-panel');
+    const worldbookList = document.getElementById('worldbook-list');
+    const btnShowCreate = document.getElementById('btn-show-create');
+    const btnCancel = document.getElementById('btn-cancel');
+    const worldbookForm = document.getElementById('worldbook-form');
+
+    // Placeholder data
+    let worldbooks = [];
+    let characters = [
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' }
+    ];
+
+    // Initialize list and form
+    function init() {
+      renderList();
+      populateCharacterOptions();
+    }
+
+    // Render list of worldbooks
+    function renderList() {
+      worldbookList.innerHTML = '';
+      worldbooks.forEach(wb => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${wb.context} <em>(${wb.keywords.join(', ')})</em></span>
+          <span>
+            <button class="btn" onclick="editWorldBook(${wb.id})">Edit</button>
+            <button class="btn danger" onclick="deleteWorldBook(${wb.id})">Delete</button>
+          </span>
+        `;
+        worldbookList.appendChild(li);
+      });
+    }
+
+    // Populate character dropdown
+    function populateCharacterOptions() {
+      const select = document.getElementById('wb-assign');
+      characters.forEach(ch => {
+        const opt = document.createElement('option');
+        opt.value = ch.id;
+        opt.textContent = ch.name;
+        select.appendChild(opt);
+      });
+    }
+
+    // Show create form
+    btnShowCreate.addEventListener('click', () => {
+      formPanel.style.display = 'block';
+      listPanel.style.display = 'none';
+      document.getElementById('form-title').textContent = 'Create WorldBook';
+      worldbookForm.reset();
+    });
+
+    // Cancel form
+    btnCancel.addEventListener('click', () => {
+      formPanel.style.display = 'none';
+      listPanel.style.display = 'block';
+    });
+
+    // Handle form submission
+    worldbookForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const idField = document.getElementById('wb-id').value;
+      const keywords = document.getElementById('wb-keywords').value.split(',').map(s => s.trim());
+      const context = document.getElementById('wb-context').value;
+      const assignId = document.getElementById('wb-assign').value;
+
+      if (idField) {
+        // TODO: update existing worldbook
+      } else {
+        // create new
+        const newWb = {
+          id: Date.now(),
+          keywords,
+          context,
+          characterId: assignId || null
+        };
+        worldbooks.push(newWb);
+        // TODO: send to server
+      }
+
+      btnCancel.click();
+      renderList();
+    });
+
+    // Edit worldbook
+    function editWorldBook(id) {
+      const wb = worldbooks.find(w => w.id === id);
+      if (!wb) return;
+      formPanel.style.display = 'block';
+      listPanel.style.display = 'none';
+      document.getElementById('form-title').textContent = 'Edit WorldBook';
+      document.getElementById('wb-id').value = wb.id;
+      document.getElementById('wb-keywords').value = wb.keywords.join(', ');
+      document.getElementById('wb-context').value = wb.context;
+      document.getElementById('wb-assign').value = wb.characterId;
+    }
+
+    // Delete worldbook
+    function deleteWorldBook(id) {
+      worldbooks = worldbooks.filter(w => w.id !== id);
+      // TODO: send delete request to server
+      renderList();
+    }
+
+    // Kickoff
+    init();
+  </script>
+</body>
+</html>
