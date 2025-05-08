@@ -10,7 +10,7 @@
     body { font-family: Arial, sans-serif; margin: 20px; color: white; background-color: #1a1a2e; }
     header { margin-bottom: 20px; }
     .container { display: flex; gap: 40px; }
-    .panel { flex: 1; border: 1px solid #ccc; border-radius: 8px; padding: 16px; }
+    .panel { border: 1px solid #ccc; border-radius: 8px; padding: 16px; }
     .panel h2 { margin-top: 0; }
     ul { list-style: none; padding: 0; }
     li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
@@ -41,15 +41,15 @@
       <h2 id="form-title">Create WorldBook</h2>
       <form id="worldbook-form">
         <input type="hidden" id="wb-id" />
-        <div>
+        <div class="container">
           <label for="wb-keywords">Keywords (comma-separated)</label>
           <input type="text" id="wb-keywords" placeholder="e.g. drink, water, thirsty, cola" required />
         </div>
-        <div>
+        <div class="container">
           <label for="wb-context">Context</label>
           <textarea id="wb-context" rows="3" placeholder="e.g. {{user}}'s favorite drink is cola" required></textarea>
         </div>
-        <div>
+        <div class="container">
           <label for="wb-assign">Assign to Character</label>
           <select id="wb-assign">
             <option value="">-- select character --</option>
