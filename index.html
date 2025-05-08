@@ -17,6 +17,7 @@
         <button class="header-toggle" id="headerToggle">☰</button>
         <nav>
             <a title="Click to go to character creator" id="createCharacterButton" href="#">Create-A-Character</a>
+            <a title="Click to go to character creator" id="worldbooksButton" href="#">Worldbooks</a>
             <a title="Click to go to profile page" id="profileButton" href="#">Guest</a>
             <a title="Click to go to settings page" id="settingsButton" href="#">Settings</a>
             <a href="https://chatcord-server.onrender.com/login" id="loginButton">Login</a>
@@ -434,6 +435,11 @@
                             event.preventDefault(); // Prevent default anchor behavior
                             createCharacter();
                         });
+
+                        document.getElementById("worldbooksButton").addEventListener("click", function (event) {
+                            event.preventDefault(); // Prevent default anchor behavior
+                            worldbooks();
+                        });
                         
                         document.getElementById("profileButton").addEventListener("click", function (event) {
                             event.preventDefault();
@@ -701,6 +707,10 @@
                             else {
                                 alert("Only logged in users can create characters.")
                             }
+                        }
+
+                        function worldbooks() {
+                            window.location.href = "worldbooks.html";
                         }
 
                         function profilePage() {
