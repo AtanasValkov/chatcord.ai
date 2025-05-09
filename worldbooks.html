@@ -48,25 +48,25 @@
           <input type="hidden" id="wb-id" />
         
           <!-- Name -->
-          <div class="container" style="flex-direction: column;">
+          <div class="container" style="flex-direction: column; max-width: 30%;">
             <label for="wb-name">Name</label>
             <input type="text" id="wb-name" placeholder="e.g. Beverage Preferences" required />
           </div>
         
           <!-- Keywords -->
-          <div class="container" style="flex-direction: column; max-width: 300px;">
+          <div class="container" style="flex-direction: column; max-width: 100%;">
             <label for="wb-keywords">Keywords (comma-separated)</label>
             <input type="text" id="wb-keywords" placeholder="e.g. drink, water, thirsty, cola" required />
           </div>
         
           <!-- Context (expanded) -->
-          <div class="container" style="flex-direction: column; flex-grow: 1;">
+          <div class="container" style="flex-direction: column; flex-grow: 1; max-width: 80%;">
             <label for="wb-context">Context</label>
             <textarea id="wb-context" rows="6" placeholder="e.g. {{user}}'s favorite drink is cola" required style="width: 100%;"></textarea>
           </div>
         
           <!-- Character assignment -->
-          <div class="container" style="flex-direction: column; max-width: 300px;">
+          <div class="container" style="flex-direction: column; max-width: 60%;">
             <label for="wb-assign">Assign to Character</label>
             <select id="wb-assign">
               <option value="">-- select character --</option>
