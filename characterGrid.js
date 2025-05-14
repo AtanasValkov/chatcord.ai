@@ -425,7 +425,8 @@ function deleteCharacter(characterId) {
     .then(data => {
       if (data.success) {
         showToast('Character deleted successfully.');
-        document.getElementById(`data-character-${characterId}`).remove();
+        const card = document.querySelector(`[data-character-id="${characterId}"]`);
+        if (card) card.remove();
       } else {
         showToast("Error: " + (data.error || "Unknown error"));
       }
