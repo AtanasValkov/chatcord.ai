@@ -112,36 +112,44 @@
 
     worldbookForm.addEventListener('submit', async event => {
       event.preventDefault();
+    
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user || !user.id) {
+        console.error("User not found in localStorage");
+        return;
+      }
+    
       const id = document.getElementById('wb-id').value;
       const payload = {
         name: document.getElementById('wb-name').value,
         keywords: document.getElementById('wb-keywords').value.split(',').map(s => s.trim()),
         context: document.getElementById('wb-context').value,
-        // user_id will come from auth/session
+        user_id: user.id  // ✅ Inject user_id from localStorage
       };
-
+    
       try {
-        if (id) {
-          // update
-          await fetch(`${API_BASE}/worldbooks/${id}`, {
-            method: 'PUT',
+        const res = await fetch(
+          `${API_BASE}/worldbooks${id ? `/${id}` : ''}`,
+          {
+            method: id ? 'PUT' : 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
-          });
-        } else {
-          // create
-          await fetch(`${API_BASE}/worldbooks`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
+          }
+        );
+    
+        if (!res.ok) {
+          const errorBody = await res.text();
+          console.error("Failed to save worldbook:", res.status, errorBody);
+          return;
         }
+    
         await fetchWorldbooks();
         btnCancel.click();
       } catch (err) {
         console.error('Error saving worldbook', err);
       }
     });
+
 
     window.editWorldBook = async function(id) {
       try {
