@@ -592,30 +592,39 @@ function parsePNGMetadata(arrayBuffer) {
     }
 }
 
+import * as exifr from 'exifr';
+
 function parseWebPMetadata(arrayBuffer) {
-    let offset = 12; // Start of chunks
+    let offset = 12; // Start after RIFF and WEBP headers
 
     while (offset + 8 <= arrayBuffer.byteLength) {
         const chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset, 4));
         const chunkSize = new DataView(arrayBuffer).getUint32(offset + 4, true);
         console.log("Found WebP metadata chunk:", chunkType);
-        if (chunkType === "EXIF" || chunkType === "XMP ") {
-            const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkSize);
-            const binaryText = new TextDecoder('latin1').decode(chunkData);
-            const match = binaryText.match(/chara:([A-Za-z0-9+/=]+)/);
-            console.log("EXIF decoded preview:", binaryText.slice(0, 200));
-            console.log("EXIF raw bytes (first 50):", chunkData.slice(0, 50));
 
-            if (match) {
-              const base64 = match[1];
-              decodeBase64JSON(base64);
-              return;
-            }
+        if (chunkType === "EXIF") {
+            const chunkData = arrayBuffer.slice(offset + 8, offset + 8 + chunkSize);
+
+            // 🧠 Use exifr to parse structured EXIF data
+            exifr.parse(chunkData).then(metadata => {
+                console.log("Parsed EXIF metadata:", metadata);
+                if (metadata?.chara) {
+                    decodeBase64JSON(metadata.chara);
+                } else {
+                    console.log("No 'chara' field found in EXIF metadata.");
+                }
+            }).catch(err => {
+                console.error("Failed to parse EXIF with exifr:", err);
+            });
+
+            return; // Done after first EXIF
         }
+
         const padding = chunkSize % 2 === 1 ? 1 : 0;
         offset += 8 + chunkSize + padding;
     }
 }
+
 
 // Decode Base64 JSON metadata
 function decodeBase64JSON(base64Str) {
