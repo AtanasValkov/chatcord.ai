@@ -522,7 +522,7 @@ function decodeBase64JSON(base64Str) {
         jsonData = JSON.parse(jsonString);
         console.log(jsonData)
         document.getElementById("characterName").value = jsonData['name'] || jsonData.data['name'] || '';
-        document.getElementById("charDescription").value = jsonData['description'] jsonData.data['description'] || 'No description available.';
+        document.getElementById("charDescription").value = jsonData['description'] || jsonData.data['description'] || 'No description available.';
         document.getElementById("charGreeting").value = jsonData['first_mes'] || jsonData.data['first_mes'] || '';
         document.getElementById("charScenario").value = jsonData['scenario'] || jsonData.data['scenario'] || '';
         document.getElementById("charDialogue").value = jsonData['mes_example'] || jsonData.data['mes_example'] || '';
