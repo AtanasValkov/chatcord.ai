@@ -593,36 +593,42 @@ function parsePNGMetadata(arrayBuffer) {
 }
 
 function parseWebPMetadata(arrayBuffer) {
-    let offset = 12; // Start after RIFF header
+    let offset = 12; // Skip RIFF header
 
     while (offset + 8 <= arrayBuffer.byteLength) {
         const chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset, 4));
         const chunkSize = new DataView(arrayBuffer).getUint32(offset + 4, true);
-        console.log("Found WebP metadata chunk:", chunkType);
+        const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkSize);
 
-        if (chunkType === "EXIF" || chunkType === "XMP ") {
-            const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkSize);
-            const preview = new TextDecoder('latin1').decode(chunkData.slice(0, 200));
-            console.log("EXIF decoded preview:", preview);
-            console.log("EXIF raw bytes (first 50):", chunkData.slice(0, 50));
+        console.log(`=== Found chunk: ${chunkType} (${chunkSize} bytes) ===`);
 
-            // Attempt to extract `chara:<base64>` manually
-            const fullText = new TextDecoder('latin1').decode(chunkData);
-            const match = fullText.match(/chara:([A-Za-z0-9+/=]+)/);
-            if (match) {
-                const base64 = match[1];
-                console.log("Found base64 after 'chara:' →", base64);
-                decodeBase64JSON(base64);
-                return;
-            } else {
-                console.warn("No 'chara:' base64 string found in EXIF");
-            }
+        // Try to decode the whole chunk as a Latin1 or UTF-8 string
+        try {
+            const textLatin1 = new TextDecoder('latin1').decode(chunkData);
+            console.log(`Latin1 preview:\n${textLatin1.slice(0, 500)}`);
+        } catch (e) {
+            console.warn(`Latin1 decode failed for ${chunkType}`);
+        }
+
+        try {
+            const textUtf8 = new TextDecoder('utf-8').decode(chunkData);
+            console.log(`UTF-8 preview:\n${textUtf8.slice(0, 500)}`);
+        } catch (e) {
+            console.warn(`UTF-8 decode failed for ${chunkType}`);
+        }
+
+        // Look for any base64-like strings
+        const textSearch = new TextDecoder('latin1').decode(chunkData);
+        const base64Match = textSearch.match(/[A-Za-z0-9+/=]{100,}/); // Adjust length threshold
+        if (base64Match) {
+            console.log(`Found possible base64:\n${base64Match[0].slice(0, 100)}...`);
         }
 
         const padding = chunkSize % 2 === 1 ? 1 : 0;
         offset += 8 + chunkSize + padding;
     }
 }
+
 
 // Decode Base64 JSON metadata
 function decodeBase64JSON(base64Str) {
