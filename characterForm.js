@@ -592,30 +592,31 @@ function parsePNGMetadata(arrayBuffer) {
     }
 }
 
-import * as exifr from 'https://cdn.skypack.dev/exifr';
-
-async function parseWebPMetadata(arrayBuffer) {
-    let offset = 12;
+function parseWebPMetadata(arrayBuffer) {
+    let offset = 12; // Start after RIFF header
 
     while (offset + 8 <= arrayBuffer.byteLength) {
         const chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset, 4));
         const chunkSize = new DataView(arrayBuffer).getUint32(offset + 4, true);
         console.log("Found WebP metadata chunk:", chunkType);
 
-        if (chunkType === "EXIF") {
-            const chunkData = arrayBuffer.slice(offset + 8, offset + 8 + chunkSize);
+        if (chunkType === "EXIF" || chunkType === "XMP ") {
+            const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkSize);
+            const preview = new TextDecoder('latin1').decode(chunkData.slice(0, 200));
+            console.log("EXIF decoded preview:", preview);
+            console.log("EXIF raw bytes (first 50):", chunkData.slice(0, 50));
 
-            try {
-                const metadata = await exifr.parse(chunkData, { tiff: true, mergeOutput: false, userComment: true });
-                console.log("Parsed raw EXIF tags:", metadata);
-                if (metadata?.chara) {
-                    decodeBase64JSON(metadata.chara);
-                }
-            } catch (err) {
-                console.error("Error parsing EXIF:", err);
+            // Attempt to extract `chara:<base64>` manually
+            const fullText = new TextDecoder('latin1').decode(chunkData);
+            const match = fullText.match(/chara:([A-Za-z0-9+/=]+)/);
+            if (match) {
+                const base64 = match[1];
+                console.log("Found base64 after 'chara:' →", base64);
+                decodeBase64JSON(base64);
+                return;
+            } else {
+                console.warn("No 'chara:' base64 string found in EXIF");
             }
-
-            return;
         }
 
         const padding = chunkSize % 2 === 1 ? 1 : 0;
