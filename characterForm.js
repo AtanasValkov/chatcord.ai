@@ -592,9 +592,9 @@ function parsePNGMetadata(arrayBuffer) {
     }
 }
 
-<script src="https://cdn.jsdelivr.net/npm/exifr/dist/lite.umd.js"></script>
+import * as exifr from 'https://cdn.skypack.dev/exifr';
 
-function parseWebPMetadata(arrayBuffer) {
+async function parseWebPMetadata(arrayBuffer) {
     let offset = 12;
 
     while (offset + 8 <= arrayBuffer.byteLength) {
@@ -605,16 +605,15 @@ function parseWebPMetadata(arrayBuffer) {
         if (chunkType === "EXIF") {
             const chunkData = arrayBuffer.slice(offset + 8, offset + 8 + chunkSize);
 
-            exifr.parse(chunkData).then(metadata => {
+            try {
+                const metadata = await exifr.parse(chunkData);
                 console.log("Parsed EXIF metadata:", metadata);
                 if (metadata?.chara) {
                     decodeBase64JSON(metadata.chara);
-                } else {
-                    console.log("No 'chara' field found in EXIF metadata.");
                 }
-            }).catch(err => {
-                console.error("Failed to parse EXIF with exifr:", err);
-            });
+            } catch (err) {
+                console.error("Error parsing EXIF:", err);
+            }
 
             return;
         }
