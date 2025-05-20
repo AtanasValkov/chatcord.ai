@@ -603,6 +603,9 @@ function parseWebPMetadata(arrayBuffer) {
             const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkSize);
             const binaryText = new TextDecoder('latin1').decode(chunkData);
             const match = binaryText.match(/chara:([A-Za-z0-9+/=]+)/);
+            console.log("EXIF decoded preview:", binaryText.slice(0, 200));
+            console.log("EXIF raw bytes (first 50):", chunkData.slice(0, 50));
+
             if (match) {
               const base64 = match[1];
               decodeBase64JSON(base64);
