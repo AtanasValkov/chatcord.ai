@@ -598,32 +598,22 @@ function parseWebPMetadata(arrayBuffer) {
     while (offset + 8 <= arrayBuffer.byteLength) {
         const chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset, 4));
         const chunkSize = new DataView(arrayBuffer).getUint32(offset + 4, true);
-        const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkSize);
-
-        console.log(`=== Found chunk: ${chunkType} (${chunkSize} bytes) ===`);
-
-        // Try to decode the whole chunk as a Latin1 or UTF-8 string
-        try {
-            const textLatin1 = new TextDecoder('latin1').decode(chunkData);
-            console.log(`Latin1 preview:\n${textLatin1.slice(0, 500)}`);
-        } catch (e) {
-            console.warn(`Latin1 decode failed for ${chunkType}`);
+        if (chunkType === "VP8 " || chunkType === "VP8X") {
+            const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkSize);
+            const binaryText = new TextDecoder("latin1").decode(chunkData); // "latin1" avoids UTF-8 decoding errors
+        
+            console.log("VP8 chunk preview:", binaryText.slice(0, 500)); // show a bit of the data
+            const possibleMatches = binaryText.match(/chara:([A-Za-z0-9+/=]+)/g); // find all "chara:..." base64 strings
+        
+            if (possibleMatches) {
+                possibleMatches.forEach((match) => {
+                    const base64 = match.split("chara:")[1];
+                    decodeBase64JSON(base64);
+                });
+            } else {
+                console.log("No 'chara:' found in VP8 chunk");
+            }
         }
-
-        try {
-            const textUtf8 = new TextDecoder('utf-8').decode(chunkData);
-            console.log(`UTF-8 preview:\n${textUtf8.slice(0, 500)}`);
-        } catch (e) {
-            console.warn(`UTF-8 decode failed for ${chunkType}`);
-        }
-
-        // Look for any base64-like strings
-        const textSearch = new TextDecoder('latin1').decode(chunkData);
-        const base64Match = textSearch.match(/[A-Za-z0-9+/=]{100,}/); // Adjust length threshold
-        if (base64Match) {
-            console.log(`Found possible base64:\n${base64Match[0].slice(0, 100)}...`);
-        }
-
         const padding = chunkSize % 2 === 1 ? 1 : 0;
         offset += 8 + chunkSize + padding;
     }
