@@ -606,8 +606,8 @@ async function parseWebPMetadata(arrayBuffer) {
             const chunkData = arrayBuffer.slice(offset + 8, offset + 8 + chunkSize);
 
             try {
-                const metadata = await exifr.parse(chunkData);
-                console.log("Parsed EXIF metadata:", metadata);
+                const metadata = await exifr.parse(chunkData, { tiff: true, mergeOutput: false, userComment: true });
+                console.log("Parsed raw EXIF tags:", metadata);
                 if (metadata?.chara) {
                     decodeBase64JSON(metadata.chara);
                 }
