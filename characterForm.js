@@ -598,13 +598,17 @@ function parseWebPMetadata(arrayBuffer) {
     while (offset + 8 <= arrayBuffer.byteLength) {
         const chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset, 4));
         const chunkSize = new DataView(arrayBuffer).getUint32(offset + 4, true);
+        console.log("Found WebP metadata chunk:", chunkType);
+
 
         if (chunkType === "EXIF" || chunkType === "XMP ") {
             const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkSize);
             const text = new TextDecoder('latin1').decode(chunkData);
-            
+            console.log("Raw text:", text);
             if (text.includes("chara")) {
                 const base64 = text.split("chara:")[1]?.split(/\s/)[0];
+                console.log("Found 'chara' metadata in WebP:", base64);
+
                 if (base64) decodeBase64JSON(base64.trim());
                 return;
             }
