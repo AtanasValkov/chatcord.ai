@@ -394,6 +394,8 @@ function setupImageUpload() {
       const file = event.target.files[0];
       if (!file) return;
       imageFile = file;
+      console.log("Selected file:", file.name, file.type);
+
       let newArrayBuffer;
       let newBlob;
       let newFile;
@@ -401,9 +403,14 @@ function setupImageUpload() {
       const reader1 = new FileReader();
       reader1.onload = function (e) {
           const arrayBuffer = e.target.result;
+          console.log("ArrayBuffer loaded");
+
           const fileType = detectFileType(arrayBuffer);
-  
+          console.log("Detected file type:", fileType);
+
           if (fileType === "png") {
+              console.log("Removing PNG metadata");
+
               newArrayBuffer = removePNGMetadata(arrayBuffer);
               newBlob = new Blob([newArrayBuffer], { type: `image/png` });
               newFile = new File([newBlob], file.name, { type: `image/png` });
@@ -411,6 +418,8 @@ function setupImageUpload() {
               imageFile = newFile; // Set processed image file
               parsePNGMetadata(arrayBuffer);
           } else if (fileType === "webp") {
+              console.log("Removing WebP metadata");
+
               newArrayBuffer = removeWebPMetadata(arrayBuffer);
               newBlob = new Blob([newArrayBuffer], { type: `image/webp` });
               newFile = new File([newBlob], file.name, { type: `image/webp` });
@@ -426,6 +435,8 @@ function setupImageUpload() {
       // Read as DataURL for previewing the image
       const reader2 = new FileReader();
       reader2.onload = function (e) {
+          console.log("Preview image loaded");
+
           document.getElementById("previewImage").src = e.target.result;
           document.getElementById("previewImage").style.display = "block";
       };
