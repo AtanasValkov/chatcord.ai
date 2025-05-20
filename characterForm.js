@@ -521,11 +521,11 @@ function decodeBase64JSON(base64Str) {
         const jsonString = new TextDecoder('utf-8').decode(bytes);
         jsonData = JSON.parse(jsonString);
         console.log(jsonData)
-        document.getElementById("characterName").value = jsonData['name'] || '';
-        document.getElementById("charDescription").value = jsonData['description'] || jsonData['personality'] || 'No description available.';
-        document.getElementById("charGreeting").value = jsonData['first_mes'] || '';
-        document.getElementById("charScenario").value = jsonData['scenario'] || '';
-        document.getElementById("charDialogue").value = jsonData['mes_example'] || '';
+        document.getElementById("characterName").value = jsonData['name'] || jsonData.data['name'] || '';
+        document.getElementById("charDescription").value = jsonData['description'] jsonData.data['description'] || 'No description available.';
+        document.getElementById("charGreeting").value = jsonData['first_mes'] || jsonData.data['first_mes'] || '';
+        document.getElementById("charScenario").value = jsonData['scenario'] || jsonData.data['scenario'] || '';
+        document.getElementById("charDialogue").value = jsonData['mes_example'] || jsonData.data['mes_example'] || '';
         document.getElementById("displayText").value = jsonData.data['creator_notes'] || '';
         // Clear and populate alternate_greetings
         const altContainer = document.getElementById('alternateGreetingsContainer');
