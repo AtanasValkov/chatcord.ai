@@ -394,7 +394,9 @@ function setupImageUpload() {
       const file = event.target.files[0];
       if (!file) return;
       imageFile = file;
-  
+      let newArrayBuffer;
+      let newBlob;
+      let newFile;
       // Read as ArrayBuffer for metadata processing
       const reader1 = new FileReader();
       reader1.onload = function (e) {
@@ -402,14 +404,21 @@ function setupImageUpload() {
           const fileType = detectFileType(arrayBuffer);
   
           if (fileType === "png") {
-              const newArrayBuffer = removePNGMetadata(arrayBuffer);
-              const newBlob = new Blob([newArrayBuffer], { type: `image/png` });
-              const newFile = new File([newBlob], file.name, { type: `image/png` });
+              newArrayBuffer = removePNGMetadata(arrayBuffer);
+              newBlob = new Blob([newArrayBuffer], { type: `image/png` });
+              newFile = new File([newBlob], file.name, { type: `image/png` });
   
               imageFile = newFile; // Set processed image file
               parsePNGMetadata(arrayBuffer);
+          } else if (fileType === "webp") {
+              newArrayBuffer = removeWebPMetadata(arrayBuffer);
+              newBlob = new Blob([newArrayBuffer], { type: `image/webp` });
+              newFile = new File([newBlob], file.name, { type: `image/webp` });
+              imageFile = newFile;
+              parseWebPMetadata(arrayBuffer);
           } else {
               console.log(`${fileType.toUpperCase()} detected, returning original file.`);
+              imageFile = file; // no changes
           }
       };
       reader1.readAsArrayBuffer(file);
@@ -430,12 +439,20 @@ function detectFileType(arrayBuffer) {
     const signatures = {
         png: [137, 80, 78, 71, 13, 10, 26, 10],
         jpg: [0xFF, 0xD8, 0xFF],
-        gif: [0x47, 0x49, 0x46, 0x38]
+        gif: [0x47, 0x49, 0x46, 0x38],
+        webp: [0x52, 0x49, 0x46, 0x46] // "RIFF"
     };
 
     if (matchesSignature(dataView, signatures.png)) return "png";
     if (matchesSignature(dataView, signatures.jpg)) return "jpg";
     if (matchesSignature(dataView, signatures.gif)) return "gif";
+    if (
+      matchesSignature(dataView, signatures.webp) &&
+      dataView.getUint8(8) === 0x57 && // 'W'
+      dataView.getUint8(9) === 0x45 && // 'E'
+      dataView.getUint8(10) === 0x42 && // 'B'
+      dataView.getUint8(11) === 0x50    // 'P'
+    ) return "webp";
 
     return "unknown";
 }
@@ -465,6 +482,62 @@ function removePNGMetadata(arrayBuffer) {
     }
 
     return rebuildPNG(chunks);
+}
+
+function removeWebPMetadata(arrayBuffer) {
+    const dataView = new DataView(arrayBuffer);
+
+    // Verify WebP
+    if (
+        dataView.getUint8(0) !== 0x52 || // 'R'
+        dataView.getUint8(1) !== 0x49 || // 'I'
+        dataView.getUint8(2) !== 0x46 || // 'F'
+        dataView.getUint8(3) !== 0x46 ||
+        dataView.getUint8(8) !== 0x57 || // 'W'
+        dataView.getUint8(9) !== 0x45 || // 'E'
+        dataView.getUint8(10) !== 0x42 || // 'B'
+        dataView.getUint8(11) !== 0x50
+    ) {
+        return arrayBuffer;
+    }
+
+    // Rebuild RIFF without EXIF, XMP, ICCP chunks
+    const chunks = [];
+    let offset = 12; // After RIFF header
+    const riffSize = dataView.getUint32(4, true);
+    const end = 8 + riffSize;
+
+    while (offset + 8 <= arrayBuffer.byteLength) {
+        const chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset, 4));
+        const chunkSize = dataView.getUint32(offset + 4, true);
+        const padding = chunkSize % 2 === 1 ? 1 : 0;
+
+        if (!["EXIF", "XMP ", "ICCP"].includes(chunkType)) {
+            const chunk = new Uint8Array(arrayBuffer.slice(offset, offset + 8 + chunkSize + padding));
+            chunks.push(chunk);
+        }
+
+        offset += 8 + chunkSize + padding;
+    }
+
+    const totalChunkSize = chunks.reduce((sum, c) => sum + c.length, 0);
+    const newRiffSize = totalChunkSize + 4;
+
+    const header = new Uint8Array(12);
+    header.set([0x52, 0x49, 0x46, 0x46]); // "RIFF"
+    new DataView(header.buffer).setUint32(4, newRiffSize, true);
+    header.set([0x57, 0x45, 0x42, 0x50], 8); // "WEBP"
+
+    const output = new Uint8Array(header.length + totalChunkSize);
+    output.set(header, 0);
+    let offsetOut = header.length;
+
+    for (const chunk of chunks) {
+        output.set(chunk, offsetOut);
+        offsetOut += chunk.length;
+    }
+
+    return output.buffer;
 }
 
 // Rebuild PNG file
@@ -505,6 +578,29 @@ function parsePNGMetadata(arrayBuffer) {
             }
         }
         offset += 12 + chunkLength;
+    }
+}
+
+function parseWebPMetadata(arrayBuffer) {
+    let offset = 12; // Start of chunks
+
+    while (offset + 8 <= arrayBuffer.byteLength) {
+        const chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset, 4));
+        const chunkSize = new DataView(arrayBuffer).getUint32(offset + 4, true);
+
+        if (chunkType === "EXIF" || chunkType === "XMP ") {
+            const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkSize);
+            const text = new TextDecoder('latin1').decode(chunkData);
+            
+            if (text.includes("chara")) {
+                const base64 = text.split("chara:")[1]?.split(/\s/)[0];
+                if (base64) decodeBase64JSON(base64.trim());
+                return;
+            }
+        }
+
+        const padding = chunkSize % 2 === 1 ? 1 : 0;
+        offset += 8 + chunkSize + padding;
     }
 }
 
