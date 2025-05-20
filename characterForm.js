@@ -592,10 +592,10 @@ function parsePNGMetadata(arrayBuffer) {
     }
 }
 
-import * as exifr from 'exifr';
+<script src="https://cdn.jsdelivr.net/npm/exifr/dist/lite.umd.js"></script>
 
 function parseWebPMetadata(arrayBuffer) {
-    let offset = 12; // Start after RIFF and WEBP headers
+    let offset = 12;
 
     while (offset + 8 <= arrayBuffer.byteLength) {
         const chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset, 4));
@@ -605,7 +605,6 @@ function parseWebPMetadata(arrayBuffer) {
         if (chunkType === "EXIF") {
             const chunkData = arrayBuffer.slice(offset + 8, offset + 8 + chunkSize);
 
-            // 🧠 Use exifr to parse structured EXIF data
             exifr.parse(chunkData).then(metadata => {
                 console.log("Parsed EXIF metadata:", metadata);
                 if (metadata?.chara) {
@@ -617,14 +616,13 @@ function parseWebPMetadata(arrayBuffer) {
                 console.error("Failed to parse EXIF with exifr:", err);
             });
 
-            return; // Done after first EXIF
+            return;
         }
 
         const padding = chunkSize % 2 === 1 ? 1 : 0;
         offset += 8 + chunkSize + padding;
     }
 }
-
 
 // Decode Base64 JSON metadata
 function decodeBase64JSON(base64Str) {
