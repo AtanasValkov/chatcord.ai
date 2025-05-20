@@ -599,8 +599,9 @@ function parseWebPMetadata(arrayBuffer) {
         const chunkType = new TextDecoder().decode(new Uint8Array(arrayBuffer, offset, 4));
         const chunkSize = new DataView(arrayBuffer).getUint32(offset + 4, true);
         console.log("Found WebP metadata chunk:", chunkType);
-
-
+        const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkSize);
+        const text = new TextDecoder('latin1').decode(chunkData);
+        console.log("Raw text:", text);
         if (chunkType === "EXIF" || chunkType === "XMP ") {
             const chunkData = new Uint8Array(arrayBuffer, offset + 8, chunkSize);
             const text = new TextDecoder('latin1').decode(chunkData);
