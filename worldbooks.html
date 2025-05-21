@@ -18,7 +18,7 @@
     .btn.danger { background: #dc3545; border-color: #dc3545; }
     form { display: flex; flex-direction: column; gap: 8px; }
     label { font-weight: bold; }
-    input[type="text"], textarea { padding: 6px; border-radius: 4px; border: 1px solid #ccc; width: 100%; }
+    input[type="text"], textarea { padding: 6px; border-radius: 4px; border: 1px solid #ccc; max-width: 95%; min-width: 50%; }
   </style>
 </head>
 <body>
@@ -32,7 +32,7 @@
       <h2>WorldBooks</h2>
       <ul id="worldbook-list"></ul>
       <button class="btn" id="btn-show-create">+ Add New</button>
-      <button class="btn" id="btn-import-json">📂 Import JSON</button>
+      <button class="btn" id="btn-import-json">📂 Import</button>
       <input type="file" id="file-input" accept=".json" style="display: none;" />
     </section>
 
@@ -52,7 +52,7 @@
 
         <!-- Context -->
         <label for="wb-context">Context</label>
-        <textarea id="wb-context" rows="6" placeholder="e.g. {{user}}'s favorite drink is cola" required></textarea>
+        <textarea id="wb-context" rows="12" placeholder="e.g. {{user}}'s favorite drink is cola" required></textarea>
 
         <div style="margin-top: 12px; display: flex; gap: 8px;">
           <button type="submit" class="btn" id="btn-save">Save</button>
@@ -90,8 +90,12 @@
       worldbookList.innerHTML = '';
       worldbooks.forEach(wb => {
         const li = document.createElement('li');
+        const displayedKeywords = wb.keywords.slice(0, 5);
+        const extraCount = wb.keywords.length - displayedKeywords.length;
+        const keywordsDisplay = displayedKeywords.join(', ') + (extraCount > 0 ? `, +${extraCount} more` : '');
+
         li.innerHTML = `
-          <span><strong>${wb.name}</strong>: ${wb.context.substring(0, 50)}... <em>(${wb.keywords.join(', ')})</em></span>
+          <span><strong>${wb.name}</strong>: ${wb.context.substring(0, 50)}... <em>(${keywordsDisplay})</em></span>
           <span>
             <button class="btn" onclick="editWorldBook('${wb.id}')">Edit</button>
             <button class="btn danger" onclick="deleteWorldBook('${wb.id}')">Delete</button>
