@@ -32,6 +32,8 @@
       <h2>WorldBooks</h2>
       <ul id="worldbook-list"></ul>
       <button class="btn" id="btn-show-create">+ Add New</button>
+      <button class="btn" id="btn-import-json">📂 Import JSON</button>
+      <input type="file" id="file-input" accept=".json" style="display: none;" />
     </section>
 
     <!-- Create / Edit Form -->
@@ -69,6 +71,8 @@
     const btnShowCreate = document.getElementById('btn-show-create');
     const btnCancel = document.getElementById('btn-cancel');
     const worldbookForm = document.getElementById('worldbook-form');
+    const fileInput = document.getElementById('file-input');
+    const btnImport = document.getElementById('btn-import-json');
 
     let worldbooks = [];
 
@@ -103,6 +107,51 @@
       document.getElementById('form-title').textContent = 'Create WorldBook';
       worldbookForm.reset();
       document.getElementById('wb-id').value = '';
+    });
+
+    btnImport.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+    
+      try {
+        const text = await file.text();
+        const json = JSON.parse(text);
+    
+        const name = file.name.replace(/[_-]+/g, ' ').replace(/\.json$/, '');
+        const entries = Object.values(json.entries || {});
+    
+        const keywords = [];
+        const contextSegments = [];
+    
+        for (const entry of entries) {
+          if (Array.isArray(entry.keys)) {
+            keywords.push(...entry.keys);
+          }
+          if (entry.content) {
+            contextSegments.push(`## ${entry.name || 'Untitled'}\n${entry.content}`);
+          }
+        }
+    
+        // Autofill form
+        formPanel.style.display = 'block';
+        listPanel.style.display = 'none';
+        document.getElementById('form-title').textContent = 'Import WorldBook';
+        worldbookForm.reset();
+    
+        document.getElementById('wb-id').value = ''; // Clear ID (new item)
+        document.getElementById('wb-name').value = name;
+        document.getElementById('wb-keywords').value = [...new Set(keywords)].join(', ');
+        document.getElementById('wb-context').value = contextSegments.join('\n\n');
+    
+      } catch (err) {
+        console.error('Failed to import JSON:', err);
+        alert('Invalid JSON file or format.');
+      }
+    
+      // Reset input for next import
+      fileInput.value = '';
     });
 
     btnCancel.addEventListener('click', () => {
