@@ -63,7 +63,7 @@
   </div>
 
   <script>
-    const API_BASE = 'https://chatcord-server.onrender.com'; // e.g. 'https://your-api.com'
+    const API_BASE = 'https://chatcord-server.onrender.com';
 
     const listPanel = document.getElementById('list-panel');
     const formPanel = document.getElementById('form-panel');
@@ -87,20 +87,27 @@
     }
 
     function renderList() {
+      const user = JSON.parse(localStorage.getItem("user")) || {};
       worldbookList.innerHTML = '';
+    
       worldbooks.forEach(wb => {
         const li = document.createElement('li');
         const displayedKeywords = wb.keywords.slice(0, 5);
         const extraCount = wb.keywords.length - displayedKeywords.length;
         const keywordsDisplay = displayedKeywords.join(', ') + (extraCount > 0 ? `, +${extraCount} more` : '');
-
+    
+        const canEdit = wb.user_id === user.id;
+    
         li.innerHTML = `
           <span><strong>${wb.name}</strong>: ${wb.context.substring(0, 50)}... <em>(${keywordsDisplay})</em></span>
           <span>
-            <button class="btn" onclick="editWorldBook('${wb.id}')">Edit</button>
-            <button class="btn danger" onclick="deleteWorldBook('${wb.id}')">Delete</button>
+            ${canEdit ? `
+              <button class="btn" onclick="editWorldBook('${wb.id}')">Edit</button>
+              <button class="btn danger" onclick="deleteWorldBook('${wb.id}')">Delete</button>
+            ` : ''}
           </span>
         `;
+    
         worldbookList.appendChild(li);
       });
     }
