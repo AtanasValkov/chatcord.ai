@@ -101,6 +101,7 @@
         li.innerHTML = `
           <span><strong>${wb.name}</strong>: ${wb.context.substring(0, 50)}... <em>(${keywordsDisplay})</em></span>
           <span>
+            <button class="btn" onclick="downloadWorldbook('${wb.id}')">Download</button>
             ${canEdit ? `
               <button class="btn" onclick="editWorldBook('${wb.id}')">Edit</button>
               <button class="btn danger" onclick="deleteWorldBook('${wb.id}')">Delete</button>
@@ -236,6 +237,27 @@
       } catch (err) {
         console.error('Error deleting worldbook', err);
       }
+    };
+
+    window.downloadWorldbook = function(id) {
+      const wb = worldbooks.find(w => w.id === id);
+      if (!wb) return alert("Worldbook not found.");
+    
+      const json = {
+        name: wb.name,
+        keywords: wb.keywords,
+        context: wb.context
+      };
+    
+      const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${wb.name.replace(/\s+/g, '_') || 'worldbook'}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     };
 
     // initialize
