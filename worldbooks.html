@@ -76,6 +76,44 @@
 
     let worldbooks = [];
 
+    function createEntryField(entry) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'entry-block';
+
+      const header = document.createElement('div');
+      header.className = 'entry-header';
+      header.innerHTML = `<span>${entry.name}</span> <span class="entry-limit">0 / 1000</span>`;
+
+      const textarea = document.createElement('textarea');
+      textarea.rows = 6;
+      textarea.value = entry.context;
+      textarea.placeholder = `Context for ${entry.name}`;
+
+      function updateCharCount() {
+        const count = textarea.value.length;
+        const display = header.querySelector('.entry-limit');
+        display.textContent = `${count} / 1000`;
+        display.className = 'entry-limit' + (count > 1000 ? ' over' : '');
+      }
+
+      textarea.addEventListener('input', updateCharCount);
+      updateCharCount();
+
+      wrapper.appendChild(header);
+      wrapper.appendChild(textarea);
+      entryContainer.appendChild(wrapper);
+    }
+
+    function normalizeWorldbookEntries(data) {
+      if (Array.isArray(data.entries)) {
+        return data.entries.map(e => ({ name: e.name || 'Unnamed', context: e.entry || '', keywords: e.keywords || [] }));
+      }
+      if (typeof data.entries === 'object') {
+        return Object.values(data.entries).map(e => ({ name: e.name || 'Unnamed', context: e.content || '', keywords: e.keys || e.key || [] }));
+      }
+      return [];
+    }
+
     async function fetchWorldbooks() {
       try {
         const res = await fetch(`${API_BASE}/worldbooks`);
@@ -112,52 +150,6 @@
       });
     }
 
-    function normalizeWorldbookEntries(data) {
-      if (Array.isArray(data.entries)) {
-        return data.entries.map(e => ({
-          name: e.name || 'Unnamed',
-          context: e.entry || '',
-          keywords: e.keywords || []
-        }));
-      }
-      if (typeof data.entries === 'object') {
-        return Object.values(data.entries).map(e => ({
-          name: e.name || 'Unnamed',
-          context: e.content || '',
-          keywords: e.keys || e.key || []
-        }));
-      }
-      return [];
-    }
-
-    function createEntryField(entry) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'entry-block';
-
-      const header = document.createElement('div');
-      header.className = 'entry-header';
-      header.innerHTML = `<span>${entry.name}</span> <span class="entry-limit">0 / 1000</span>`;
-
-      const textarea = document.createElement('textarea');
-      textarea.rows = 6;
-      textarea.value = entry.context;
-      textarea.placeholder = `Context for ${entry.name}`;
-
-      function updateCharCount() {
-        const count = textarea.value.length;
-        const display = header.querySelector('.entry-limit');
-        display.textContent = `${count} / 1000`;
-        display.className = 'entry-limit' + (count > 1000 ? ' over' : '');
-      }
-
-      textarea.addEventListener('input', updateCharCount);
-      updateCharCount();
-
-      wrapper.appendChild(header);
-      wrapper.appendChild(textarea);
-      entryContainer.appendChild(wrapper);
-    }
-
     btnShowCreate.addEventListener('click', () => {
       formPanel.style.display = 'block';
       listPanel.style.display = 'none';
@@ -172,7 +164,6 @@
     fileInput.addEventListener('change', async event => {
       const file = event.target.files[0];
       if (!file) return;
-
       try {
         const text = await file.text();
         const parsed = JSON.parse(text);
@@ -186,14 +177,11 @@
         formPanel.style.display = 'block';
         listPanel.style.display = 'none';
         document.getElementById('form-title').textContent = 'Import WorldBook';
-
         entryContainer.innerHTML = '';
         entries.forEach(createEntryField);
-
       } catch (err) {
         alert('Failed to import JSON: ' + err.message);
       }
-
       fileInput.value = '';
     });
 
@@ -201,6 +189,101 @@
       formPanel.style.display = 'none';
       listPanel.style.display = 'block';
     });
+
+    worldbookForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user || !user.id) return alert("User not found");
+
+      const entryTexts = Array.from(document.querySelectorAll('.entry-block textarea'));
+      for (const textArea of entryTexts) {
+        if (textArea.value.length > 1000) {
+          alert("One or more entries exceed the 1000 character limit.");
+          return;
+        }
+      }
+
+      const combinedContext = entryTexts.map(el => el.value.trim()).join('\n\n');
+      const id = document.getElementById('wb-id').value;
+      const payload = {
+        name: document.getElementById('wb-name').value,
+        keywords: document.getElementById('wb-keywords').value.split(',').map(s => s.trim()),
+        context: combinedContext,
+        user_id: user.id
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/worldbooks${id ? `/${id}` : ''}`, {
+          method: id ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errorBody = await res.text();
+          console.error("Failed to save worldbook:", res.status, errorBody);
+          return;
+        }
+        await fetchWorldbooks();
+        btnCancel.click();
+      } catch (err) {
+        console.error('Error saving worldbook', err);
+      }
+    });
+
+    window.editWorldBook = async function(id) {
+      try {
+        const res = await fetch(`${API_BASE}/worldbooks/${id}`);
+        const wb = await res.json();
+
+        document.getElementById('wb-id').value = wb.id;
+        document.getElementById('wb-name').value = wb.name;
+        document.getElementById('wb-keywords').value = wb.keywords.join(', ');
+
+        formPanel.style.display = 'block';
+        listPanel.style.display = 'none';
+        document.getElementById('form-title').textContent = 'Edit WorldBook';
+
+        const sections = wb.context.split(/(?:^|\n)(?=##\s)/).map(s => s.trim()).filter(Boolean);
+        entryContainer.innerHTML = '';
+        sections.forEach((section, i) => {
+          createEntryField({ name: `Entry ${i + 1}`, context: section, keywords: [] });
+        });
+      } catch (err) {
+        console.error('Error loading worldbook', err);
+      }
+    };
+
+    window.deleteWorldBook = async function(id) {
+      if (!confirm('Delete this worldbook?')) return;
+      try {
+        await fetch(`${API_BASE}/worldbooks/${id}`, { method: 'DELETE' });
+        await fetchWorldbooks();
+      } catch (err) {
+        console.error('Error deleting worldbook', err);
+      }
+    };
+
+    window.downloadWorldbook = function(id) {
+      const wb = worldbooks.find(w => w.id === id);
+      if (!wb) return alert("Worldbook not found.");
+
+      const json = {
+        name: wb.name,
+        keywords: wb.keywords,
+        context: wb.context
+      };
+
+      const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${wb.name.replace(/\s+/g, '_') || 'worldbook'}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
 
     fetchWorldbooks();
   </script>
