@@ -52,6 +52,7 @@
 
         <!-- Context -->
         <label for="wb-context">Context</label>
+        <div id="context-limit" style="font-size: 0.9em; color: lightgray;">0 / 1000</div>
         <textarea id="wb-context" rows="12" placeholder="e.g. {{user}}'s favorite drink is cola" required></textarea>
 
         <div style="margin-top: 12px; display: flex; gap: 8px;">
@@ -174,12 +175,14 @@
           return;
         }
     
-        // Use the first valid entry to pre-fill the form
-        const wb = entries[0];
+        const combinedContext = entries.map(e => `## ${e.name}\n${e.context}`).join('\n\n');
+        const combinedKeywords = [...new Set(entries.flatMap(e => e.keywords))];
+        
         document.getElementById('wb-id').value = '';
-        document.getElementById('wb-name').value = wb.name;
-        document.getElementById('wb-keywords').value = wb.keywords.join(', ');
-        document.getElementById('wb-context').value = wb.context;
+        document.getElementById('wb-name').value = file.name.replace(/[_-]+/g, ' ').replace(/\\.json$/, '');
+        document.getElementById('wb-keywords').value = combinedKeywords.join(', ');
+        document.getElementById('wb-context').value = combinedContext;
+
         formPanel.style.display = 'block';
         listPanel.style.display = 'none';
         document.getElementById('form-title').textContent = 'Import WorldBook';
@@ -287,6 +290,18 @@
 
     // initialize
     fetchWorldbooks();
+    const contextField = document.getElementById('wb-context');
+    const contextLimitDisplay = document.getElementById('context-limit');
+    
+    function updateContextCount() {
+      const len = contextField.value.length;
+      contextLimitDisplay.textContent = `${len} / 1000`;
+      contextLimitDisplay.style.color = len > 1000 ? 'red' : 'lightgray';
+    }
+    
+    contextField.addEventListener('input', updateContextCount);
+    updateContextCount(); // call once on load
+
   </script>
 </body>
 </html>
