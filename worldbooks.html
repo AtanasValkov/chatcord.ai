@@ -49,7 +49,7 @@
         <input type="text" id="wb-name" placeholder="e.g. Beverage Preferences" required />
 
         <div id="entry-container"></div>
-
+        <button type="button" class="btn" id="btn-add-entry">+ Add Entry</button>
         <div style="margin-top: 12px; display: flex; gap: 8px;">
           <button type="submit" class="btn" id="btn-save">Save</button>
           <button type="button" class="btn danger" id="btn-cancel">Cancel</button>
@@ -79,7 +79,13 @@
 
       const header = document.createElement('div');
       header.className = 'entry-header';
-      header.innerHTML = `<span>${entry.name}</span> <span class="entry-limit">0 / 1000</span>`;
+      header.innerHTML = `
+        <span>${entry.name}</span>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span class="entry-limit">0 / 1000</span>
+          <button type="button" class="btn danger btn-sm delete-entry">✕</button>
+        </div>
+      `;
 
       const textarea = document.createElement('textarea');
       textarea.rows = 6;
@@ -105,9 +111,22 @@
       wrapper.appendChild(header);
       wrapper.appendChild(keywordsInput);
       wrapper.appendChild(textarea);
+      header.querySelector('.delete-entry').addEventListener('click', () => {
+        if (entryContainer.querySelectorAll('.entry-block').length > 1) {
+          wrapper.remove();
+        } else {
+          alert("At least one entry is required.");
+        }
+      });
 
       entryContainer.appendChild(wrapper);
     }
+
+    document.getElementById('btn-add-entry').addEventListener('click', () => {
+      const count = entryContainer.querySelectorAll('.entry-block').length + 1;
+      createEntryField({ name: `Entry ${count}`, context: "", keywords: [] });
+    });
+
 
     async function fetchWorldbooks() {
       try {
@@ -149,7 +168,9 @@
       worldbookForm.reset();
       document.getElementById('wb-id').value = '';
       entryContainer.innerHTML = '';
+      createEntryField({ name: "Entry 1", context: "", keywords: [] }); // 👈 Add this
     });
+
 
     btnImport.addEventListener('click', () => fileInput.click());
 
@@ -159,7 +180,7 @@
       try {
         const text = await file.text();
         const parsed = JSON.parse(text);
-        const entries = parsed.entries || [];
+        const entries = normalizeWorldbookEntries(parsed);
 
         document.getElementById('wb-id').value = '';
         document.getElementById('wb-name').value = parsed.name || file.name.replace(/[_-]+/g, ' ').replace(/\.json$/, '');
