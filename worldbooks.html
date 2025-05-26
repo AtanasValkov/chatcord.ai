@@ -48,9 +48,6 @@
         <label for="wb-name">Name</label>
         <input type="text" id="wb-name" placeholder="e.g. Beverage Preferences" required />
 
-        <label for="wb-keywords">Keywords (comma-separated)</label>
-        <input type="text" id="wb-keywords" placeholder="e.g. drink, water, cola" required />
-
         <div id="entry-container"></div>
 
         <div style="margin-top: 12px; display: flex; gap: 8px;">
@@ -104,22 +101,12 @@
       keywordsInput.placeholder = 'keywords (comma-separated)';
       keywordsInput.value = (entry.keywords || []).join(', ');
       keywordsInput.className = 'entry-keywords';
-      
+
       wrapper.appendChild(header);
       wrapper.appendChild(keywordsInput);
       wrapper.appendChild(textarea);
 
       entryContainer.appendChild(wrapper);
-    }
-
-    function normalizeWorldbookEntries(data) {
-      if (Array.isArray(data.entries)) {
-        return data.entries.map(e => ({ name: e.name || 'Unnamed', context: e.entry || '', keywords: e.keywords || [] }));
-      }
-      if (typeof data.entries === 'object') {
-        return Object.values(data.entries).map(e => ({ name: e.name || 'Unnamed', context: e.content || '', keywords: e.keys || e.key || [] }));
-      }
-      return [];
     }
 
     async function fetchWorldbooks() {
@@ -138,13 +125,10 @@
 
       worldbooks.forEach(wb => {
         const li = document.createElement('li');
-        const displayedKeywords = wb.keywords.slice(0, 5);
-        const extraCount = wb.keywords.length - displayedKeywords.length;
-        const keywordsDisplay = displayedKeywords.join(', ') + (extraCount > 0 ? `, +${extraCount} more` : '');
         const canEdit = wb.user_id === user.id;
 
         li.innerHTML = `
-          <span><strong>${wb.name}</strong>: ${wb.context.substring(0, 50)}... <em>(${keywordsDisplay})</em></span>
+          <span><strong>${wb.name}</strong></span>
           <span>
             <button class="btn" onclick="downloadWorldbook('${wb.id}')">Download</button>
             ${canEdit ? `
@@ -175,12 +159,10 @@
       try {
         const text = await file.text();
         const parsed = JSON.parse(text);
-        const entries = normalizeWorldbookEntries(parsed);
+        const entries = parsed.entries || [];
 
         document.getElementById('wb-id').value = '';
-        document.getElementById('wb-name').value = file.name.replace(/[_-]+/g, ' ').replace(/\.json$/, '');
-        const combinedKeywords = [...new Set(entries.flatMap(e => e.keywords))];
-        document.getElementById('wb-keywords').value = combinedKeywords.join(', ');
+        document.getElementById('wb-name').value = parsed.name || file.name.replace(/[_-]+/g, ' ').replace(/\.json$/, '');
 
         formPanel.style.display = 'block';
         listPanel.style.display = 'none';
@@ -203,45 +185,27 @@
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user || !user.id) return alert("User not found");
 
-      const entryTexts = Array.from(document.querySelectorAll('.entry-block textarea'));
-      for (const textArea of entryTexts) {
-        if (textArea.value.length > 1000) {
-          alert("One or more entries exceed the 1000 character limit.");
-          return;
-        }
-      }
-
       const entries = Array.from(document.querySelectorAll('.entry-block')).map(block => {
         const name = block.querySelector('.entry-header span').textContent;
         const context = block.querySelector('textarea').value.trim();
         const keywords = block.querySelector('.entry-keywords').value.split(',').map(s => s.trim()).filter(Boolean);
         return { name, context, keywords };
       });
-      
+
       for (const entry of entries) {
         if (entry.context.length > 1000) {
           alert(`Entry "${entry.name}" exceeds 1000 characters.`);
           return;
+        }
       }
-      
-      const combinedContext = entries.map(e => `## ${e.name}\n${e.context}`).join('\n\n');
-      const combinedKeywords = [...new Set(entries.flatMap(e => e.keywords))];
-      
+
       const payload = {
         name: document.getElementById('wb-name').value,
-        keywords: combinedKeywords,
-        context: combinedContext,
-        user_id: user.id
+        user_id: user.id,
+        entries
       };
 
       const id = document.getElementById('wb-id').value;
-      const payload = {
-        name: document.getElementById('wb-name').value,
-        keywords: document.getElementById('wb-keywords').value.split(',').map(s => s.trim()),
-        context: combinedContext,
-        user_id: user.id
-      };
-
       try {
         const res = await fetch(`${API_BASE}/worldbooks${id ? `/${id}` : ''}`, {
           method: id ? 'PUT' : 'POST',
@@ -264,24 +228,17 @@
     window.editWorldBook = async function(id) {
       try {
         const res = await fetch(`${API_BASE}/worldbooks/${id}`);
-        const wb = await res.json();
+        const { worldbook, entries } = await res.json();
 
-        document.getElementById('wb-id').value = wb.id;
-        document.getElementById('wb-name').value = wb.name;
-        document.getElementById('wb-keywords').value = wb.keywords.join(', ');
+        document.getElementById('wb-id').value = worldbook.id;
+        document.getElementById('wb-name').value = worldbook.name;
 
         formPanel.style.display = 'block';
         listPanel.style.display = 'none';
         document.getElementById('form-title').textContent = 'Edit WorldBook';
 
-        const sections = wb.context.split(/(?:^|\n)(?=##\s)/).map(s => {
-          const lines = s.trim().split('\n');
-          const name = lines[0].replace(/^##\s*/, '') || 'Unnamed';
-          const context = lines.slice(1).join('\n').trim();
-          return { name, context, keywords: [] };
-        });
         entryContainer.innerHTML = '';
-        sections.forEach(createEntryField);
+        (entries || []).forEach(createEntryField);
       } catch (err) {
         console.error('Error loading worldbook', err);
       }
@@ -297,25 +254,28 @@
       }
     };
 
-    window.downloadWorldbook = function(id) {
-      const wb = worldbooks.find(w => w.id === id);
-      if (!wb) return alert("Worldbook not found.");
+    window.downloadWorldbook = async function(id) {
+      try {
+        const res = await fetch(`${API_BASE}/worldbooks/${id}`);
+        const { worldbook, entries } = await res.json();
 
-      const json = {
-        name: wb.name,
-        keywords: wb.keywords,
-        context: wb.context
-      };
+        const json = {
+          name: worldbook.name,
+          entries: entries || []
+        };
 
-      const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${wb.name.replace(/\s+/g, '_') || 'worldbook'}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+        const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${worldbook.name.replace(/\s+/g, '_') || 'worldbook'}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error("Error downloading worldbook", err);
+      }
     };
 
     fetchWorldbooks();
