@@ -8,7 +8,7 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; color: white; background-color: #1a1a2e; }
     header { margin-bottom: 20px; }
-    .container { display: flex; gap: 4px; margin-bottom: 12px; }
+    .container { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
     .panel { border: 1px solid #ccc; border-radius: 8px; padding: 16px; flex: 1; max-width: 95%; }
     .panel h2 { margin-top: 0; }
     ul { list-style: none; padding: 0; }
@@ -18,7 +18,12 @@
     .btn.danger { background: #dc3545; border-color: #dc3545; }
     form { display: flex; flex-direction: column; gap: 8px; }
     label { font-weight: bold; }
-    input[type="text"], textarea { padding: 6px; border-radius: 4px; border: 1px solid #ccc; max-width: 95%; min-width: 50%; }
+    input[type="text"], textarea { padding: 6px; border-radius: 4px; border: 1px solid #ccc; width: 100%; }
+    .entry-block { margin-bottom: 12px; border: 1px dashed #555; padding: 8px; border-radius: 6px; background: #2e2e42; }
+    .entry-header { display: flex; justify-content: space-between; align-items: center; }
+    .entry-header span { font-weight: bold; }
+    .entry-limit { font-size: 0.85em; color: lightgray; }
+    .entry-limit.over { color: red; }
   </style>
 </head>
 <body>
@@ -27,7 +32,6 @@
   </header>
 
   <div class="container">
-    <!-- List of existing worldbooks -->
     <section class="panel" id="list-panel">
       <h2>WorldBooks</h2>
       <ul id="worldbook-list"></ul>
@@ -36,24 +40,18 @@
       <input type="file" id="file-input" accept=".json" style="display: none;" />
     </section>
 
-    <!-- Create / Edit Form -->
     <section class="panel" id="form-panel" style="display: none;">
       <h2 id="form-title">Create WorldBook</h2>
       <form id="worldbook-form">
         <input type="hidden" id="wb-id" />
 
-        <!-- Name -->
         <label for="wb-name">Name</label>
         <input type="text" id="wb-name" placeholder="e.g. Beverage Preferences" required />
 
-        <!-- Keywords -->
         <label for="wb-keywords">Keywords (comma-separated)</label>
         <input type="text" id="wb-keywords" placeholder="e.g. drink, water, cola" required />
 
-        <!-- Context -->
-        <label for="wb-context">Context</label>
-        <div id="context-limit" style="font-size: 0.9em; color: lightgray;">0 / 1000</div>
-        <textarea id="wb-context" rows="12" placeholder="e.g. {{user}}'s favorite drink is cola" required></textarea>
+        <div id="entry-container"></div>
 
         <div style="margin-top: 12px; display: flex; gap: 8px;">
           <button type="submit" class="btn" id="btn-save">Save</button>
@@ -74,6 +72,7 @@
     const worldbookForm = document.getElementById('worldbook-form');
     const fileInput = document.getElementById('file-input');
     const btnImport = document.getElementById('btn-import-json');
+    const entryContainer = document.getElementById('entry-container');
 
     let worldbooks = [];
 
@@ -90,15 +89,14 @@
     function renderList() {
       const user = JSON.parse(localStorage.getItem("user")) || {};
       worldbookList.innerHTML = '';
-    
+
       worldbooks.forEach(wb => {
         const li = document.createElement('li');
         const displayedKeywords = wb.keywords.slice(0, 5);
         const extraCount = wb.keywords.length - displayedKeywords.length;
         const keywordsDisplay = displayedKeywords.join(', ') + (extraCount > 0 ? `, +${extraCount} more` : '');
-    
         const canEdit = wb.user_id === user.id;
-    
+
         li.innerHTML = `
           <span><strong>${wb.name}</strong>: ${wb.context.substring(0, 50)}... <em>(${keywordsDisplay})</em></span>
           <span>
@@ -109,7 +107,7 @@
             ` : ''}
           </span>
         `;
-    
+
         worldbookList.appendChild(li);
       });
     }
@@ -129,23 +127,35 @@
           keywords: e.keys || e.key || []
         }));
       }
-      
       return [];
+    }
+
+    function createEntryField(entry) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'entry-block';
+
+      const header = document.createElement('div');
+      header.className = 'entry-header';
+      header.innerHTML = `<span>${entry.name}</span> <span class="entry-limit">0 / 1000</span>`;
+
+      const textarea = document.createElement('textarea');
+      textarea.rows = 6;
+      textarea.value = entry.context;
+      textarea.placeholder = `Context for ${entry.name}`;
+
+      function updateCharCount() {
+        const count = textarea.value.length;
+        const display = header.querySelector('.entry-limit');
+        display.textContent = `${count} / 1000`;
+        display.className = 'entry-limit' + (count > 1000 ? ' over' : '');
       }
 
-    function validateEntryLimits(entries, maxChars = 1000) {
-      const overLimit = [];
-    
-      for (const entry of entries) {
-        if (entry.context.length > maxChars) {
-          overLimit.push({
-            name: entry.name,
-            length: entry.context.length
-          });
-        }
-      }
-    
-      return overLimit;
+      textarea.addEventListener('input', updateCharCount);
+      updateCharCount();
+
+      wrapper.appendChild(header);
+      wrapper.appendChild(textarea);
+      entryContainer.appendChild(wrapper);
     }
 
     btnShowCreate.addEventListener('click', () => {
@@ -154,43 +164,36 @@
       document.getElementById('form-title').textContent = 'Create WorldBook';
       worldbookForm.reset();
       document.getElementById('wb-id').value = '';
+      entryContainer.innerHTML = '';
     });
 
     btnImport.addEventListener('click', () => fileInput.click());
 
-
     fileInput.addEventListener('change', async event => {
       const file = event.target.files[0];
       if (!file) return;
-    
+
       try {
         const text = await file.text();
         const parsed = JSON.parse(text);
         const entries = normalizeWorldbookEntries(parsed);
-        const tooLong = validateEntryLimits(entries);
-    
-        if (tooLong.length > 0) {
-          const warning = tooLong.map(e => `• "${e.name}" is ${e.length} characters.`).join('\n');
-          alert(`Some sections are too long (max 850 characters):\n\n${warning}`);
-          return;
-        }
-    
-        const combinedContext = entries.map(e => `## ${e.name}\n${e.context}`).join('\n\n');
-        const combinedKeywords = [...new Set(entries.flatMap(e => e.keywords))];
-        
+
         document.getElementById('wb-id').value = '';
-        document.getElementById('wb-name').value = file.name.replace(/[_-]+/g, ' ').replace(/\\.json$/, '');
+        document.getElementById('wb-name').value = file.name.replace(/[_-]+/g, ' ').replace(/\.json$/, '');
+        const combinedKeywords = [...new Set(entries.flatMap(e => e.keywords))];
         document.getElementById('wb-keywords').value = combinedKeywords.join(', ');
-        document.getElementById('wb-context').value = combinedContext;
 
         formPanel.style.display = 'block';
         listPanel.style.display = 'none';
         document.getElementById('form-title').textContent = 'Import WorldBook';
-    
+
+        entryContainer.innerHTML = '';
+        entries.forEach(createEntryField);
+
       } catch (err) {
         alert('Failed to import JSON: ' + err.message);
       }
-    
+
       fileInput.value = '';
     });
 
@@ -199,109 +202,7 @@
       listPanel.style.display = 'block';
     });
 
-    worldbookForm.addEventListener('submit', async event => {
-      event.preventDefault();
-    
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (!user || !user.id) {
-        console.error("User not found in localStorage");
-        return;
-      }
-    
-      const id = document.getElementById('wb-id').value;
-      const payload = {
-        name: document.getElementById('wb-name').value,
-        keywords: document.getElementById('wb-keywords').value.split(',').map(s => s.trim()),
-        context: document.getElementById('wb-context').value,
-        user_id: user.id  // ✅ Inject user_id from localStorage
-      };
-    
-      try {
-        const res = await fetch(
-          `${API_BASE}/worldbooks${id ? `/${id}` : ''}`,
-          {
-            method: id ? 'PUT' : 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          }
-        );
-    
-        if (!res.ok) {
-          const errorBody = await res.text();
-          console.error("Failed to save worldbook:", res.status, errorBody);
-          return;
-        }
-    
-        await fetchWorldbooks();
-        btnCancel.click();
-      } catch (err) {
-        console.error('Error saving worldbook', err);
-      }
-    });
-
-
-    window.editWorldBook = async function(id) {
-      try {
-        const res = await fetch(`${API_BASE}/worldbooks/${id}`);
-        const wb = await res.json();
-        document.getElementById('wb-id').value = wb.id;
-        document.getElementById('wb-name').value = wb.name;
-        document.getElementById('wb-keywords').value = wb.keywords.join(', ');
-        document.getElementById('wb-context').value = wb.context;
-
-        formPanel.style.display = 'block';
-        listPanel.style.display = 'none';
-        document.getElementById('form-title').textContent = 'Edit WorldBook';
-      } catch (err) {
-        console.error('Error loading worldbook', err);
-      }
-    };
-
-    window.deleteWorldBook = async function(id) {
-      if (!confirm('Delete this worldbook?')) return;
-      try {
-        await fetch(`${API_BASE}/worldbooks/${id}`, { method: 'DELETE' });
-        await fetchWorldbooks();
-      } catch (err) {
-        console.error('Error deleting worldbook', err);
-      }
-    };
-
-    window.downloadWorldbook = function(id) {
-      const wb = worldbooks.find(w => w.id === id);
-      if (!wb) return alert("Worldbook not found.");
-    
-      const json = {
-        name: wb.name,
-        keywords: wb.keywords,
-        context: wb.context
-      };
-    
-      const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${wb.name.replace(/\s+/g, '_') || 'worldbook'}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    };
-
-    // initialize
     fetchWorldbooks();
-    const contextField = document.getElementById('wb-context');
-    const contextLimitDisplay = document.getElementById('context-limit');
-    
-    function updateContextCount() {
-      const len = contextField.value.length;
-      contextLimitDisplay.textContent = `${len} / 1000`;
-      contextLimitDisplay.style.color = len > 1000 ? 'red' : 'lightgray';
-    }
-    
-    contextField.addEventListener('input', updateContextCount);
-    updateContextCount(); // call once on load
-
   </script>
 </body>
 </html>
