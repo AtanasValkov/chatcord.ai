@@ -79,13 +79,37 @@
 
       const header = document.createElement('div');
       header.className = 'entry-header';
-      header.innerHTML = `
-        <span>${entry.name}</span>
-        <div style="display: flex; gap: 10px; align-items: center;">
-          <span class="entry-limit">0 / 1000</span>
-          <button type="button" class="btn danger btn-sm delete-entry">✕</button>
-        </div>
-      `;
+      header.innerHTML = '';
+      const titleInput = document.createElement('input');
+      titleInput.type = 'text';
+      titleInput.value = entry.name;
+      titleInput.className = 'entry-title';
+      titleInput.placeholder = 'Entry title';
+      titleInput.style = 'font-weight: bold; font-size: 1em; background: transparent; border: none; color: white; width: 100%;';
+      
+      const countSpan = document.createElement('span');
+      countSpan.className = 'entry-limit';
+      countSpan.textContent = '0 / 1000';
+      
+      const toggleBtn = document.createElement('button');
+      toggleBtn.className = 'btn btn-sm toggle-entry';
+      toggleBtn.type = 'button';
+      toggleBtn.textContent = '−';
+      
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'btn btn-sm danger delete-entry';
+      deleteBtn.type = 'button';
+      deleteBtn.textContent = '✕';
+      
+      const controls = document.createElement('div');
+      controls.style.display = 'flex';
+      controls.style.gap = '6px';
+      controls.appendChild(countSpan);
+      controls.appendChild(toggleBtn);
+      controls.appendChild(deleteBtn);
+      
+      header.appendChild(titleInput);
+      header.appendChild(controls);
 
       const textarea = document.createElement('textarea');
       textarea.rows = 6;
@@ -118,6 +142,14 @@
           alert("At least one entry is required.");
         }
       });
+      
+      toggleBtn.addEventListener('click', () => {
+        const isHidden = keywordsInput.style.display === 'none';
+        keywordsInput.style.display = isHidden ? 'block' : 'none';
+        textarea.style.display = isHidden ? 'block' : 'none';
+        toggleBtn.textContent = isHidden ? '−' : '+';
+      });
+
 
       entryContainer.appendChild(wrapper);
     }
@@ -207,7 +239,7 @@
       if (!user || !user.id) return alert("User not found");
 
       const entries = Array.from(document.querySelectorAll('.entry-block')).map(block => {
-        const name = block.querySelector('.entry-header span').textContent;
+        const name = block.querySelector('.entry-title').value.trim() || 'Unnamed';
         const context = block.querySelector('textarea').value.trim();
         const keywords = block.querySelector('.entry-keywords').value.split(',').map(s => s.trim()).filter(Boolean);
         return { name, context, keywords };
