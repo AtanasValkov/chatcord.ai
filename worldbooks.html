@@ -113,6 +113,40 @@
       });
     }
 
+    function normalizeWorldbookEntries(data) {
+      if (Array.isArray(data.entries)) {
+        return data.entries.map(e => ({
+          name: e.name || 'Unnamed',
+          context: e.entry || '',
+          keywords: e.keywords || []
+        }));
+      }
+      if (typeof data.entries === 'object') {
+        return Object.values(data.entries).map(e => ({
+          name: e.name || 'Unnamed',
+          context: e.content || '',
+          keywords: e.keys || e.key || []
+        }));
+      }
+      
+      return [];
+      }
+
+    function validateEntryLimits(entries, maxChars = 850) {
+      const overLimit = [];
+    
+      for (const entry of entries) {
+        if (entry.context.length > maxChars) {
+          overLimit.push({
+            name: entry.name,
+            length: entry.context.length
+          });
+        }
+      }
+    
+      return overLimit;
+    }
+
     btnShowCreate.addEventListener('click', () => {
       formPanel.style.display = 'block';
       listPanel.style.display = 'none';
@@ -123,46 +157,37 @@
 
     btnImport.addEventListener('click', () => fileInput.click());
 
-    fileInput.addEventListener('change', async (event) => {
+
+    fileInput.addEventListener('change', async event => {
       const file = event.target.files[0];
       if (!file) return;
     
       try {
         const text = await file.text();
-        const json = JSON.parse(text);
+        const parsed = JSON.parse(text);
+        const entries = normalizeWorldbookEntries(parsed);
+        const tooLong = validateEntryLimits(entries);
     
-        const name = file.name.replace(/[_-]+/g, ' ').replace(/\.json$/, '');
-        const entries = Object.values(json.entries || {});
-    
-        const keywords = [];
-        const contextSegments = [];
-    
-        for (const entry of entries) {
-          if (Array.isArray(entry.keys)) {
-            keywords.push(...entry.keys);
-          }
-          if (entry.content) {
-            contextSegments.push(`## ${entry.name || 'Untitled'}\n${entry.content}`);
-          }
+        if (tooLong.length > 0) {
+          const warning = tooLong.map(e => `• "${e.name}" is ${e.length} characters.`).join('\n');
+          alert(`Some sections are too long (max 850 characters):\n\n${warning}`);
+          return;
         }
     
-        // Autofill form
+        // Use the first valid entry to pre-fill the form
+        const wb = entries[0];
+        document.getElementById('wb-id').value = '';
+        document.getElementById('wb-name').value = wb.name;
+        document.getElementById('wb-keywords').value = wb.keywords.join(', ');
+        document.getElementById('wb-context').value = wb.context;
         formPanel.style.display = 'block';
         listPanel.style.display = 'none';
         document.getElementById('form-title').textContent = 'Import WorldBook';
-        worldbookForm.reset();
-    
-        document.getElementById('wb-id').value = ''; // Clear ID (new item)
-        document.getElementById('wb-name').value = name;
-        document.getElementById('wb-keywords').value = [...new Set(keywords)].join(', ');
-        document.getElementById('wb-context').value = contextSegments.join('\n\n');
     
       } catch (err) {
-        console.error('Failed to import JSON:', err);
-        alert('Invalid JSON file or format.');
+        alert('Failed to import JSON: ' + err.message);
       }
     
-      // Reset input for next import
       fileInput.value = '';
     });
 
