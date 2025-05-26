@@ -99,8 +99,16 @@
       textarea.addEventListener('input', updateCharCount);
       updateCharCount();
 
+      const keywordsInput = document.createElement('input');
+      keywordsInput.type = 'text';
+      keywordsInput.placeholder = 'keywords (comma-separated)';
+      keywordsInput.value = (entry.keywords || []).join(', ');
+      keywordsInput.className = 'entry-keywords';
+      
       wrapper.appendChild(header);
+      wrapper.appendChild(keywordsInput);
       wrapper.appendChild(textarea);
+
       entryContainer.appendChild(wrapper);
     }
 
@@ -203,7 +211,29 @@
         }
       }
 
-      const combinedContext = entryTexts.map(el => el.value.trim()).join('\n\n');
+      const entries = Array.from(document.querySelectorAll('.entry-block')).map(block => {
+        const name = block.querySelector('.entry-header span').textContent;
+        const context = block.querySelector('textarea').value.trim();
+        const keywords = block.querySelector('.entry-keywords').value.split(',').map(s => s.trim()).filter(Boolean);
+        return { name, context, keywords };
+      });
+      
+      for (const entry of entries) {
+        if (entry.context.length > 1000) {
+          alert(`Entry "${entry.name}" exceeds 1000 characters.`);
+          return;
+      }
+      
+      const combinedContext = entries.map(e => `## ${e.name}\n${e.context}`).join('\n\n');
+      const combinedKeywords = [...new Set(entries.flatMap(e => e.keywords))];
+      
+      const payload = {
+        name: document.getElementById('wb-name').value,
+        keywords: combinedKeywords,
+        context: combinedContext,
+        user_id: user.id
+      };
+
       const id = document.getElementById('wb-id').value;
       const payload = {
         name: document.getElementById('wb-name').value,
@@ -244,11 +274,14 @@
         listPanel.style.display = 'none';
         document.getElementById('form-title').textContent = 'Edit WorldBook';
 
-        const sections = wb.context.split(/(?:^|\n)(?=##\s)/).map(s => s.trim()).filter(Boolean);
-        entryContainer.innerHTML = '';
-        sections.forEach((section, i) => {
-          createEntryField({ name: `Entry ${i + 1}`, context: section, keywords: [] });
+        const sections = wb.context.split(/(?:^|\n)(?=##\s)/).map(s => {
+          const lines = s.trim().split('\n');
+          const name = lines[0].replace(/^##\s*/, '') || 'Unnamed';
+          const context = lines.slice(1).join('\n').trim();
+          return { name, context, keywords: [] };
         });
+        entryContainer.innerHTML = '';
+        sections.forEach(createEntryField);
       } catch (err) {
         console.error('Error loading worldbook', err);
       }
