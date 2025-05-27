@@ -203,7 +203,26 @@
       createEntryField({ name: "Entry 1", context: "", keywords: [] }); // 👈 Add this
     });
 
-
+    function normalizeWorldbookEntries(data) {
+      if (Array.isArray(data.entries)) {
+        return data.entries.map(e => ({
+          name: e.name || 'Unnamed',
+          context: e.entry || e.context || '',
+          keywords: e.keywords || e.keys || []
+        }));
+      }
+    
+      if (typeof data.entries === 'object') {
+        return Object.values(data.entries).map(e => ({
+          name: e.name || 'Unnamed',
+          context: e.content || e.entry || e.context || '',
+          keywords: e.keys || e.keywords || []
+        }));
+      }
+    
+      return [];
+    }
+    
     btnImport.addEventListener('click', () => fileInput.click());
 
     fileInput.addEventListener('change', async event => {
