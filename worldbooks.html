@@ -177,15 +177,15 @@
 
       worldbooks.forEach(wb => {
         const li = document.createElement('li');
-        const canEdit = wb.user_id === user.id;
+        const canEdit = wb.worldbook.user_id === user.id;
 
         li.innerHTML = `
-          <span><strong>${wb.name}</strong></span>
+          <span><strong>${wb.worldbook.name}</strong></span>
           <span>
-            <button class="btn" onclick="downloadWorldbook('${wb.id}')">Download</button>
+            <button class="btn" onclick="downloadWorldbook('${wb.worldbook.id}')">Download</button>
             ${canEdit ? `
-              <button class="btn" onclick="editWorldBook('${wb.id}')">Edit</button>
-              <button class="btn danger" onclick="deleteWorldBook('${wb.id}')">Delete</button>
+              <button class="btn" onclick="editWorldBook('${wb.worldbook.id}')">Edit</button>
+              <button class="btn danger" onclick="deleteWorldBook('${wb.worldbook.id}')">Delete</button>
             ` : ''}
           </span>
         `;
