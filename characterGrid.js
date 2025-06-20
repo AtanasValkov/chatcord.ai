@@ -455,12 +455,26 @@ function debounce(func, delay) {
     };
 }
 
-async function createBot(id) {
+export async function createBot(id) {
     document.querySelectorAll(".close").forEach(btn => {
         btn.addEventListener("click", closeModal);
     });
 
-    currentCharId = id;
+    // Check if it's a UUID using regex
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+  
+    if (isUUID) {
+      console.log('Handling UUID:', id);
+      // process UUID logic here
+      worldbookId = id;
+    } else if (/^\d+$/.test(id)) {
+      console.log('Handling numeric ID:', id);
+      // process numeric ID logic here
+      currentCharId = id;
+    } else {
+      throw new Error('Invalid ID format');
+    }
+
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
         showToast("Please log in to add characters to your server.")
@@ -613,6 +627,7 @@ async function createBot(id) {
 
 // Global variable to store the current character id:
 let currentCharId = null;
+let worldbookId = null;
 
 async function handleCreateWebhookClick() {
     const guildId = document.getElementById("guild-select").value;
@@ -620,11 +635,40 @@ async function handleCreateWebhookClick() {
 
     if (guildId && channelId) {
         try {
-            // Proceed with creating the webhook
-            createWebhook(channelId, currentCharId);
+            if (currentCharId) {
+              // Proceed with creating the webhook
+              createWebhook(channelId, currentCharId);
+            } else {
+              // Proceed with loading the worldbook
+              loadWorldbook(channelId, worldbookId);
         } catch (error) {
-            showToast("Failed to create webhook: " + error);
+            showToast("Failed: " + error);
         }
+    }
+}
+
+// Create the webhook in the selected channel
+async function loadWorldbook(channelId, worldbookId) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const response = await fetch('https://chatcord-server.onrender.com/load-worldbook', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            channel_id: channelId,
+            worldbook_id: worldbookId,
+            user_id: user.id,
+        })
+    });
+
+    const responseData = await response.json();
+    console.log("Response Data:", responseData);
+    if (response.ok) {
+        showToast(responseData.message);
+        closeModal();
+    } else {
+        showToast("Error: " + responseData.error);
     }
 }
 
@@ -673,7 +717,7 @@ async function isBotInGuild(guildId, signal) {
 }
 
 // Prompt the user to add the bot to the server
-function promptToAddBot(guildId) {
+export function promptToAddBot(guildId) {
     const addBotUrl = `https://discord.com/oauth2/authorize?client_id=1352038053757190206&scope=bot&permissions=536873984&guild_id=${guildId}`;
     showToast("The bot is not in this guild. Please add the bot to the guild.");
     window.open(addBotUrl, '_blank');
@@ -695,7 +739,7 @@ export async function fetchGuilds(userId, forceRefresh = false) {
 }
 
 // Fetch channels for a specific server (guild) using access_token
-async function fetchChannels(guildId, signal, forceRefresh = false) {
+export async function fetchChannels(guildId, signal, forceRefresh = false) {
     const url = `https://chatcord-server.onrender.com/guilds/${guildId}/channels${forceRefresh ? '?force_refresh=true' : ''}`;
     const response = await fetch(url, { signal });
     if (!response.ok) throw new Error("Failed to fetch channels");
@@ -713,11 +757,11 @@ async function loadCharacterInteractions(userId, charID) {
 }
 
 // Close Modal
-function closeModal() {
+export function closeModal() {
     document.getElementById("modal").style.display = "none";
 }
 
-function showToast(message) {
+export function showToast(message) {
     const toast = document.createElement("div");
     toast.className = "custom-toast";
     toast.innerText = message;
