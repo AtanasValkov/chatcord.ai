@@ -46,7 +46,7 @@
         <input type="hidden" id="wb-id" />
 
         <label for="wb-name">Name</label>
-        <input type="text" id="wb-name" placeholder="e.g. Beverage Preferences" required />
+        <input type="text" id="wb-name" placeholder="e.g. Runeterra" required />
 
         <div id="entry-container"></div>
         <button type="button" class="btn" id="btn-add-entry">+ Add Entry</button>
@@ -164,6 +164,7 @@
       try {
         const res = await fetch(`${API_BASE}/worldbooks`);
         worldbooks = await res.json();
+        console.log(worldbooks);
         renderList();
       } catch (err) {
         console.error('Error fetching worldbooks', err);
