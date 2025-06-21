@@ -641,6 +641,7 @@ async function handleCreateWebhookClick() {
             } else {
               // Proceed with loading the worldbook
               loadWorldbook(channelId, worldbookId);
+            }
         } catch (error) {
             showToast("Failed: " + error);
         }
