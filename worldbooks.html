@@ -164,7 +164,6 @@
       try {
         const res = await fetch(`${API_BASE}/worldbooks`);
         worldbooks = await res.json();
-        console.log(worldbooks);
         renderList();
       } catch (err) {
         console.error('Error fetching worldbooks', err);
