@@ -464,11 +464,9 @@ export async function createBot(id) {
     const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
   
     if (isUUID) {
-      console.log('Handling UUID:', id);
       // process UUID logic here
       worldbookId = id;
     } else if (/^\d+$/.test(id)) {
-      console.log('Handling numeric ID:', id);
       // process numeric ID logic here
       currentCharId = id;
     } else {
@@ -541,34 +539,44 @@ export async function createBot(id) {
         try {
             const botInGuild = await isBotInGuild(guildId, signal);
             if (botInGuild) {
-                const data = await fetchChannels(guildId, signal);
-                if (Array.isArray(data.channels)) {
-                    channelSelect.innerHTML = '<option value="">Select a Channel</option>'; // Clear again to avoid duplicates
-                    data.channels.forEach(channel => {
-                        const option = document.createElement("option");
-                        option.value = channel.channel_id;
-                        option.textContent = channel.name;
-                        channelSelect.appendChild(option);
-                    });
-                    channelSelect.disabled = false;
-                    forceRefreshBtn.disabled = false;
-                    forceRefreshBtn.onclick = async function () {
-                        try {
-                            const refreshed = await fetchChannels(guildId, signal, true);
-                            if (Array.isArray(refreshed.channels)) {
-                                channelSelect.innerHTML = '<option value="">Select a Channel</option>';
-                                refreshed.channels.forEach(channel => {
-                                    const option = document.createElement("option");
-                                    option.value = channel.id; // Refreshed channels come from Discord with .id instead of .channel_id
-                                    option.textContent = channel.name;
-                                    channelSelect.appendChild(option);
-                                });
-                            }
-                        } catch (err) {
-                            showToast("Force refresh failed: " + err.message);
+              let data;
+              if (isUUID) {
+                data = await fetchChannels(guildId, signal, { forceRefresh: false, skippingWebhookLimit: true });
+              } else {
+                data = await fetchChannels(guildId, signal, { forceRefresh: false, skippingWebhookLimit: false });
+              }
+              if (Array.isArray(data.channels)) {
+                  channelSelect.innerHTML = '<option value="">Select a Channel</option>'; // Clear again to avoid duplicates
+                  data.channels.forEach(channel => {
+                      const option = document.createElement("option");
+                      option.value = channel.channel_id;
+                      option.textContent = channel.name;
+                      channelSelect.appendChild(option);
+                  });
+                  channelSelect.disabled = false;
+                  forceRefreshBtn.disabled = false;
+                  forceRefreshBtn.onclick = async function () {
+                      try {
+                        let refreshed;
+                        if (isUUID) {
+                          refreshed = await fetchChannels(guildId, signal, { forceRefresh: true, skippingWebhookLimit: true });
+                        } else {
+                          refreshed = await fetchChannels(guildId, signal, { forceRefresh: true, skippingWebhookLimit: false });
                         }
-                    };
-                }
+                          if (Array.isArray(refreshed.channels)) {
+                              channelSelect.innerHTML = '<option value="">Select a Channel</option>';
+                              refreshed.channels.forEach(channel => {
+                                  const option = document.createElement("option");
+                                  option.value = channel.id; // Refreshed channels come from Discord with .id instead of .channel_id
+                                  option.textContent = channel.name;
+                                  channelSelect.appendChild(option);
+                              });
+                          }
+                      } catch (err) {
+                          showToast("Force refresh failed: " + err.message);
+                      }
+                  };
+              }
             } else {
                 promptToAddBot(guildId);
             }
@@ -651,7 +659,7 @@ async function handleCreateWebhookClick() {
 // Create the webhook in the selected channel
 async function loadWorldbook(channelId, worldbookId) {
     const user = JSON.parse(localStorage.getItem("user"));
-    const response = await fetch('https://chatcord-server.onrender.com/load-worldbook?skip_webhook_limit=true', {
+    const response = await fetch('https://chatcord-server.onrender.com/load-worldbook', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -740,8 +748,12 @@ export async function fetchGuilds(userId, forceRefresh = false) {
 }
 
 // Fetch channels for a specific server (guild) using access_token
-export async function fetchChannels(guildId, signal, forceRefresh = false) {
-    const url = `https://chatcord-server.onrender.com/guilds/${guildId}/channels${forceRefresh ? '?force_refresh=true' : ''}`;
+export async function fetchChannels(guildId, signal, { forceRefresh = false, skippingWebhookLimit = false } = {}) {
+    const params = new URLSearchParams();
+    if (forceRefresh) params.append("force_refresh", "true");
+    if (skippingWebhookLimit) params.append("skippingwebhooklimit", "true");
+
+    const url = `https://chatcord-server.onrender.com/guilds/${guildId}/channels?${params.toString()}`;
     const response = await fetch(url, { signal });
     if (!response.ok) throw new Error("Failed to fetch channels");
     return response.json();
