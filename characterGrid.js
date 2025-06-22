@@ -651,7 +651,7 @@ async function handleCreateWebhookClick() {
 // Create the webhook in the selected channel
 async function loadWorldbook(channelId, worldbookId) {
     const user = JSON.parse(localStorage.getItem("user"));
-    const response = await fetch('https://chatcord-server.onrender.com/load-worldbook', {
+    const response = await fetch('https://chatcord-server.onrender.com/load-worldbook?skip_webhook_limit=true', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
