@@ -30,6 +30,32 @@
   <header>
     <h1>WorldBooks Manager</h1>
   </header>
+  <!-- Load Worldbook Modal -->
+  <div id="modal" class="modal" style="display: none;">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Load Worldbook</h2>
+  
+          <div>
+              <label for="guild-select">Select Server</label>
+              <select id="guild-select">
+                  <option value="">Select a Server</option>
+              </select>
+          </div>
+  
+          <div>
+              <label for="channel-select">Select Channel</label>
+              <select id="channel-select" disabled>
+                  <option value="">Select a Channel</option>
+              </select>
+          </div>
+          <div>
+              <button id="create-webhook-btn" disabled>Load Worldbook</button>
+              <button id="refresh-guilds">Refresh Servers</button>
+              <button id="force-refresh-channels" disabled>Refresh Channels</button>
+          </div>
+      </div>
+  </div>
 
   <div class="container">
     <section class="panel" id="list-panel">
@@ -59,6 +85,7 @@
   </div>
 
   <script>
+    import createBot from './characterGrid.js';
     const API_BASE = 'https://chatcord-server.onrender.com';
 
     const listPanel = document.getElementById('list-panel');
@@ -181,7 +208,7 @@
         li.innerHTML = `
           <span><strong>${wb.worldbook.name}</strong></span>
           <span>
-            <button class="btn" onclick="downloadWorldbook('${wb.worldbook.id}')">Download</button>
+            <button class="btn" onclick="createBot('${wb.worldbook.id}')">Download</button>
             ${canEdit ? `
               <button class="btn" onclick="editWorldBook('${wb.worldbook.id}')">Edit</button>
               <button class="btn danger" onclick="deleteWorldBook('${wb.worldbook.id}')">Delete</button>
