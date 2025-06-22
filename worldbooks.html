@@ -208,14 +208,15 @@
         li.innerHTML = `
           <span><strong>${wb.worldbook.name}</strong></span>
           <span>
-            <button class="btn" onclick="createBot('${wb.worldbook.id}')">Download</button>
+            <button class="btn download-btn">Download</button>
             ${canEdit ? `
               <button class="btn" onclick="editWorldBook('${wb.worldbook.id}')">Edit</button>
               <button class="btn danger" onclick="deleteWorldBook('${wb.worldbook.id}')">Delete</button>
             ` : ''}
           </span>
         `;
-
+        const downloadBtn = li.querySelector('.download-btn');
+        downloadBtn.addEventListener('click', () => createBot(wb.worldbook.id));
         worldbookList.appendChild(li);
       });
     }
