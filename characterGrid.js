@@ -727,7 +727,7 @@ async function isBotInGuild(guildId, signal) {
 
 // Prompt the user to add the bot to the server
 export function promptToAddBot(guildId) {
-    const addBotUrl = `https://discord.com/oauth2/authorize?client_id=1352038053757190206&scope=bot&permissions=536873984&guild_id=${guildId}`;
+    const addBotUrl = `https://discord.com/oauth2/authorize?client_id=1352038053757190206&scope=bot&permissions=536882176&guild_id=${guildId}`;
     showToast("The bot is not in this guild. Please add the bot to the guild.");
     window.open(addBotUrl, '_blank');
     const channelSelect = document.getElementById("channel-select");        
