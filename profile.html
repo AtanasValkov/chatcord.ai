@@ -139,6 +139,7 @@
           case 'mine': return character.userID === myUserId;
           case 'favorites': return favoriteCharacterIds.has(Number(character.id));
           case 'review': return character.review_status === 'pending';
+          case 'user': return character.username === username;
           default: return true;
         }
       });
@@ -176,7 +177,7 @@
     // Initial load
     if (username) {
       // Viewing someone else's profile
-      await loadCharacters('mine', accessLevel);
+      await loadCharacters('user', accessLevel);
     } else {
       // Viewing own profile
       if (accessLevel === 'admin' || accessLevel === 'moderator') {
