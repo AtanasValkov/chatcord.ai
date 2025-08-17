@@ -388,16 +388,35 @@ function showCharacterDetails(character) {
     const madeByDiv = document.createElement("div");
     madeByDiv.classList.add("madeBy");
     madeByDiv.id = "madeBy";
-    madeByDiv.innerHTML = `
-      <a href="profile.html?username=${encodeURIComponent(character.username)}" style="text-decoration: none;display: flex;color: inherit;align-items: anchor-center;">
-        <p style="margin: 0 10px;">Uploaded by <strong>${character.username}</strong></p>
-        <img src="https://cdn.discordapp.com/avatars/${character.userID}/${character.avatar}.png"
-             alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
-      </a>
-    `;
-    detailsPanelMadeBy.appendChild(madeByDiv);
-
-    detailsPanel.appendChild(detailsPanelMadeBy);
+    // Default to username first
+    let uploaderName = character.username;
+    // Fetch displayname from backend
+    fetch(`https://chatcord-server.onrender.com/get-displayname/${encodeURIComponent(character.username)}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch displayname");
+        return res.json();
+      })
+      .then(data => {
+        if (data.displayname) {
+          uploaderName = data.displayname;
+        }
+      })
+      .catch(err => {
+        console.warn("Using username fallback because displayname fetch failed:", err);
+      })
+      .finally(() => {
+        // Render the HTML after we know which name to use
+        madeByDiv.innerHTML = `
+          <a href="profile.html?username=${encodeURIComponent(character.username)}" 
+             style="text-decoration: none;display: flex;color: inherit;align-items: anchor-center;">
+            <p style="margin: 0 10px;">Uploaded by <strong>${uploaderName}</strong></p>
+            <img src="https://cdn.discordapp.com/avatars/${character.userID}/${character.avatar}.png"
+                 alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
+          </a>
+        `;
+        detailsPanelMadeBy.appendChild(madeByDiv);    
+        detailsPanel.appendChild(detailsPanelMadeBy);
+      });
 
     const detailsPanelPlace = document.getElementById("detailsPanelPlace");
     // Append to body or another container
