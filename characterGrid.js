@@ -389,7 +389,7 @@ function showCharacterDetails(character) {
     madeByDiv.classList.add("madeBy");
     madeByDiv.id = "madeBy";
     madeByDiv.innerHTML = `
-      <a href="profile.html?ID=${character.userID}&username=${encodeURIComponent(character.username)}" style="text-decoration: none;display: flex;color: inherit;align-items: anchor-center;">
+      <a href="profile.html?username=${encodeURIComponent(character.username)}" style="text-decoration: none;display: flex;color: inherit;align-items: anchor-center;">
         <p style="margin: 0 10px;">Uploaded by <strong>${character.username}</strong></p>
         <img src="https://cdn.discordapp.com/avatars/${character.userID}/${character.avatar}.png"
              alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
