@@ -553,8 +553,8 @@
                               const usernameInput = document.getElementById('usernameInput');
                             
                               saveUsernameBtn.addEventListener('click', async () => {
-                                const newUsername = usernameInput.value.trim();
-                                if (newUsername !== '') {
+                                const newDisplayname = usernameInput.value.trim();
+                                if (newDisplayname !== '') {
                                   const existingUser = JSON.parse(localStorage.getItem('user')) || {};
                                   if (!existingUser.id) {
                                     alert("User ID not found. Please log in again.");
