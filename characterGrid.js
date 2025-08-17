@@ -407,7 +407,7 @@ function showCharacterDetails(character) {
       .finally(() => {
         // Render the HTML after we know which name to use
         madeByDiv.innerHTML = `
-          <a href="profile.html?username=${encodeURIComponent(character.username)}" 
+          <a href="profile.html?u=${encodeURIComponent(character.userID)}" 
              style="text-decoration: none;display: flex;color: inherit;align-items: anchor-center;">
             <p style="margin: 0 10px;">Uploaded by <strong>${uploaderName}</strong></p>
             <img src="https://cdn.discordapp.com/avatars/${character.userID}/${character.avatar}.png"
