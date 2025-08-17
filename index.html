@@ -552,7 +552,7 @@
                               const saveUsernameBtn = document.getElementById('saveUsername');
                               const usernameInput = document.getElementById('usernameInput');
                             
-                              saveUsernameBtn.addEventListener('click', () => {
+                              saveUsernameBtn.addEventListener('click', async () => {
                                 const newUsername = usernameInput.value.trim();
                                 if (newUsername !== '') {
                                   const existingUser = JSON.parse(localStorage.getItem('user')) || {};
