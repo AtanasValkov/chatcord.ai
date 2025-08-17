@@ -191,7 +191,14 @@
                             
                                 // Create a span for the username
                                 const usernameSpan = document.createElement("span");
-                                usernameSpan.textContent = user.username;
+                                name = "";
+                                if (user.displayname) {
+                                    name = user.displaynamel
+                                }
+                                else {
+                                    name = user.username;
+                                }
+                                usernameSpan.textContent = name;
                             
                                 // Create an avatar image
                                 const avatarIcon = document.createElement("img");
@@ -235,7 +242,14 @@
                                         
                                             // Create a span for the username
                                             const usernameSpan = document.createElement("span");
-                                            usernameSpan.textContent = user.username;
+                                            name = "";
+                                            if (user.displayname) {
+                                                name = user.displaynamel
+                                            }
+                                            else {
+                                                name = user.username;
+                                            }
+                                            usernameSpan.textContent = name;
                                         
                                             // Create an avatar image
                                             const avatarIcon = document.createElement("img");
@@ -542,9 +556,36 @@
                                 const newUsername = usernameInput.value.trim();
                                 if (newUsername !== '') {
                                   const existingUser = JSON.parse(localStorage.getItem('user')) || {};
-                                  existingUser.username = newUsername;
-                                  localStorage.setItem('user', JSON.stringify(existingUser));
-                                  alert('Username updated!');
+                                  if (!existingUser.id) {
+                                    alert("User ID not found. Please log in again.");
+                                    return;
+                                  }
+                                    try {
+                                      // Call your backend to update displayname
+                                      const response = await fetch(`https://chatcord-server.onrender.com/update-displayname/${existingUser.id}`, {
+                                        method: 'PUT',
+                                        headers: {
+                                          'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ displayname: newDisplayname })
+                                      });
+                                    
+                                      if (!response.ok) {
+                                        const errorData = await response.json();
+                                        throw new Error(errorData.description || 'Failed to update displayname');
+                                      }
+                                    
+                                      const data = await response.json();
+                                    
+                                      // Update localStorage
+                                      existingUser.displayname = data.user.displayname;
+                                      localStorage.setItem('user', JSON.stringify(existingUser));
+                                    
+                                      alert('Displayname updated!');
+                                    } catch (err) {
+                                      console.error(err);
+                                      alert(`Error: ${err.message}`);
+                                    }
                                 }
                               });
                             
