@@ -27,7 +27,6 @@
     
     // Parse the URL parameters
     const params = new URLSearchParams(window.location.search);
-    const userId = params.get('ID');
     const username = params.get('username');
     
     // Get user data
@@ -46,7 +45,7 @@
 
     // Set up UI based on whether viewing own profile or someone else's
     const header = document.getElementById('profileHeader');
-    if (userId && username) {
+    if (username) {
       // Viewing someone else's profile
       header.innerHTML = `<span>${username}'s Profile</span>`;
     } else {
@@ -78,18 +77,20 @@
     }
 
     // Set up tab event listeners
-    document.getElementById('myCharactersTab').addEventListener('click', () => {
-      handleTabClick(document.getElementById('myCharactersTab'), 'mine');
-    });
-    
-    document.getElementById('myFavoritesTab').addEventListener('click', () => {
-      handleTabClick(document.getElementById('myFavoritesTab'), 'favorites');
-    });
-    
-    if (document.getElementById('forReviewTab')) {
-      document.getElementById('forReviewTab').addEventListener('click', () => {
-        handleTabClick(document.getElementById('forReviewTab'), 'review');
+    if (!username) {
+      document.getElementById('myCharactersTab').addEventListener('click', () => {
+        handleTabClick(document.getElementById('myCharactersTab'), 'mine');
       });
+    
+      document.getElementById('myFavoritesTab').addEventListener('click', () => {
+        handleTabClick(document.getElementById('myFavoritesTab'), 'favorites');
+      });
+      
+      if (document.getElementById('forReviewTab')) {
+        document.getElementById('forReviewTab').addEventListener('click', () => {
+          handleTabClick(document.getElementById('forReviewTab'), 'review');
+        });
+      }
     }
 
     // Main character loading function
