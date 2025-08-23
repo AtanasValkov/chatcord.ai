@@ -104,6 +104,7 @@ async function populateFields(character, mode) {
   document.getElementById("displayText").value = character.description || '';
   document.getElementById("genderSelect").value = character.gender || '';
   document.getElementById("sfwSelect").value = character.rating || '';
+  document.getElementById("privateCheckbox").value = character.is_private || '';
   authorID = character.userID;
   let authorName = character.username;
   let authorIcon = character.avatar;
@@ -618,7 +619,8 @@ async function onSubmit(mode, e) {
     userID: user.id,
     username: user.username,
     avatar: user.avatar,
-    ...(mode === 'edit' && { id: charID })
+    ...(mode === 'edit' && { id: charID }),
+    is_private: document.getElementById("privateCheckbox").value;
   };
   try {
     // Prepare FormData (incl. file if any)
