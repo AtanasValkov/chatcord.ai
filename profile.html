@@ -45,6 +45,8 @@
     // Parse the URL parameters
     const params = new URLSearchParams(window.location.search);
     const userID = params.get('u');
+    const charID = params.get("charID");
+    window.history.replaceState({}, document.title, "profile.html");
     let currentType = null;
     // Fetch profile user data
     let profileUser = null;
@@ -146,11 +148,6 @@
   
       // 2) Get the ids of favortited characters
       const myUserId = user?.id ?? null;
-  
-      // Handle URL parameters
-      const urlParamsChar = new URLSearchParams(window.location.search);
-      window.history.replaceState({}, document.title, "profile.html");
-      const charID = urlParamsChar.get("charID");
       
       // Search setup
       const searchInput = document.getElementById("searchBarCharacters");
