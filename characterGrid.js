@@ -139,7 +139,8 @@ function buildButtonsHTML(character, filters) {
     return `
       <div class="card-actions">
         <button class="edit-btn ${needsAttention}" aria-label="Edit character">Edit</button>
-        <button class="delete-btn" aria-label="Delete character">Delete</button>
+        <button class="delete-btn" aria-label="Delete character">Delete</button>        
+        <button class="share-btn" aria-label="Share Link">Share</button>
       </div>
     `;
   }
@@ -176,6 +177,7 @@ function addCardInteractions(card, character, filters) {
   if (!filters.showDetails) {
     const deleteBtn = card.querySelector('.delete-btn');
     const editBtn = card.querySelector('.edit-btn');
+    const shareBtn2 = card.querySelector('.share-btn');
     
     deleteBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -185,6 +187,11 @@ function addCardInteractions(card, character, filters) {
     editBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       editCharacter(character.id);
+    });
+
+    shareBtn2.addEventListener('click', (e) => {
+      e.stopPropagation();
+      shareCharacter(character);
     });
   }
 }
@@ -314,27 +321,7 @@ function showCharacterDetails(character) {
     
     shareBtn.addEventListener('click', (event) => {
         event.stopPropagation();
-    
-        // Get current page filename (e.g. "index.html" or "profile.html")
-        const currentPage = window.location.pathname.split("/").pop();
-    
-        let shareLink;
-    
-        if (currentPage === "profile.html") {
-            // profile page → add both charID and userID
-            shareLink = `${window.location.origin}/profile.html?u=${encodeURIComponent(character.userID)}&charID=${character.id}`;
-        } else {
-            // fallback for index.html (or any other page)
-            shareLink = `${window.location.origin}/index.html?charID=${character.id}`;
-        }
-    
-        // Copy to clipboard
-        navigator.clipboard.writeText(shareLink).then(() => {
-            showToast("Character link copied!");
-        }).catch(err => {
-            console.error("Failed to copy text: ", err);
-            showToast("Failed to copy link.");
-        });
+        shareCharacter(character);
     });
 
 (function() {
@@ -468,6 +455,28 @@ function deleteCharacter(characterId) {
   }
 }
 
+function shareCharacter(character) {
+  // Get current page filename (e.g. "index.html" or "profile.html")
+  const currentPage = window.location.pathname.split("/").pop();
+  
+  let shareLink;
+  
+  if (currentPage === "profile.html") {
+      // profile page → add both charID and userID
+      shareLink = `${window.location.origin}/profile.html?u=${encodeURIComponent(character.userID)}&charID=${character.id}`;
+  } else {
+      // fallback for index.html (or any other page)
+      shareLink = `${window.location.origin}/index.html?charID=${character.id}`;
+  }
+  
+  // Copy to clipboard
+  navigator.clipboard.writeText(shareLink).then(() => {
+      showToast("Character link copied!");
+  }).catch(err => {
+      console.error("Failed to copy text: ", err);
+      showToast("Failed to copy link.");
+  });
+}
 
 // Function to hide details panel
 export function hideDetails() {
