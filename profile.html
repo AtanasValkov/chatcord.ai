@@ -15,6 +15,23 @@
       <span class="tab" id="myFavoritesTab">My Favorites</span>
     </h1>
     <button onclick="window.location.href='index.html';" class="back-btn">Back</button>
+    <div class="sort-controls">
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </div>
+      <select id="sortOptions">
+        <option value="downloads">Downloads</option>
+        <option value="likes">Likes</option>
+        <option value="comments">Comments</option>
+        <option value="favorites">Favorites</option>
+        <option value="date">Date Created</option>
+      </select>
+      <select id="sortOrder">
+        <option value="desc">Descending</option>
+        <option value="asc">Ascending</option>
+      </select>
+      <input type="text" id="searchBarCharacters" placeholder="Search..." />
+    </div>
     <div id="detailsPanelPlace"></div>
     <div class="container-profile">
       <div class="character-grid" id="characterGrid">Loading characters...</div>
@@ -126,9 +143,59 @@
         console.error('Fetch failed:', error);
       }
   
-      // 2) Rest of your existing code remains the same
+      // 2) Get the ids of favortited characters
       const myUserId = user?.id ?? null;
   
+      // Handle URL parameters
+      const urlParamsChar = new URLSearchParams(window.location.search);
+      window.history.replaceState({}, document.title, "profile.html");
+      const charID = urlParamsChar.get("charID");
+      
+      // Search setup
+      const searchInput = document.getElementById("searchBarCharacters");
+      let searchQuery = searchInput.value.toLowerCase();
+      
+      // Find matching character for initial search input
+      const matchedChar = allCharacters.find(char => char.id === charID);
+      if (charID && matchedChar) {
+        searchInput.value = matchedChar.char_name;
+        searchQuery = matchedChar.char_name.toLowerCase();
+      }
+  
+      // Filter characters
+      let filteredCharacters = allCharacters.filter(char => {
+        // const isApproved = (char.review_status || "").toLowerCase() === "approved";
+        const matchesSearch = char.char_name?.toLowerCase().includes(searchQuery);
+        // return isApproved && (searchQuery === "" || matchesSearch);
+        return (searchQuery === "" || matchesSearch);
+      });
+  
+      // Sorting
+      const sortOption = document.getElementById("sortOptions").value;
+      const sortOrder = document.getElementById("sortOrder").value;
+      const multiplier = sortOrder === "asc" ? -1 : 1;
+  
+      filteredCharacters.sort((charA, charB) => {
+        const getValue = (char, field) => parseInt(char[field], 10) || 0;
+        
+        switch (sortOption) {
+          case "downloads":
+            return multiplier * (getValue(charB, 'downloads') - getValue(charA, 'downloads'));
+          case "likes":
+            return multiplier * (getValue(charB, 'likes') - getValue(charA, 'likes'));
+          case "comments":
+            return multiplier * (getValue(charB, 'comments') - getValue(charA, 'comments'));
+          case "favorites":
+            return multiplier * (getValue(charB, 'favorites') - getValue(charA, 'favorites'));
+          case "date":
+            return multiplier * (new Date(charB.createdAt) - new Date(charA.createdAt));
+          default:
+            return 0;
+        }
+      });
+
+      allCharacters = filteredCharacters;
+      
       let favoriteCharacterIds = new Set();
       if (myUserId && (type === 'favorites' || type === 'mine')) {
         try {
@@ -203,6 +270,9 @@
       }
     }
 
+    // Character grid search bar
+    document.getElementById("searchBarCharacters").addEventListener("input", loadCharacters);
+    
     // Close sidebar when clicking on the overlay
     document.getElementById('overlay').addEventListener('click', function() {
       document.getElementById('detailsPanel')?.remove();
