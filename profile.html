@@ -45,6 +45,7 @@
     // Parse the URL parameters
     const params = new URLSearchParams(window.location.search);
     const userID = params.get('u');
+    let currentType = null;
     // Fetch profile user data
     let profileUser = null;
     try {
@@ -256,20 +257,25 @@
     // Initial load
     if (userID) {
       // Viewing someone else's profile
-      await loadCharacters('user', accessLevel);
+      currentType = 'user';
+      await loadCharacters(currentType, accessLevel);
     } else {
       // Viewing own profile
       if (accessLevel === 'admin' || accessLevel === 'moderator') {
-        await loadCharacters('review', accessLevel);
+        currentType = 'review';
+        await loadCharacters(currentType, accessLevel);
         document.getElementById('forReviewTab').classList.add('active');
       } else {
-        await loadCharacters('mine', accessLevel);
+        currentType = 'mine';
+        await loadCharacters(currentType, accessLevel);
         document.getElementById('myCharactersTab').classList.add('active');
       }
     }
 
     // Character grid search bar
-    document.getElementById("searchBarCharacters").addEventListener("input", loadCharacters);
+    document.getElementById("searchBarCharacters").addEventListener("input", () => {
+      loadCharacters(currentType, accessLevel);
+    });
     
     // Close sidebar when clicking on the overlay
     document.getElementById('overlay').addEventListener('click', function() {
