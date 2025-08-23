@@ -311,11 +311,22 @@ function showCharacterDetails(character) {
     shareBtn.classList.add("share");
     shareBtn.id = "shareBtn";
     shareBtn.innerHTML = '<i class="fas fa-share-alt"></i>';
-
+    
     shareBtn.addEventListener('click', (event) => {
         event.stopPropagation();
     
-        const shareLink = `https://chatcord.win/index.html?charID=${character.id}`;
+        // Get current page filename (e.g. "index.html" or "profile.html")
+        const currentPage = window.location.pathname.split("/").pop();
+    
+        let shareLink;
+    
+        if (currentPage === "profile.html") {
+            // profile page → add both charID and userID
+            shareLink = `${window.location.origin}/profile.html?u=${encodeURIComponent(character.userID)}&charID=${character.id}`;
+        } else {
+            // fallback for index.html (or any other page)
+            shareLink = `${window.location.origin}/index.html?charID=${character.id}`;
+        }
     
         // Copy to clipboard
         navigator.clipboard.writeText(shareLink).then(() => {
