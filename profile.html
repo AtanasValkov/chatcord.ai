@@ -45,7 +45,7 @@
     // Parse the URL parameters
     const params = new URLSearchParams(window.location.search);
     const userID = params.get('u');
-    const charID = params.get("charID");
+    let charID = params.get("charID");
     window.history.replaceState({}, document.title, "profile.html");
     let currentType = null;
     // Fetch profile user data
