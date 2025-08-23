@@ -620,7 +620,7 @@ async function onSubmit(mode, e) {
     username: user.username,
     avatar: user.avatar,
     ...(mode === 'edit' && { id: charID }),
-    is_private: document.getElementById("privateCheckbox").value;
+    is_private: document.getElementById("privateCheckbox").value
   };
   try {
     // Prepare FormData (incl. file if any)
