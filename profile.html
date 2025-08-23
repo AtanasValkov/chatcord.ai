@@ -193,8 +193,16 @@
       let filteredCharacters = charactersToDisplay.filter(char => {
         // const isApproved = (char.review_status || "").toLowerCase() === "approved";
         const matchesSearch = char.char_name?.toLowerCase().includes(searchQuery);
+        // Admins and mods can always see everything
+        const isStaff = accessLevel === 'admin' || accessLevel === 'moderator';
+        // Private check
+        const canViewPrivate =
+          isStaff ||                 // staff override
+          !char.is_private ||        // not private
+          char.userID === myUserId || // owner
+          char.id === charID;        // accessed directly by ID
         // return isApproved && (searchQuery === "" || matchesSearch);
-        return (searchQuery === "" || matchesSearch);
+        return canViewPrivate && (searchQuery === "" || matchesSearch);
       });
   
       // Sorting
