@@ -279,6 +279,7 @@
 
     // Character grid search bar
     document.getElementById("searchBarCharacters").addEventListener("input", () => {
+      charID = null;
       loadCharacters(currentType, accessLevel);
     });
     document.getElementById("sortOptions").addEventListener("input", () => {
