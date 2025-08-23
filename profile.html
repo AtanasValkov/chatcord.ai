@@ -222,12 +222,10 @@
             return 0;
         }
       });
-
-      charactersToDisplay = filteredCharacters;
   
       // 4) Sorting and rendering
       if (type === 'mine') {
-        charactersToDisplay.sort((a, b) => {
+        filteredCharacters.sort((a, b) => {
           if (a.review_status === 'request_changes') return -1;
           if (b.review_status === 'request_changes') return 1;
           return 0;
@@ -235,14 +233,14 @@
       }
   
       const showFavBadge = (type === 'favorites');
-      if (charactersToDisplay.length === 0) {
+      if (filteredCharacters.length === 0) {
         document.getElementById('characterGrid').innerHTML = 
            type === 'favorites' ? "You haven't favorited any characters yet." :
            type === 'mine' ? "You haven't created any characters yet." :
            type === 'review' ? "No characters pending review." :
            "No characters found.";
       } else {
-        populateGrid(charactersToDisplay, {
+        populateGrid(filteredCharacters, {
           showDetails: type !== 'mine',
           reviewMode: type === 'review',
           accessLevel: accessLevel,
