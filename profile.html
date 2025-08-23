@@ -276,6 +276,12 @@
     document.getElementById("searchBarCharacters").addEventListener("input", () => {
       loadCharacters(currentType, accessLevel);
     });
+    document.getElementById("sortOptions").addEventListener("input", () => {
+      loadCharacters(currentType, accessLevel);
+    });
+    document.getElementById("sortOrder").addEventListener("input", () => {
+      loadCharacters(currentType, accessLevel);
+    });
     
     // Close sidebar when clicking on the overlay
     document.getElementById('overlay').addEventListener('click', function() {
