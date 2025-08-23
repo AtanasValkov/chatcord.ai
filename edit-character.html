@@ -24,12 +24,23 @@
             padding: 20px;
             border-radius: 10px;
         }
-        input, textarea {
+        /* Apply full width only to text-like inputs */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        textarea {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             border-radius: 5px;
             max-width: 100%;
+        }
+        
+        /* Let checkboxes behave normally */
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 5px;
         }
         input {
             background: #333;
@@ -175,8 +186,14 @@
     <div class="tags" id="tagContainer"></div>
     <input type="text" id="tagInput" placeholder="Press Enter after each Tag">
     <div id="suggestions" class="suggestions"></div>
-    <button type="submit" id="submitBtn">Edit Character</button>
-    <a href="index.html" id="backBtn" class="back-btn">Back</a>
+    <label for="privateCheckbox" 
+        title="Private characters do not show up in public searches, only you and people with the link can see them.">
+      <input type="checkbox" id="privateCheckbox"> Private
+    </label>
+    <div>
+        <button type="submit" id="submitBtn">Create Character</button>
+        <a href="index.html" id="backBtn" class="back-btn">Back</a>
+    </div>
   </form>
 </div>
 <div id="reviewSidebar" class="review-sidebar">
