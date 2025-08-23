@@ -154,16 +154,45 @@
       // Search setup
       const searchInput = document.getElementById("searchBarCharacters");
       let searchQuery = searchInput.value.toLowerCase();
+
+      let favoriteCharacterIds = new Set();
+      if (myUserId && (type === 'favorites' || type === 'mine')) {
+        try {
+          const respInter = await fetch(
+            `https://chatcord-server.onrender.com/user-interactions/${myUserId}`
+          );
+          const interactions = await respInter.json();
+          interactions.forEach(({ character_id }) => {
+            favoriteCharacterIds.add(Number(character_id));
+          });
+        } catch (error) {
+          console.error('Failed to fetch interactions:', error);
+        }
+      }
+  
+      // 3) Filter characters (now safe with array)
+      let charactersToDisplay = allCharacters.filter(character => {
+        if (type !== 'mine' && type !== 'review' && character.review_status !== 'approved') {
+          return false;
+        }
+        switch (type) {
+          case 'mine': return character.userID === myUserId;
+          case 'favorites': return favoriteCharacterIds.has(Number(character.id));
+          case 'review': return character.review_status === 'pending';
+          case 'user': return character.username === profileUser.username;
+          default: return true;
+        }
+      });
       
       // Find matching character for initial search input
-      const matchedChar = allCharacters.find(char => char.id === charID);
+      const matchedChar = charactersToDisplay.find(char => char.id === charID);
       if (charID && matchedChar) {
         searchInput.value = matchedChar.char_name;
         searchQuery = matchedChar.char_name.toLowerCase();
       }
   
       // Filter characters
-      let filteredCharacters = allCharacters.filter(char => {
+      let filteredCharacters = charactersToDisplay.filter(char => {
         // const isApproved = (char.review_status || "").toLowerCase() === "approved";
         const matchesSearch = char.char_name?.toLowerCase().includes(searchQuery);
         // return isApproved && (searchQuery === "" || matchesSearch);
@@ -194,36 +223,7 @@
         }
       });
 
-      allCharacters = filteredCharacters;
-      
-      let favoriteCharacterIds = new Set();
-      if (myUserId && (type === 'favorites' || type === 'mine')) {
-        try {
-          const respInter = await fetch(
-            `https://chatcord-server.onrender.com/user-interactions/${myUserId}`
-          );
-          const interactions = await respInter.json();
-          interactions.forEach(({ character_id }) => {
-            favoriteCharacterIds.add(Number(character_id));
-          });
-        } catch (error) {
-          console.error('Failed to fetch interactions:', error);
-        }
-      }
-  
-      // 3) Filter characters (now safe with array)
-      let charactersToDisplay = allCharacters.filter(character => {
-        if (type !== 'mine' && type !== 'review' && character.review_status !== 'approved') {
-          return false;
-        }
-        switch (type) {
-          case 'mine': return character.userID === myUserId;
-          case 'favorites': return favoriteCharacterIds.has(Number(character.id));
-          case 'review': return character.review_status === 'pending';
-          case 'user': return character.username === profileUser.username;
-          default: return true;
-        }
-      });
+      charactersToDisplay = filteredCharacters;
   
       // 4) Sorting and rendering
       if (type === 'mine') {
