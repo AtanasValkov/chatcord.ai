@@ -24,6 +24,31 @@
     .entry-header span { font-weight: bold; }
     .entry-limit { font-size: 0.85em; color: lightgray; }
     .entry-limit.over { color: red; }
+    /* Basic styles for modal */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: #16213e;
+      margin: 3% auto;
+      padding: 20px;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 8px;
+    }
+    .close {
+      float: right;
+      font-size: 28px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
