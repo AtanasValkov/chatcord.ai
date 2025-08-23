@@ -380,8 +380,9 @@
                             // Filter characters
                             let filteredCharacters = charactersArray.filter(char => {
                               const isApproved = (char.review_status || "").toLowerCase() === "approved";
+                              const isPrivate  = char.is_private === true;
                               const matchesSearch = char.char_name?.toLowerCase().includes(searchQuery);
-                              return isApproved && (searchQuery === "" || matchesSearch);
+                              return isApproved && !isPrivate && (searchQuery === "" || matchesSearch);
                             });
                         
                             // Sorting
