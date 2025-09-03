@@ -6,9 +6,10 @@ export function populateGrid(
     showDetails: true,
     accessLevel: '',
     reviewMode: false
-  }
+  },
+  targetGridId = "characterGrid" // <-- NEW PARAM
 ) {
-  const grid = document.getElementById("characterGrid");
+  const grid = document.getElementById(targetGridId);
   if (!grid) {
     console.error('Grid container not found');
     return;
