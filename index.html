@@ -436,7 +436,7 @@
 
                         async function loadCharacters(forceRefresh = false) {
                           await fetchCharactersFromServer(forceRefresh);
-                          renderRecommendedFromServer(allCharacters, count = 10)
+                          renderRecommendedFromServer()
                           renderCharacters();
                         }
 
@@ -842,9 +842,10 @@
                                 });
                             };
 
-                        async function renderRecommendedFromServer(allCharacters, count = 10) {
+                        async function renderRecommendedFromServer() {
                           try {
-                            let userId
+                            let userId = null;
+                            let count = 10;
                             const user = JSON.parse(localStorage.getItem("user"));
                             if (user) {
                               userId = user.id;
