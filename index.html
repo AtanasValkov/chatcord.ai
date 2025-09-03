@@ -911,6 +911,9 @@
                         function createCharacter() {
                             const user = JSON.parse(localStorage.getItem("user"));
                             if (user) {
+                                await fetch(`https://chatcord-server.onrender.com/regenerate-recommendations/${encodeURIComponent(user.id)}?count=10`, {
+                                    method: 'POST'
+                                });
                                 window.location.href = "create-character.html";
                             }
                             else {
@@ -956,15 +959,6 @@
                             
                               localStorage.setItem('theme', isDark ? 'dark' : 'light');
                             });
-                            const user = JSON.parse(localStorage.getItem("user"));
-                            if (user) {
-                                await fetch(`https://chatcord-server.onrender.com/regenerate-recommendations/${encodeURIComponent(user.id)}?count=10`, {
-                                    method: 'POST'
-                                });
-                            }
-                            else {
-                                alert("Only logged in users can regen recommendations.")
-                            }
 
                             loadCharacters(); // Then load characters
                         }
