@@ -285,7 +285,6 @@ body, header, .modal-content {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 15px;
   max-width: 1250px;
-  margin: 1vw 0vw;
   /* smooth collapse */
   overflow: hidden;
   max-height: 2000px; /* large enough to contain cards */
