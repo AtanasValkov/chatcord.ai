@@ -145,8 +145,17 @@
                   <input type="text" id="searchBarCharacters" placeholder="Search..." />
                 </div>
                 <!-- Random Characters Section -->
-                <div class="character-section">
-                  <h2 class="section-title">Recommended</h2>
+                <div class="character-section" id="randomSection">
+                  <div class="section-header">
+                    <h2 class="section-title">Recommended</h2>
+                    <div class="section-controls">
+                      <button id="randomToggleBtn" class="toggle-btn" aria-expanded="true" title="Collapse section">
+                        <span class="icon" aria-hidden="true">▾</span>
+                        <span class="sr-only">Toggle Recommended</span>
+                      </button>
+                    </div>
+                  </div>
+                
                   <div class="character-grid" id="randomCharacterGrid">
                     Loading recommended characters...
                   </div>
@@ -161,6 +170,44 @@
                 </div>
                     <script type="module">
                         import { populateGrid, fetchGuilds } from './characterGrid.js';
+
+                        const RECS_SECTION_ID = 'recsSection';
+                        const RECS_TOGGLE_ID = 'recsToggleBtn';
+                        const RECS_MINIMIZED_KEY = 'recsSectionMinimized'; // localStorage key
+                        
+                        const recsSection = document.getElementById(RECS_SECTION_ID);
+                        const recsToggleBtn = document.getElementById(RECS_TOGGLE_ID);
+                        const searchInput = document.getElementById('searchBarCharacters');
+                        
+                        // helper to set collapse state and persist
+                        function setRecsSectionMinimized(minimized, persist = true) {
+                          if (!recsSection || !recsToggleBtn) return;
+                          recsSection.classList.toggle('minimized', !!minimized);
+                          recsToggleBtn.setAttribute('aria-expanded', String(!minimized));
+                          recsToggleBtn.title = minimized ? 'Expand section' : 'Collapse section';
+                          if (persist) {
+                            try { localStorage.setItem(RECS_MINIMIZED_KEY, minimized ? '1' : '0'); } catch (e) { /* ignore */ }
+                          }
+                        }
+                        
+                        // initialize from saved preference (user-controlled)
+                        function initRecsSectionState() {
+                          if (!recsSection || !recsToggleBtn) return;
+                          let saved = null;
+                          try { saved = localStorage.getItem(RECS_MINIMIZED_KEY); } catch (e) { /* ignore */ }
+                          if (saved === '1') setRecsSectionMinimized(true, false);
+                          else setRecsSectionMinimized(false, false);
+                        }
+                        
+                        if (recsToggleBtn && recsSection) {
+                          recsToggleBtn.addEventListener('click', () => {
+                            const isMin = recsSection.classList.contains('minimized');
+                            setRecsSectionMinimized(!isMin, true); // toggle and persist
+                          });
+                        }
+                        
+                        // call this during initialization so UI respects stored preference
+                        initRecsSectionState();
 
                         async function verifyUser() {
                             // Extract 'code' from the URL
@@ -399,7 +446,17 @@
                             // Search setup
                             const searchInput = document.getElementById("searchBarCharacters");
                             let searchQuery = searchInput.value.toLowerCase();
-                            
+                            const shouldAutoMinimize = (searchQuery || '').trim() !== '';
+                            // if user is actively searching, always collapse the recommended block.
+                            // otherwise restore user's saved pref (initRecsSectionState already did initial load)
+                            if (shouldAutoMinimize) {
+                              setRecsSectionMinimized(true, false);
+                            } else {
+                              // restore saved preference (in case we collapsed due to search earlier)
+                              const saved = (() => { try { return localStorage.getItem(RECS_MINIMIZED_KEY); } catch (e) { return null; } })();
+                              setRecsSectionMinimized(saved === '1', false);
+                            }
+
                             // Find matching character for initial search input
                             const matchedChar = charactersArray.find(char => char.id === charID);
                             if (charID && matchedChar) {
