@@ -233,11 +233,51 @@ body, header, .modal-content {
   max-width: 1250px; /* Matches grid width */
 }
 
+/* header layout */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 0.25rem 0.5rem 0.25rem;
+}
+
 .section-title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   color: white;
   font-weight: bold;
+}
+
+/* controls */
+.section-controls { display:flex; align-items:center; }
+
+/* toggle button */
+.toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: 6px 8px;
+  font-size: 14px;
+  line-height: 1;
+  border-radius: 6px;
+  border: 1px solid #cfcfcf;
+  background: transparent;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* small screen-friendly sizing */
+.toggle-btn .icon { display:inline-block; transition: transform .25s ease; }
+
+/* visually hide accessible-only text */
+.sr-only{
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px,1px,1px,1px);
+  white-space: nowrap;
 }
 
 .character-grid {
@@ -246,6 +286,25 @@ body, header, .modal-content {
   gap: 15px;
   max-width: 1250px;
   margin: 1vw 0vw;
+  /* smooth collapse */
+  overflow: hidden;
+  max-height: 2000px; /* large enough to contain cards */
+  transition: max-height .35s ease, opacity .25s ease, padding .25s ease;
+  opacity: 1;
+  padding: 0.5rem 0;
+  box-sizing: border-box;
+}
+
+/* collapsed state */
+.character-section.minimized .icon {
+  transform: rotate(-90deg);
+}
+.character-section.minimized .character-grid {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .character {
