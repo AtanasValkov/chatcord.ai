@@ -405,14 +405,14 @@
                                 if (includeCheckbox.checked) {
                                   excludeCheckbox.checked = false;
                                 }
-                                loadCharacters();
+                                renderCharacters();
                               });
                         
                               excludeCheckbox.addEventListener("change", () => {
                                 if (excludeCheckbox.checked) {
                                   includeCheckbox.checked = false;
                                 }
-                                loadCharacters();
+                                renderCharacters();
                               });
                         
                               // Tag label
@@ -575,9 +575,9 @@
                             profilePage();
                         });
 
-                        // Add event listeners on the elements (outside of loadCharacters)
-                        document.getElementById("sortOptions").addEventListener("change", loadCharacters);
-                        document.getElementById("sortOrder").addEventListener("change", loadCharacters);
+                        // Add event listeners on the elements (outside of renderCharacters)
+                        document.getElementById("sortOptions").addEventListener("change", renderCharacters);
+                        document.getElementById("sortOrder").addEventListener("change", renderCharacters);
 
                         // Toggle sidebar when the hamburger menu is clicked
                         document.getElementById('menuToggle').addEventListener('click', function() {
@@ -613,7 +613,7 @@
                         });
 
                         // Character grid search bar
-                        document.getElementById("searchBarCharacters").addEventListener("input", loadCharacters);
+                        document.getElementById("searchBarCharacters").addEventListener("input", renderCharacters);
 
                         // Settings
                         async function loadSettings() {
