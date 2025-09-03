@@ -148,6 +148,9 @@
                 <div class="character-section" id="recsSection">
                   <div class="section-header">
                     <h2 class="section-title">Recommended</h2>
+                      <button id="refreshRecsBtn" class="btn-refresh">
+                       🔄 Refresh Recommendations
+                      </button>
                     <div class="section-controls">
                       <button id="recsToggleBtn" class="toggle-btn" aria-expanded="true" title="Collapse section">
                         <span class="icon" aria-hidden="true">▾</span>
@@ -908,12 +911,28 @@
                             .slice(0, count);
                         }
 
+                        async function refreshRecommendations() {
+                            const user = JSON.parse(localStorage.getItem("user"));
+                            if (user) {
+                              try {
+                                await fetch(`https://chatcord-server.onrender.com/regenerate-recommendations/${encodeURIComponent(user.id)}?count=10`, {
+                                  method: 'POST'
+                                });
+                                await loadCharacters(); // reload with new recs
+                              } catch (err) {
+                                console.error('Failed to refresh recommendations:', err);
+                              }
+                            }
+                            else {
+                                alert("Only logged in users can refresh their recommendations.")
+                            }
+                        }
+                        
+                        document.getElementById('refreshRecsBtn').addEventListener('click', refreshRecommendations);
+
                         function createCharacter() {
                             const user = JSON.parse(localStorage.getItem("user"));
                             if (user) {
-                                await fetch(`https://chatcord-server.onrender.com/regenerate-recommendations/${encodeURIComponent(user.id)}?count=10`, {
-                                    method: 'POST'
-                                });
                                 window.location.href = "create-character.html";
                             }
                             else {
