@@ -919,7 +919,7 @@
                                 await fetch(`https://chatcord-server.onrender.com/regenerate-recommendations/${encodeURIComponent(user.id)}?count=10`, {
                                   method: 'POST'
                                 });
-                                await loadCharacters(); // reload with new recs
+                                loadCharacters(); // reload with new recs
                               } catch (err) {
                                 console.error('Failed to refresh recommendations:', err);
                               }
