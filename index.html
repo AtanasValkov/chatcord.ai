@@ -422,20 +422,20 @@
                             const charactersArray = Array.isArray(characters) ? characters : Object.values(characters);
 
                             // ================================
-                            // 1. RANDOM CHARACTERS SECTION
+                            // 1. RECOMMENDED CHARACTERS SECTION
                             // ================================
-                            const randomCharacters = [...charactersArray] // copy array
+                            const recsCharacters = [...charactersArray] // copy array
                               .filter(char => (char.review_status || "").toLowerCase() === "approved" && !char.is_private)
                               .sort(() => Math.random() - 0.5) // shuffle randomly
                               .slice(0, 10); // take first 10
                         
-                            populateGrid(randomCharacters, {
+                            populateGrid(recsCharacters, {
                               showDetails: true,
                               reviewMode: false,
                               accessLevel: '',
                               includeTags: [],
                               excludeTags: []
-                            }, 'randomCharacterGrid'); // <-- specify target grid
+                            }, 'recsCharacterGrid'); // <-- specify target grid
 
                         
                             // Handle URL parameters
