@@ -225,12 +225,27 @@ body, header, .modal-content {
     padding: 1.5rem;
 }
 
+.character-section {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  background: #f9f9f9;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+  font-weight: bold;
+}
+
 .character-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
-    max-width: 1250px;
-    margin: 1vw 0vw;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  max-width: 1250px;
+  margin: 1vw 0vw;
 }
 
 .character {
