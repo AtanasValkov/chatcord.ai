@@ -461,8 +461,8 @@
                               showDetails: true,
                               reviewMode: false,
                               accessLevel: '',
-                              includeTags: [],
-                              excludeTags: []
+                              includeTags: getIncludeTags(),
+                              excludeTags: getExcludeTags()
                             }, 'recsCharacterGrid'); // <-- specify target grid
 
                             // Handle URL parameters
