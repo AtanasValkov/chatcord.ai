@@ -433,6 +433,7 @@
 
                         async function loadCharacters(forceRefresh = false) {
                           await fetchCharactersFromServer(forceRefresh);
+                          renderRecommendedFromServer(allCharacters, count = 10)
                           renderCharacters();
                         }
 
@@ -448,22 +449,6 @@
                         
                             // Convert to array if needed (backend might return object)
                             const charactersArray = Array.isArray(characters) ? characters : Object.values(characters);
-
-                            // ================================
-                            // 1. RECOMMENDED CHARACTERS SECTION
-                            // ================================
-                            const recsCharacters = [...charactersArray] // copy array
-                              .filter(char => (char.review_status || "").toLowerCase() === "approved" && !char.is_private)
-                              .sort(() => Math.random() - 0.5) // shuffle randomly
-                              .slice(0, 10); // take first 10
-                        
-                            populateGrid(recsCharacters, {
-                              showDetails: true,
-                              reviewMode: false,
-                              accessLevel: '',
-                              includeTags: getIncludeTags(),
-                              excludeTags: getExcludeTags()
-                            }, 'recsCharacterGrid'); // <-- specify target grid
 
                             // Handle URL parameters
                             const urlParamsChar = new URLSearchParams(window.location.search);
@@ -854,7 +839,75 @@
                                 });
                             };
 
-                       
+                        async function renderRecommendedFromServer(allCharacters, count = 10) {
+                          try {
+                            let userId
+                            const user = JSON.parse(localStorage.getItem("user"));
+                            if (user) {
+                              userId = user.id;
+                            } else {
+                              console.log('No recommendations for not logged in users.')
+                              return;
+                            }
+                            // 1) fetch recommendations (server returns ordered ids + optionally interacted ids)
+                            const recResp = await fetch(`https://chatcord-server.onrender.com/get-recommendations/${encodeURIComponent(userId)}?count=${count}`);
+                            if (!recResp.ok) {
+                              console.warn('No server recommendations available, falling back to local method');
+                              // you can call the fallback function here if desired
+                              return renderRecommendedLocalFallback(allCharacters, userId, count);
+                            }
+                            const recBody = await recResp.json();
+                            const recIds = Array.isArray(recBody.recs) ? recBody.recs : [];
+                            const interactedSet = new Set(recBody.interacted || []); // optional; server may include interacted ids
+                        
+                            // 2) Map rec IDs to your cached character objects
+                            const charById = new Map((Array.isArray(allCharacters) ? allCharacters : Object.values(allCharacters))
+                              .filter(c => c && c.id)
+                              .map(c => [c.id, c]));
+                        
+                            const recommendedChars = recIds
+                              .map(id => charById.get(id))
+                              .filter(Boolean) // remove missing or private or not approved
+                              .filter(c => (c.review_status || "").toLowerCase() === "approved" && !c.is_private)
+                              // Also ensure not already interacted (extra safety if server didn't supply interacted)
+                              .filter(c => !interactedSet.has(c.id))
+                              .slice(0, count);
+                        
+                            // If server returned fewer than `count`, optionally fill the rest by local scoring or trending
+                            if (recommendedChars.length < count) {
+                              const needed = count - recommendedChars.length;
+                              const filler = getLocalFillers(allCharacters, new Set(recommendedChars.map(c => c.id)), interactedSet, needed);
+                              console.error(`Not enough to recommend ${filler}`);
+                              recommendedChars.push(...filler);
+                            }
+                        
+                            // 3) Populate the grid into a separate DOM target 'recsCharacterGrid'
+                            populateGrid(recommendedChars, {
+                              showDetails: true,
+                              reviewMode: false,
+                              accessLevel: '',
+                              includeTags: getIncludeTags(),
+                              excludeTags: getExcludeTags()
+                            }, 'recsCharacterGrid');
+                        
+                          } catch (err) {
+                            console.error('Error fetching server recommendations:', err);
+                            // fallback
+                            return renderRecommendedLocalFallback(allCharacters, userId, count);
+                          }
+                        }
+                        
+                        // Simple filler that returns top-N characters (approved/public) not in exclude set
+                        function getLocalFillers(allCharacters, excludeIds = new Set(), interactedSet = new Set(), count = 10) {
+                          const arr = Array.isArray(allCharacters) ? allCharacters : Object.values(allCharacters);
+                          return arr
+                            .filter(c => c && !excludeIds.has(c.id) && !interactedSet.has(c.id))
+                            .filter(c => (c.review_status || "").toLowerCase() === "approved" && !c.is_private)
+                            // simple popularity sort fallback (likes + favorites)
+                            .sort((a,b) => ((b.likes||0) + (b.favorites||0)*2) - ((a.likes||0) + (a.favorites||0)*2))
+                            .slice(0, count);
+                        }
+
                         function createCharacter() {
                             const user = JSON.parse(localStorage.getItem("user"));
                             if (user) {
@@ -903,6 +956,15 @@
                             
                               localStorage.setItem('theme', isDark ? 'dark' : 'light');
                             });
+                            const user = JSON.parse(localStorage.getItem("user"));
+                            if (user) {
+                                await fetch(`https://chatcord-server.onrender.com/regenerate-recommendations/${encodeURIComponent(user.id)}?count=10`, {
+                                    method: 'POST'
+                                });
+                            }
+                            else {
+                                alert("Only logged in users can regen recommendations.")
+                            }
 
                             loadCharacters(); // Then load characters
                         }
