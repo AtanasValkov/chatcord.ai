@@ -144,13 +144,21 @@
                   </select>
                   <input type="text" id="searchBarCharacters" placeholder="Search..." />
                 </div>
-                            <!-- New Random Characters Section -->
-                <div class="character-grid" id="randomCharacterGrid">
-                    <h2>Recommended</h2>
-                  Loading recommended characters...
+                <!-- Random Characters Section -->
+                <div class="character-section">
+                  <h2 class="section-title">Recommended</h2>
+                  <div class="character-grid" id="randomCharacterGrid">
+                    Loading recommended characters...
+                  </div>
                 </div>
-
-                <div class="character-grid" id="characterGrid">Loading characters...Check back in 1 to 2 minutes.</div>
+                
+                <!-- Main Characters Section -->
+                <div class="character-section">
+                  <h2 class="section-title">All Characters</h2>
+                  <div class="character-grid" id="characterGrid">
+                    Loading characters...Check back in 1 to 2 minutes.
+                  </div>
+                </div>
                     <script type="module">
                         import { populateGrid, fetchGuilds } from './characterGrid.js';
 
