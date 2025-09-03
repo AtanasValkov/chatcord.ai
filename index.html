@@ -861,6 +861,7 @@
                               return renderRecommendedLocalFallback(allCharacters, userId, count);
                             }
                             const recBody = await recResp.json();
+                            console.log(recBody);
                             const recIds = Array.isArray(recBody.recs) ? recBody.recs : [];
                             const interactedSet = new Set(recBody.interacted || []); // optional; server may include interacted ids
                         
