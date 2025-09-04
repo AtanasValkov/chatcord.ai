@@ -286,7 +286,7 @@ body, header, .modal-content {
   gap: 15px;
   max-width: 1250px;
   /* smooth collapse */
-  overflow: hidden;
+  overflow: auto;
   max-height: 2000px; /* large enough to contain cards */
   transition: max-height .35s ease, opacity .25s ease, padding .25s ease;
   opacity: 1;
