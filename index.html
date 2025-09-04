@@ -510,7 +510,7 @@
                                   return 0;
                               }
                             });
-                            console.log(filteredCharacters)
+    
                             // Pass to populateGrid
                             populateGrid(filteredCharacters, {
                               showDetails: true,
@@ -885,12 +885,9 @@
                               console.error(`Not enough to recommend ${filler}`);
                               recommendedChars.push(...filler);
                             }
-                              
-                            // Convert to array if needed (backend might return object)
-                            let recsCharactersArray = Array.isArray(recommendedChars) ? recommendedChars : Object.values(recommendedChars);
 
                             // 3) Populate the grid into a separate DOM target 'recsCharacterGrid'
-                            populateGrid(recsCharactersArray, {
+                            populateGrid(recommendedChars, {
                               showDetails: true,
                               reviewMode: false,
                               accessLevel: '',
