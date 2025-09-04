@@ -861,7 +861,6 @@
                               return renderRecommendedLocalFallback(allCharacters, userId, count);
                             }
                             const recBody = await recResp.json();
-                            console.log(recBody);
                             const recIds = Array.isArray(recBody.recs) ? recBody.recs : [];
                             const interactedSet = new Set(recBody.interacted || []); // optional; server may include interacted ids
                         
@@ -877,7 +876,6 @@
                               // Also ensure not already interacted (extra safety if server didn't supply interacted)
                               .filter(c => !interactedSet.has(c.id))
                               .slice(0, count);
-                            console.log(recommendedChars);
                             // If server returned fewer than `count`, optionally fill the rest by local scoring or trending
                             if (recommendedChars.length < count) {
                               const needed = count - recommendedChars.length;
