@@ -863,7 +863,7 @@
                             const recBody = await recResp.json();
                             const recIds = Array.isArray(recBody.recs) ? recBody.recs : [];
                             const interactedSet = new Set(recBody.interacted || []); // optional; server may include interacted ids
-                            
+                            console.log(interactedSet)
                             // ✅ Deduplicate IDs before mapping
                             const uniqueRecIds = Array.from(new Set(recIds));
                             
