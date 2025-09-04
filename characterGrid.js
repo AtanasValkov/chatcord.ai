@@ -42,6 +42,7 @@ export function populateGrid(
       }
 
       const card = createCharacterCard(character, filters);
+      console.log(card);
       fragment.appendChild(card);
     } catch (error) {
       console.error('Error rendering character:', error, character);
