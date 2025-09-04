@@ -436,7 +436,6 @@
 
                         async function loadCharacters(forceRefresh = false) {
                           await fetchCharactersFromServer(forceRefresh);
-                          renderRecommendedFromServer()
                           renderCharacters();
                         }
 
@@ -449,7 +448,7 @@
                               console.error('Error:', characters.error);
                               return;
                             }
-                        
+                            renderRecommendedFromServer()
                             // Convert to array if needed (backend might return object)
                             const charactersArray = Array.isArray(characters) ? characters : Object.values(characters);
 
