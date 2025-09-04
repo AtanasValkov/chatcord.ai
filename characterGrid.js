@@ -24,9 +24,7 @@ export function populateGrid(
     grid.innerHTML = `<div class="empty-state">No characters to display</div>`;
     return;
   }
-  if (targetGridId == 'recsCharacterGrid') {
-    console.log(safeCharacters);
-  }
+
   // Prepare DOM fragment for batch insertion
   const fragment = document.createDocumentFragment();
 
@@ -42,7 +40,6 @@ export function populateGrid(
       }
 
       const card = createCharacterCard(character, filters);
-      console.log(card);
       fragment.appendChild(card);
     } catch (error) {
       console.error('Error rendering character:', error, character);
