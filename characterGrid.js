@@ -7,7 +7,7 @@ export function populateGrid(
     accessLevel: '',
     reviewMode: false
   },
-  targetGridId = "characterGrid" // <-- NEW PARAM
+  targetGridId = "characterGrid"
 ) {
   const grid = document.getElementById(targetGridId);
   if (!grid) {
@@ -24,7 +24,9 @@ export function populateGrid(
     grid.innerHTML = `<div class="empty-state">No characters to display</div>`;
     return;
   }
-
+  if (targetGridId == 'recsCharacterGrid') {
+    console.log(safeCharacters);
+  }
   // Prepare DOM fragment for batch insertion
   const fragment = document.createDocumentFragment();
 
