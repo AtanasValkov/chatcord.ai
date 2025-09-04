@@ -863,27 +863,38 @@
                             const recBody = await recResp.json();
                             const recIds = Array.isArray(recBody.recs) ? recBody.recs : [];
                             const interactedSet = new Set(recBody.interacted || []); // optional; server may include interacted ids
-                        
+                            
+                            // ✅ Deduplicate IDs before mapping
+                            const uniqueRecIds = Array.from(new Set(recIds));
+                            
                             // 2) Map rec IDs to your cached character objects
-                            const charById = new Map((Array.isArray(allCharacters) ? allCharacters : Object.values(allCharacters))
-                              .filter(c => c && c.id)
-                              .map(c => [c.id, c]));
-                        
-                            const recommendedChars = recIds
+                            const charById = new Map(
+                              (Array.isArray(allCharacters) ? allCharacters : Object.values(allCharacters))
+                                .filter(c => c && c.id)
+                                .map(c => [c.id, c])
+                            );
+                            
+                            const recommendedChars = uniqueRecIds
                               .map(id => charById.get(id))
                               .filter(Boolean) // remove missing or private or not approved
                               .filter(c => (c.review_status || "").toLowerCase() === "approved" && !c.is_private)
                               // Also ensure not already interacted (extra safety if server didn't supply interacted)
                               .filter(c => !interactedSet.has(c.id))
                               .slice(0, count);
+                            
                             // If server returned fewer than `count`, optionally fill the rest by local scoring or trending
                             if (recommendedChars.length < count) {
                               const needed = count - recommendedChars.length;
-                              const filler = getLocalFillers(allCharacters, new Set(recommendedChars.map(c => c.id)), interactedSet, needed);
-                              console.error(`Not enough to recommend ${filler}`);
+                              const filler = getLocalFillers(
+                                allCharacters,
+                                new Set(recommendedChars.map(c => c.id)),
+                                interactedSet,
+                                needed
+                              );
+                              console.error(`Not enough to recommend, adding fillers:`, filler);
                               recommendedChars.push(...filler);
                             }
-
+                            
                             // 3) Populate the grid into a separate DOM target 'recsCharacterGrid'
                             populateGrid(recommendedChars, {
                               showDetails: true,
@@ -892,7 +903,6 @@
                               includeTags: getIncludeTags(),
                               excludeTags: getExcludeTags()
                             }, 'recsCharacterGrid');
-                        
                           } catch (err) {
                             console.error('Error fetching server recommendations:', err);
                             // fallback
