@@ -862,9 +862,7 @@
                             }
                             const recBody = await recResp.json();
                             const recIds = Array.isArray(recBody.recs) ? recBody.recs : [];
-                            const interactedSet = new Set(recBody.interacted || []); // optional; server may include interacted ids
-                            console.log(interactedSet)
-                            // ✅ Deduplicate IDs before mapping
+                            // Deduplicate IDs before mapping
                             const uniqueRecIds = Array.from(new Set(recIds));
                             
                             // 2) Map rec IDs to your cached character objects
@@ -878,8 +876,6 @@
                               .map(id => charById.get(id))
                               .filter(Boolean) // remove missing or private or not approved
                               .filter(c => (c.review_status || "").toLowerCase() === "approved" && !c.is_private)
-                              // Also ensure not already interacted (extra safety if server didn't supply interacted)
-                              .filter(c => !interactedSet.has(c.id))
                               .slice(0, count);
                             
                             // If server returned fewer than `count`, optionally fill the rest by local scoring or trending
