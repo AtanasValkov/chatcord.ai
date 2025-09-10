@@ -917,21 +917,24 @@
                         }
 
                         async function refreshRecommendations() {
-                            const user = JSON.parse(localStorage.getItem("user"));
-                            if (user) {
-                              try {
-                                `https://chatcord-server.onrender.com/regenerate-recommendations/${encodeURIComponent(user.id)}?count=10&randomize=1`, {
+                          const user = JSON.parse(localStorage.getItem("user"));
+                          if (user) {
+                            try {
+                              await fetch(
+                                `https://chatcord-server.onrender.com/regenerate-recommendations/${encodeURIComponent(user.id)}?count=10&randomize=1`, 
+                                {
                                   method: 'POST'
-                                });
-                                loadCharacters(); // reload with new recs
-                              } catch (err) {
-                                console.error('Failed to refresh recommendations:', err);
-                              }
+                                }
+                              );
+                              loadCharacters(); // reload with new recommendations
+                            } catch (err) {
+                              console.error('Failed to refresh recommendations:', err);
                             }
-                            else {
-                                alert("Only logged in users can refresh their recommendations.")
-                            }
+                          } else {
+                            alert("Only logged in users can refresh their recommendations.");
+                          }
                         }
+
                         
                         document.getElementById('refreshRecsBtn').addEventListener('click', refreshRecommendations);
 
