@@ -920,7 +920,7 @@
                             const user = JSON.parse(localStorage.getItem("user"));
                             if (user) {
                               try {
-                                await fetch(`https://chatcord-server.onrender.com/regenerate-recommendations/${encodeURIComponent(user.id)}?count=10`, {
+                                `https://chatcord-server.onrender.com/regenerate-recommendations/${encodeURIComponent(user.id)}?count=10&randomize=1`, {
                                   method: 'POST'
                                 });
                                 loadCharacters(); // reload with new recs
