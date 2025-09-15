@@ -159,9 +159,10 @@
           const respInter = await fetch(
             `https://chatcord-server.onrender.com/user-interactions/${myUserId}`
           );
-          const interactions = await respInter.json();
-          interactions.forEach(({ character_id }) => {
-            favoriteCharacterIds.add(Number(character_id));
+          interactions.forEach(({ character_id, interaction_type }) => {
+            if (interaction_type === 'favorite') {
+              favoriteCharacterIds.add(Number(character_id));
+            }
           });
         } catch (error) {
           console.error('Failed to fetch interactions:', error);
