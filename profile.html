@@ -78,9 +78,6 @@
       }
     }
     
-    // Fetch profile user and render header meta
-    await fetchProfileUser();
-    
     // Set up UI based on whether viewing own profile or someone else's
     const header = document.getElementById('profileHeader');
     if (profileUser) {
@@ -105,6 +102,8 @@
         header.appendChild(separator);
         header.appendChild(forReviewTab);
       }
+      // Fetch profile user and render header meta
+      await fetchProfileUser();
     }
 
     // Tab click handler
@@ -371,7 +370,7 @@
           ? profileUser.displayname
           : profileUser.username;
         const header = document.getElementById('profileHeader');
-        setProfileHeaderTitle(escapeHtml(displayName));
+        header.innerHTML = `<span>${displayName}'s Profile</span>`;
   
         // Render meta: not own profile
         renderHeaderMeta({ profile: profileUser, isViewingOwn: myUserId === userID, isFollowing });
@@ -427,41 +426,41 @@
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
   }
-    // Initial load
-    if (userID) {
-      // Viewing someone else's profile
-      currentType = 'user';
+  // Initial load
+  if (userID) {
+    // Viewing someone else's profile
+    currentType = 'user';
+    await loadCharacters(currentType, accessLevel);
+  } else {
+    // Viewing own profile
+    if (accessLevel === 'admin' || accessLevel === 'moderator') {
+      currentType = 'review';
       await loadCharacters(currentType, accessLevel);
+      document.getElementById('forReviewTab').classList.add('active');
     } else {
-      // Viewing own profile
-      if (accessLevel === 'admin' || accessLevel === 'moderator') {
-        currentType = 'review';
-        await loadCharacters(currentType, accessLevel);
-        document.getElementById('forReviewTab').classList.add('active');
-      } else {
-        currentType = 'mine';
-        await loadCharacters(currentType, accessLevel);
-        document.getElementById('myCharactersTab').classList.add('active');
-      }
+      currentType = 'mine';
+      await loadCharacters(currentType, accessLevel);
+      document.getElementById('myCharactersTab').classList.add('active');
     }
+  }
 
-    // Character grid search bar
-    document.getElementById("searchBarCharacters").addEventListener("input", () => {
-      charID = null;
-      loadCharacters(currentType, accessLevel);
-    });
-    document.getElementById("sortOptions").addEventListener("input", () => {
-      loadCharacters(currentType, accessLevel);
-    });
-    document.getElementById("sortOrder").addEventListener("input", () => {
-      loadCharacters(currentType, accessLevel);
-    });
-    
-    // Close sidebar when clicking on the overlay
-    document.getElementById('overlay').addEventListener('click', function() {
-      document.getElementById('detailsPanel')?.remove();
-      this.classList.remove('active');
-    });
+  // Character grid search bar
+  document.getElementById("searchBarCharacters").addEventListener("input", () => {
+    charID = null;
+    loadCharacters(currentType, accessLevel);
+  });
+  document.getElementById("sortOptions").addEventListener("input", () => {
+    loadCharacters(currentType, accessLevel);
+  });
+  document.getElementById("sortOrder").addEventListener("input", () => {
+    loadCharacters(currentType, accessLevel);
+  });
+  
+  // Close sidebar when clicking on the overlay
+  document.getElementById('overlay').addEventListener('click', function() {
+    document.getElementById('detailsPanel')?.remove();
+    this.classList.remove('active');
+  });
 
   </script>
 </body>
