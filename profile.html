@@ -371,7 +371,7 @@
           ? profileUser.displayname
           : profileUser.username;
         const header = document.getElementById('profileHeader');
-        header.innerHTML = `<span>${escapeHtml(displayName)}'s Profile</span>`;
+        setProfileHeaderTitle(escapeHtml(displayName));
   
         // Render meta: not own profile
         renderHeaderMeta({ profile: profileUser, isViewingOwn: myUserId === userID, isFollowing });
@@ -381,7 +381,7 @@
           // Not logged in and no u param: nothing to show
           profileUser = null;
           const header = document.getElementById('profileHeader');
-          header.innerHTML = `<span>My Profile</span>`;
+          setProfileHeaderTitle('My');
           renderHeaderMeta({ profile: null, isViewingOwn: true, isFollowing: false });
           return;
         }
@@ -394,7 +394,7 @@
           ? profileUser.displayname
           : profileUser.username;
         const header = document.getElementById('profileHeader');
-        header.innerHTML = `<span>${escapeHtml(displayName)}'s Profile</span>`;
+        setProfileHeaderTitle(escapeHtml(displayName));
   
         // Render meta: own profile => show only follower count
         renderHeaderMeta({ profile: profileUser, isViewingOwn: true, isFollowing: false });
@@ -402,6 +402,19 @@
     } catch (err) {
       console.error('Error fetching profile user:', err);
     }
+  }
+
+  function setProfileHeaderTitle(displayName) {
+    const header = document.getElementById('profileHeader');
+    // Try to reuse an existing title element, else create one
+    let titleSpan = header.querySelector('#profileTitle');
+    if (!titleSpan) {
+      titleSpan = document.createElement('span');
+      titleSpan.id = 'profileTitle';
+      // Insert BEFORE the first tab so tabs keep their styling/behavior
+      header.insertBefore(titleSpan, header.firstChild);
+    }
+    titleSpan.textContent = `${displayName}'s Profile`;
   }
   
   // small utility to escape text for safe insertion into HTML
