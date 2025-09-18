@@ -90,6 +90,41 @@ nav {
     flex-shrink: 0; /* Prevents the avatar from shrinking */
 }
 
+#profileHeaderWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+#profileHeaderMeta {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  font-size: 14px;
+  color: #444;
+}
+.avatar-small img {
+  width:40px;
+  height:40px;
+  border-radius:6px;
+  object-fit:cover;
+  border:1px solid rgba(0,0,0,0.08);
+}
+.follow-btn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: #007bff;
+  color: white;
+}
+.follow-btn.unfollow {
+  background: #e6e6e6;
+  color: #111;
+}
+.follow-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
 nav a {
     color: white;
     text-decoration: none;
