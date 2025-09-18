@@ -65,11 +65,12 @@
     }
     // Get user data
     const user = JSON.parse(localStorage.getItem("user")) || {};
+    const myUserId = user.id ?? null;
     let accessLevel = null;
     
-    if (user.id) {
+    if (myUserId) {
       try {
-        const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${user.id}`);
+        const userResponse = await fetch(`https://chatcord-server.onrender.com/get-user/${myUserId}`);
         const userData = await userResponse.json();
         accessLevel = userData.user?.access_level?.toLowerCase();
       } catch (error) {
