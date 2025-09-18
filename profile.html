@@ -277,7 +277,7 @@
       return;
     }
 
-    const avatarUrl = profile.avatar || '/default-avatar.png';
+    const avatarUrl =  `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png` || '/default-avatar.png';
     const followerCount = Number(profile.follower_count ?? 0);
 
     // base meta HTML: avatar + counts area
