@@ -82,10 +82,10 @@
     const header = document.getElementById('profileHeader');
     if (profileUser) {
       // Viewing someone else's profile
-     // const displayName = profileUser.displayname && profileUser.displayname.trim() !== ""
-     // ? profileUser.displayname
-     // : profileUser.username;
-     // header.innerHTML = `<span>${displayName}'s Profile</span>`;
+      const displayName = profileUser.displayname && profileUser.displayname.trim() !== ""
+      ? profileUser.displayname
+      : profileUser.username;
+      header.innerHTML = `<span>${displayName}'s Profile</span>`;
     } else {
       // Viewing own profile
       if (accessLevel === 'admin' || accessLevel === 'moderator') {
