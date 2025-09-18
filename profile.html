@@ -80,30 +80,8 @@
     
     // Set up UI based on whether viewing own profile or someone else's
     const header = document.getElementById('profileHeader');
-    if (profileUser) {
-      // Viewing someone else's profile
-      const displayName = profileUser.displayname && profileUser.displayname.trim() !== ""
-      ? profileUser.displayname
-      : profileUser.username;
-      header.innerHTML = `<span>${displayName}'s Profile</span>`;
-    } else {
-      // Viewing own profile
-      if (accessLevel === 'admin' || accessLevel === 'moderator') {
-        const separator = document.createElement('span');
-        separator.className = 'separator';
-        separator.textContent = '|';
-        
-        const forReviewTab = document.createElement('span');
-        forReviewTab.className = 'tab';
-        forReviewTab.id = 'forReviewTab';
-        forReviewTab.textContent = 'For Review';
-        forReviewTab.addEventListener('click', () => loadCharacters('review', accessLevel));
-        
-        header.appendChild(separator);
-        header.appendChild(forReviewTab);
-      }
-      // Fetch profile user and render header meta
-      await fetchProfileUser();
+    // Fetch profile user and render header meta
+    await fetchProfileUser();
     }
 
     // Tab click handler
@@ -388,13 +366,29 @@
         if (!res.ok) throw new Error('Failed to fetch your user data');
         const data = await res.json();
         profileUser = data.user;
-  
+
         const displayName = profileUser.displayname && profileUser.displayname.trim() !== ""
           ? profileUser.displayname
           : profileUser.username;
         const header = document.getElementById('profileHeader');
         setProfileHeaderTitle(escapeHtml(displayName));
-  
+
+        // Review Tab
+        if (accessLevel === 'admin' || accessLevel === 'moderator') {
+          const separator = document.createElement('span');
+          separator.className = 'separator';
+          separator.textContent = '|';
+          
+          const forReviewTab = document.createElement('span');
+          forReviewTab.className = 'tab';
+          forReviewTab.id = 'forReviewTab';
+          forReviewTab.textContent = 'For Review';
+          forReviewTab.addEventListener('click', () => loadCharacters('review', accessLevel));
+          
+          header.appendChild(separator);
+          header.appendChild(forReviewTab);
+        }
+        
         // Render meta: own profile => show only follower count
         renderHeaderMeta({ profile: profileUser, isViewingOwn: true, isFollowing: false });
       }
