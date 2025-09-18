@@ -9,11 +9,14 @@
 </head>
 <body>
   <div class="profilePage">
-    <h1 id="profileHeader">
-      <span class="tab active" id="myCharactersTab">My Characters</span>
-      <span class="separator">|</span>
-      <span class="tab" id="myFavoritesTab">My Favorites</span>
-    </h1>
+    <div id="profileHeaderWrap">
+      <h1 id="profileHeader">
+        <span class="tab active" id="myCharactersTab">My Characters</span>
+        <span class="separator">|</span>
+        <span class="tab" id="myFavoritesTab">My Favorites</span>
+      </h1>
+      <div id="profileHeaderMeta" aria-hidden="false"></div>
+  </div>
     <button onclick="window.location.href='index.html';" class="back-btn">Back</button>
     <div class="sort-controls">
         <div class="menu-toggle" id="menuToggle">
@@ -73,15 +76,18 @@
         console.error("Error fetching user data:", error);
       }
     }
-
+    
+    // Fetch profile user and render header meta
+    await fetchProfileUser();
+    
     // Set up UI based on whether viewing own profile or someone else's
     const header = document.getElementById('profileHeader');
     if (profileUser) {
       // Viewing someone else's profile
-      const displayName = profileUser.displayname && profileUser.displayname.trim() !== ""
-      ? profileUser.displayname
-      : profileUser.username;
-      header.innerHTML = `<span>${displayName}'s Profile</span>`;
+     // const displayName = profileUser.displayname && profileUser.displayname.trim() !== ""
+     // ? profileUser.displayname
+     // : profileUser.username;
+     // header.innerHTML = `<span>${displayName}'s Profile</span>`;
     } else {
       // Viewing own profile
       if (accessLevel === 'admin' || accessLevel === 'moderator') {
@@ -260,6 +266,152 @@
       console.error("Error loading characters:", error);
       document.getElementById('characterGrid').innerText = "Failed to load characters.";
     }
+  }
+
+  // Helper: render header meta (avatar + follower count or button)
+  function renderHeaderMeta({ profile, isViewingOwn, isFollowing }) {
+    const meta = document.getElementById('profileHeaderMeta');
+    if (!profile) {
+      meta.innerHTML = '';
+      return;
+    }
+
+    const avatarUrl = profile.avatar || '/default-avatar.png';
+    const followerCount = Number(profile.follower_count ?? 0);
+
+    // base meta HTML: avatar + counts area
+    meta.innerHTML = `
+      <div class="avatar-small"><img src="${avatarUrl}" alt="avatar"></div>
+      <div style="display:flex; flex-direction:column;">
+        <div><strong id="followerCount">${followerCount}</strong> followers</div>
+        <div id="followActionArea" style="margin-top:6px;"></div>
+      </div>
+    `;
+
+    const actionArea = document.getElementById('followActionArea');
+
+    // If viewing own profile: show only follower count (no buttons)
+    if (isViewingOwn) {
+      actionArea.innerHTML = ''; // nothing to add
+      return;
+    }
+
+    // Not own profile: show follow/unfollow button if logged in
+    if (!myUserId) {
+      actionArea.innerHTML = ''; // not logged in => no follow button
+      return;
+    }
+
+    // Create follow toggle button
+    const btn = document.createElement('button');
+    btn.className = 'follow-btn';
+    btn.dataset.following = isFollowing ? '1' : '0';
+    btn.textContent = isFollowing ? 'Unfollow' : 'Follow';
+    if (isFollowing) btn.classList.add('unfollow');
+
+    btn.onclick = async () => {
+      btn.disabled = true;
+      try {
+        // Use your backend endpoints /follow and /unfollow
+        const endpoint = (btn.dataset.following === '1') ? '/unfollow' : '/follow';
+        const resp = await fetch(`https://chatcord-server.onrender.com${endpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          // NOTE: server should verify the authenticated user; client sends myUserId for convenience
+          body: JSON.stringify({ follower_id: myUserId, followed_id: profile.id })
+        });
+
+        if (!resp.ok) {
+          const text = await resp.text();
+          console.error('Follow action failed:', text);
+          alert('Failed to perform action.');
+          return;
+        }
+
+        // Toggle UI state locally
+        const newFollowing = btn.dataset.following === '1' ? '0' : '1';
+        btn.dataset.following = newFollowing;
+        const isNowFollowing = newFollowing === '1';
+        btn.textContent = isNowFollowing ? 'Unfollow' : 'Follow';
+        btn.classList.toggle('unfollow', isNowFollowing);
+
+        // Update follower count shown (remember DB trigger keeps authoritative count)
+        const fcEl = document.getElementById('followerCount');
+        let current = Number(fcEl.innerText || 0);
+        fcEl.innerText = isNowFollowing ? current + 1 : Math.max(0, current - 1);
+      } catch (err) {
+        console.error(err);
+        alert('Network error');
+      } finally {
+        btn.disabled = false;
+      }
+    };
+
+    actionArea.appendChild(btn);
+  }
+
+  // Fetch profile user (using extended endpoint so server returns follower_count and is_following)
+  async function fetchProfileUser() {
+    try {
+      // If viewing someone else's profile
+      if (userID) {
+        // request extended info and pass viewer id (if available)
+        const url = myUserId
+          ? `https://chatcord-server.onrender.com/get-user-extended/${encodeURIComponent(userID)}?viewer_id=${encodeURIComponent(myUserId)}`
+          : `https://chatcord-server.onrender.com/get-user-extended/${encodeURIComponent(userID)}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Failed to fetch profile user');
+        const data = await res.json();
+        profileUser = data.user;
+        const isFollowing = !!data.is_following;
+  
+        // Set header text
+        const displayName = profileUser.displayname && profileUser.displayname.trim() !== ""
+          ? profileUser.displayname
+          : profileUser.username;
+        const header = document.getElementById('profileHeader');
+        header.innerHTML = `<span>${escapeHtml(displayName)}'s Profile</span>`;
+  
+        // Render meta: not own profile
+        renderHeaderMeta({ profile: profileUser, isViewingOwn: myUserId === userID, isFollowing });
+      } else {
+        // Viewing own profile: fetch own user record (use extended endpoint for consistency)
+        if (!myUserId) {
+          // Not logged in and no u param: nothing to show
+          profileUser = null;
+          const header = document.getElementById('profileHeader');
+          header.innerHTML = `<span>My Profile</span>`;
+          renderHeaderMeta({ profile: null, isViewingOwn: true, isFollowing: false });
+          return;
+        }
+        const res = await fetch(`https://chatcord-server.onrender.com/get-user-extended/${encodeURIComponent(myUserId)}?viewer_id=${encodeURIComponent(myUserId)}`);
+        if (!res.ok) throw new Error('Failed to fetch your user data');
+        const data = await res.json();
+        profileUser = data.user;
+  
+        const displayName = profileUser.displayname && profileUser.displayname.trim() !== ""
+          ? profileUser.displayname
+          : profileUser.username;
+        const header = document.getElementById('profileHeader');
+        header.innerHTML = `<span>${escapeHtml(displayName)}'s Profile</span>`;
+  
+        // Render meta: own profile => show only follower count
+        renderHeaderMeta({ profile: profileUser, isViewingOwn: true, isFollowing: false });
+      }
+    } catch (err) {
+      console.error('Error fetching profile user:', err);
+    }
+  }
+  
+  // small utility to escape text for safe insertion into HTML
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
     // Initial load
     if (userID) {
